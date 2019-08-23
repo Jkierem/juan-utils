@@ -1,0 +1,24 @@
+{
+  "name": "juan-utils",
+  "version": "1.0.0",
+  "description": "Util library",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jkierem/juan-utils.git"
+  },
+  "keywords": [
+    "Utility",
+    "Javascript",
+    "js"
+  ],
+  "author": "Juan Gomez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jkierem/juan-utils/issues"
+  },
+  "homepage": "https://github.com/Jkierem/juan-utils#readme"
+}
