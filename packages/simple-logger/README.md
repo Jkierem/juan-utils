@@ -1,5 +1,7 @@
 # Simple Logger
 
+Simple personal logger.
+
 ## Usage 
 
 Log Levels:
