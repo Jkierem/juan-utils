@@ -1,6 +1,6 @@
 {
   "name": "juan-utils",
-  "private": true,
+  "private": false,
   "version": "1.0.0",
   "description": "Util library",
   "main": "./lib/index.js",
