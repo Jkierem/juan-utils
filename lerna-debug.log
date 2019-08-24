@@ -1,6 +1,0 @@
-36 error Error: Command failed: git tag v0.0.8-alpha.0 -m v0.0.8-alpha.0
-36 error fatal: tag 'v0.0.8-alpha.0' already exists
-36 error
-36 error     at makeError (/home/juan/.nvm/versions/node/v8.11.4/lib/node_modules/lerna/node_modules/execa/index.js:174:9)
-36 error     at Promise.all.then.arr (/home/juan/.nvm/versions/node/v8.11.4/lib/node_modules/lerna/node_modules/execa/index.js:278:16)
-36 error     at <anonymous>
