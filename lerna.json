@@ -4,5 +4,8 @@
   ],
   "version": "0.0.5-alpha.0",
   "npmClient": "yarn",
-  "useWrokspaces": true
+  "useWrokspaces": true,
+  "publishConfig": {
+    "access": "public"
+  }
 }
