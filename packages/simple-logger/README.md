@@ -24,7 +24,7 @@ import createLogger , { Levels } from '@juan-utils/simple-logger';
 //createLogger :: ( level = Levels.All , out = console.log ) => logger
 const logger = createLogger();
 
-// logger.[Level] :: (...any) => void
+// logger[Level] :: (...any) => void
 logger.All("Logged in every level config"); //All: Logged in every level config
 logger.Debug("Logged in Debug or lower config"); //Debug: Logged in Debug or lower config
 logger.Info("Logged in Info or lower config"); //Info: Logged in Info or lower config
