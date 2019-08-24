@@ -2,5 +2,7 @@
     "name": "@juan-utils/simple-logger",
     "version": "0.0.2-alpha.0",
     "main": "./src/index.js",
-    "gitHead": "38554908c94f5b7c41abf54030c4db88dd717d4e"
+    "gitHead": "4a5131860302b55827f5835ccab70ecbb6639cc3",
+    "license": "MIT",
+    "access": "public"
 }
