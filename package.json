@@ -1,5 +1,6 @@
 {
   "name": "juan-utils",
+  "private": true,
   "version": "1.0.0",
   "description": "Util library",
   "main": "./lib/index.js",
@@ -20,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/Jkierem/juan-utils/issues"
   },
-  "homepage": "https://github.com/Jkierem/juan-utils#readme"
+  "homepage": "https://github.com/Jkierem/juan-utils#readme",
+  "devDependencies": {
+    "lerna": "^3.16.4"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
