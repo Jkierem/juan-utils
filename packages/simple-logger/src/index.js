@@ -25,7 +25,7 @@ const createLogger = (initLevel = defaultLevel, out = console.log) => {
     logger.setLevel = (level) => {
         currentLevel = level;
     }
-    logger.log = (...args) => src {
+    logger.log = (...args) => {
         if (currentLevel) {
             out(...args)
         }
