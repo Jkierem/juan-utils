@@ -1,3 +1,6 @@
+/**
+ * @description Logging levels available. All < Debug < Info < Warn < Error < Fatal < Off
+ */
 export const Levels = {
     "All": 0,
     "Debug": 1,
@@ -10,6 +13,7 @@ export const Levels = {
 
 const defaultLevel = Levels.All
 /**
+ * @typedef {(...args:any[]) => any} OutChannel
  * @typedef {{
  *  All: (...args:any[]) => void, 
  *  Debug: (...args:any[]) => void,
@@ -20,11 +24,11 @@ const defaultLevel = Levels.All
  *  Off: (...args:any[]) => void 
  *  log: (...args:any[]) => void
  *  setLevel: (level:number) => void , 
- *  setOutput: (out: (...args:any[]) => void ) => void , 
+ *  setOutput: (out: (...args:any[]) => any ) => void , 
  * }} Logger
  * @param {number} [initLevel=0] initial logging level. Defaults to Levels.All
- * @param {function} [initOut=console.log] initial output function for logging. Defaults o console.log
- * @returns {Logger} Logger
+ * @param {OutChannel} [initOut=console.log] initial output function for logging. Defaults to console.log
+ * @returns {Logger} new Logger object
  */
 const createLogger = (initLevel = defaultLevel, initOut = console.log) => {
     let currentLevel = initLevel
@@ -49,7 +53,7 @@ const createLogger = (initLevel = defaultLevel, initOut = console.log) => {
     }
     /**
      * @description changes the output channel a logger uses
-     * @param {(...args:any[]) => void} output new out channel to be used
+     * @param {OutChannel} newOut new out channel to be used
      */
     logger.setOutput = (newOut) => {
         out = newOut;

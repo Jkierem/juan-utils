@@ -19,10 +19,17 @@ export const and = (...preds) => (value) => preds.reduce((acc, pred) => acc && p
 export const or = (...preds) => (value) => preds.reduce((acc, pred) => acc || pred(value), false)
 export const neither = (...preds) => not(or(...preds))
 
-export const True = justOf(true)
-export const False = justOf(false)
+/**
+ * @returns {true} true
+ */
+export const True = () => true
+/**
+ * @returns {false} false
+ */
+export const False = () => false
 
-export const asymEquals = (obj1, obj2) => keysOf(obj1).every(key => obj1[key] == obj2[key])
+export const asymEquals = (obj1, obj2) => keysOf(obj1).map(prop).every(keyOf => keyOf(obj1) === keyOf(obj2))
+export const symEquals = (obj1, obj2) => union(keysOf(obj1), keysOf(obj2)).map(prop).every(keyOf => keyOf(obj1) === keyOf(obj2));
 export const shallowEquals = (obj1, obj2) => union(keysOf(obj1), keysOf(obj2)).map(prop).every(keyOf => keyOf(obj1) === keyOf(obj2));
 export const equals = (a, b) => {
     const typeA = typeof a;
