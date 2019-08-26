@@ -82,3 +82,4 @@ export const memo = (f) => {
 }
 export const pipe = (hf = identity, ...fs) => (...args) => fs.reduce((arg, next) => next(arg), hf(...args));
 export const compose = (...fs) => pipe(...reverse(fs), identity);
+export const createArray = (...args) => args;
