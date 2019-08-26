@@ -23,6 +23,7 @@ const createLogger = (initLevel = defaultLevel, initOut = console.log) => {
             }
         }
     )
+    logger.Off = () => { }
     /**
      * @description changes the current level of a logger
      * @param {number} level new level
@@ -41,7 +42,8 @@ const createLogger = (initLevel = defaultLevel, initOut = console.log) => {
      * @description Bypasses levels unless level is set to Levels.Off
      */
     logger.log = (...args) => {
-        if (currentLevel) {
+        debugger;
+        if (currentLevel !== Levels.Off) {
             out(...args)
         }
     }

@@ -1,8 +1,7 @@
 {
-    "name": "@juan-utils/simple-logger",
-    "version": "0.0.11",
+    "name": "@juan-utils/functions",
+    "version": "0.0.0",
     "main": "./src/index.js",
-    "gitHead": "942f1b8b73a9a1c6434f267c9fef0877d938248e",
     "license": "MIT",
     "publishConfig": {
         "access": "public"
