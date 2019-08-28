@@ -1,8 +1,10 @@
+import { curry } from './core'
+
 export const length = x => x.length;
 export const createArray = (...args) => args;
-export const map = f => data => data.map(f);
-export const filter = f => data => data.filter(f);
-export const reduce = (...args) => data => data.reduce(...args);
+export const map = curry((f,data) => data.map(f))
+export const filter = curry((f,data) => data.filter(f));
+export const reduce = curry((f,init,data) => data.reduce(f,init));
 export const isEmpty = arr => length(arr) == 0
 
 export const head = ([head]) => head
@@ -14,3 +16,5 @@ export const union = (...arrs) => arrs.reduce(binaryUnion)
 export const zip = (...arrs) => arrs.some(isEmpty) ? [] : [arrs.map(head), ...zip(...arrs.map(tail))]
 
 export const inclusiveZip = (...arrs) => arrs.every(isEmpty) ? [] : [[...arrs.map(head)], ...inclusiveZip(...arrs.map(tail))]
+
+export const belongs = curry((arr,value) => arr.includes(value))
