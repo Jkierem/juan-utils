@@ -1,4 +1,4 @@
-import { curry, compose, justOf, prop } from './core'
+import { curry, compose, pipe } from './core'
 import { length, reduce } from './array';
 
 export const add = curry((a,b) => b + a);
