@@ -4,7 +4,7 @@ export const length = x => x.length;
 export const createArray = (...args) => args;
 export const map = curry((f,data) => data.map(f))
 export const filter = curry((f,data) => data.filter(f));
-export const reduce = curry((f,init,data) => data.reduce(f,init));
+export const reduce = (f,init) => (data) => data.reduce(f,init);
 export const isEmpty = arr => length(arr) == 0
 
 export const head = ([head]) => head

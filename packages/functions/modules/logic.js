@@ -1,5 +1,5 @@
-import { curry } from './core';
-import { isNaN, isNil } from './types'
+import { curry, identity } from './core';
+import { isNaN, isNil, isFunction } from './types'
 
 export const True = () => true;
 export const False = () => false;
@@ -13,7 +13,7 @@ export const anyPass = (...preds) => (value) => preds.reduce((acc, pred) => acc 
 export const nonePass = (...preds) => not(anyPass(...preds))
 
 export const conditional = (conds) => (...args) => conds.reduce(
-    (prev,[cond , res]) => prev || (cond(...args) ? res(...args) : prev),
+    (prev,[cond=True , res=identity]) => prev || (cond(...args) ? res(...args) : prev),
     undefined
 );
 
