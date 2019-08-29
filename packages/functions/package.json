@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/functions",
-    "version": "0.0.17",
+    "version": "0.0.18",
     "main": "./modules/index.js",
     "license": "MIT",
     "publishConfig": {
