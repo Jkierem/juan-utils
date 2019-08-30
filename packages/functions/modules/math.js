@@ -1,5 +1,6 @@
-import { curry, compose, pipe } from './core'
+import { curry, compose, pipe, justOf, identity } from './core'
 import { length, reduce } from './array';
+import { conditional, True } from './logic'
 
 export const add = curry((a,b) => b + a);
 export const sub = curry((a,b) => b - a)
@@ -20,6 +21,14 @@ export const half = div(2);
 export const floor = x => Math.floor(x)
 export const ceil = x => Math.ceil(x)
 export const inverse = mult(-1);
+
+export const toDegrees = rads => (rads*180)/Math.PI;
+export const toRadians = degs => (degs*Math.PI)/180;
+export const interval = (min,max) => conditional([
+    [gt(max), justOf(max)],
+    [lt(min), justOf(min)],
+    [True , identity]
+])
 
 export const inc = a => a+1;
 export const dec = a => a-1;
