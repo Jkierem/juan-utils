@@ -2,5 +2,6 @@
 
 Implementations of common structures. Available structures:
 
-- Optional
+- Functor
 - LinkedList
+- Maybe

@@ -2,8 +2,10 @@ import { curry } from './core'
 
 export const shareConstructor = curry((a, b) => a instanceof b.constructor && b instanceof a.constructor)
 export const typeEquals = curry((type,value) => typeof value === type)
+export const isInstanceOf = curry((a,b) => b instanceof a);
 export const isFunction = typeEquals("function")
 export const isObject = typeEquals("object")
+export const isArray = isInstanceOf(Array);
 export const isNil = (value) => value === undefined || value === null
 export const isDefined = (obj) => obj !== undefined && obj !== null
 export const isNaN = x => x !== x;

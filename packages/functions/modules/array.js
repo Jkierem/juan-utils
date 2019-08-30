@@ -1,4 +1,5 @@
 import { curry } from './core'
+import { isArray } from './types'
 
 export const length = x => x.length;
 export const createArray = (...args) => args;
@@ -18,3 +19,5 @@ export const zip = (...arrs) => arrs.some(isEmpty) ? [] : [arrs.map(head), ...zi
 export const inclusiveZip = (...arrs) => arrs.every(isEmpty) ? [] : [[...arrs.map(head)], ...inclusiveZip(...arrs.map(tail))]
 
 export const belongs = curry((arr,value) => arr.includes(value))
+
+export const flatten = reduce( (acc,next) => isArray(next) ? [...acc , ...next] : [...acc , next ],[])
