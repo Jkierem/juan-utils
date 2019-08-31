@@ -1,13 +1,52 @@
 {
-    "name": "@juan-utils/functions",
-    "version": "0.0.20",
-    "main": "./modules/index.js",
-    "license": "MIT",
-    "publishConfig": {
-        "access": "public"
+  "name": "@juan-utils/functions",
+  "version": "0.0.20",
+  "main": "./modules/index.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jkierem/juan-utils"
+  },
+  "scripts": {
+    "test": "rm -rf ./coverage && jest --coverage -u --verbose",
+    "test:watch": "jest -u --watch"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.5.5",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env"
+    ]
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverageFrom": [
+      "modules/*.{js,jsx}"
+    ],
+    "testMatch": [
+      "<rootDir>/modules/**/?(*.)test.{js,jsx}"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      ".js$": "babel-jest"
     },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Jkierem/juan-utils"
-    }
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "modules"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx"
+    ]
+  }
 }

@@ -1,9 +1,11 @@
 import { map, compose, call, mult, isNil, reduce, add } from "@juan-utils/functions";
 
-const Vector = (values) => {
+const Vector = (...values) => {
     const data = values;
     return {
-        scale(s){ return compose( Vector , map(mult(s)))(data) },
+        get x(){ return this.get(0) },
+        get y(){ return this.get(1) },
+        scale(s){ return Vector(...map(mult(s),data)) },
         add(v){ return this.map( (value,index) => v.get(index) + value )},
         sub(v){ return this.map( (value,index) => v.get(index) - value )},
         mult(v){ return this.map( (value,index) => v.get(index) * value )},
@@ -11,12 +13,12 @@ const Vector = (values) => {
         _normalize(i=1){ return this.scale(this.mod()).scale(i) },
         normalize(i=1){ this._normalize()._normalize(i) },
         distance(v){ return this.sub(v).mod() },
-        toArray(){ return this.get() },
+        toArray(){ return data },
 
         reduce(f,init){ return reduce(f,init)(data) },
 
         get(i){ return isNil(i) ? data : (data[i] || 0)  },
-        map(f){ return compose( Vector , map(f) )(data) },
+        map(f){ return Vector(...map(f,data)) },
         open(f){ return compose( call("get") , map(f) )(this) },
         morph(of){ return of(data) },
         transmorph(of,f){ return compose( of , f )(data) }

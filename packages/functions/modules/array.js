@@ -1,12 +1,12 @@
-import { curry } from './core'
+import { curry, prop } from './core'
 import { isArray } from './types'
 
-export const length = x => x.length;
+export const length = prop("length");
 export const createArray = (...args) => args;
 export const map = curry((f,data) => data.map(f))
 export const filter = curry((f,data) => data.filter(f));
 export const reduce = (f,init) => (data) => data.reduce(f,init);
-export const isEmpty = arr => length(arr) == 0
+export const isEmpty = arr => length(arr) === 0
 
 export const head = ([head]) => head
 export const tail = ([, ...tail]) => tail
@@ -21,3 +21,21 @@ export const inclusiveZip = (...arrs) => arrs.every(isEmpty) ? [] : [[...arrs.ma
 export const belongs = curry((arr,value) => arr.includes(value))
 
 export const flatten = reduce( (acc,next) => isArray(next) ? [...acc , ...next] : [...acc , next ],[])
+
+export const range = (from,to,step=1) => {
+    let cur = from;
+    const res = []
+    while(cur < to){
+        res.push(cur)
+        cur += step
+    }
+    return res
+}
+
+export const repeat = (n,value) => {
+    const res = []
+    for( let i = 0 ; i < n ; i++ ){
+        res.push(value);
+    }
+    return res
+}

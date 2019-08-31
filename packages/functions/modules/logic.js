@@ -21,3 +21,5 @@ export const defaultTo = curry((def,value) => anyPass(isNil,isNaN)(value) ? def 
 
 export const unless = curry((cond,trans,value) => cond(value) ? value : trans(value));
 
+export const until = (cond) => (trans) => value => cond(value) ? value : until(cond)(trans)(trans(value))
+
