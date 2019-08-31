@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "main": "./src/index.js",
     "license": "MIT",
     "publishConfig": {
@@ -11,6 +11,6 @@
         "url": "https://github.com/Jkierem/juan-utils"
     },
     "dependencies": {
-        "@juan-utils/functions": "^0.0.20"
+        "@juan-utils/functions": "^0.0.21"
     }
 }
