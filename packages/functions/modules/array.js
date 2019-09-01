@@ -32,10 +32,10 @@ export const range = (from,to,step=1) => {
     return res
 }
 
-export const repeat = (n,value) => {
+export const repeat = curry((n,value) => {
     const res = []
     for( let i = 0 ; i < n ; i++ ){
         res.push(value);
     }
     return res
-}
+})

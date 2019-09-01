@@ -11,13 +11,14 @@
     "url": "https://github.com/Jkierem/juan-utils"
   },
   "scripts": {
-    "test": "rm -rf ./coverage && jest --coverage -u --verbose",
-    "test:watch": "jest -u --watch"
+    "test": "rm -rf ./coverage && jest --coverage --verbose",
+    "test:watch": "jest --verbose --watch"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.5.5",
     "babel-jest": "^24.9.0",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "sinon": "^7.4.1"
   },
   "babel": {
     "presets": [
