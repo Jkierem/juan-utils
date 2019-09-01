@@ -1,16 +1,14 @@
 //Core
-const _reverse = (arr) => arr.reduce((acc, obj) => [obj, ...acc],[])
-
-export const identity = x => x
-export const justOf = value => () => value
-export const prop = (key) => (obj) => obj ? obj[key] : undefined
-export const path = (p, delim = ".") => (obj) => p.split(delim).map(prop).reduce((prev, next) => prev && next(prev), obj);
-export const keysOf = (obj) => obj ? Object.keys(obj) : []
-
 export const curry = (fn, ...oldArgs) => (...newArgs) => {
     const args = [...oldArgs, ...newArgs];
     return (args.length < fn.length) ? curry(fn, ...args) : fn(...args);
 };
+
+export const identity = x => x
+export const justOf = value => () => value
+export const prop = (key) => (obj) => obj ? obj[key] : undefined
+export const path = (p, delim = ".") => (obj) => p.split(delim).map(prop).reduce((prev, next) => prev && next(prev), obj)
+export const keysOf = (obj) => obj ? Object.keys(obj) : []
 
 export const memo = (f) => {
     const mem = {};
@@ -35,7 +33,7 @@ export const memoBy = curry((keyGen , f) => {
 
 export const pipe = (hf = identity, ...fs) => (...args) => fs.reduce((arg, next) => next(arg), hf(...args));
 
-export const compose = (...fs) => pipe(..._reverse(fs), identity);
+export const compose = (...fs) => pipe(...fs.reduce((acc, obj) => [obj, ...acc],[]), identity);
 
 export const log = x => {
     console.log(x);
