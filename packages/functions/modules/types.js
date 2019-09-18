@@ -1,4 +1,4 @@
-import { curry } from './core'
+import { curry2 as curry } from './core'
 
 export const shareConstructor = curry((a, b) => a instanceof b.constructor && b instanceof a.constructor)
 export const typeEquals = curry((type,value) => typeof value === type)

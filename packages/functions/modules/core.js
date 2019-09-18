@@ -1,12 +1,25 @@
 //Core
-export const curry = (fn, ...oldArgs) => (...newArgs) => {
-    const args = [...oldArgs, ...newArgs];
-    return (args.length < fn.length) ? curry(fn, ...args) : fn(...args);
-};
+
+export const curry2 = f => (a,b) => {
+    if( b === undefined ){
+        return (b) => f(a,b)
+    }
+    return f(a,b)
+}
+
+export const curry3 = f => (a,b,c) => {
+    if( b === undefined && c === undefined ){
+        return curry2((b,c) => f(a,b,c))
+    } else if( c === undefined ) {
+        return (c) => f(a,b,c);
+    } else {
+        return f(a,b,c)
+    }
+}
 
 export const identity = x => x
 export const justOf = value => () => value
-export const prop = (key) => (obj) => obj ? obj[key] : undefined
+export const prop = curry2((key,obj) => obj ? obj[key] : undefined)
 export const path = (p, delim = ".") => (obj) => p.split(delim).map(prop).reduce((prev, next) => prev && next(prev), obj)
 export const keysOf = (obj) => obj ? Object.keys(obj) : []
 
@@ -20,7 +33,8 @@ export const memo = (f) => {
         return mem[key];
     }
 }
-export const memoBy = curry((keyGen , f) => {
+
+export const memoBy = (keyGen , f) => {
     const mem = {};
     return (...args) => {
         const key = keyGen(args);
@@ -29,18 +43,17 @@ export const memoBy = curry((keyGen , f) => {
         }
         return mem[key];
     }
-})
+}
 
-export const pipe = (hf = identity, ...fs) => (...args) => fs.reduce((arg, next) => next(arg), hf(...args));
-
-export const compose = (...fs) => pipe(...fs.reduce((acc, obj) => [obj, ...acc],[]), identity);
+export const pipe = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)));
+export const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
 
 export const log = x => {
     console.log(x);
     return x;
 }
 
-export const cardinal = curry((f,a,b) => f(b,a))
+export const cardinal = (f,a,b) => f(b,a)
 
 export const flip = f => (...args) => f(..._reverse(args));
 export const call = (who, ...args) => funk.call(who, ...args)

@@ -1,11 +1,11 @@
-import { curry, prop } from './core'
+import { prop } from './core'
 import { isArray } from './types'
 
 export const length = prop("length");
 export const createArray = (...args) => args;
-export const map = curry((f,data) => data.map(f))
-export const filter = curry((f,data) => data.filter(f));
-export const reduce = (f,init) => (data) => data.reduce(f,init);
+export const map = (f, data) => data.map(f)
+export const filter = (f, data) => data.filter(f);
+export const reduce = (f, init) => (data) => data.reduce(f, init);
 export const isEmpty = arr => length(arr) === 0
 
 export const head = ([head]) => head
@@ -18,24 +18,30 @@ export const zip = (...arrs) => arrs.some(isEmpty) ? [] : [arrs.map(head), ...zi
 
 export const inclusiveZip = (...arrs) => arrs.every(isEmpty) ? [] : [[...arrs.map(head)], ...inclusiveZip(...arrs.map(tail))]
 
-export const belongs = curry((arr,value) => arr.includes(value))
+export const belongs = (arr, value) => arr.includes(value)
 
-export const flatten = reduce( (acc,next) => isArray(next) ? [...acc , ...next] : [...acc , next ],[])
+export const flatten = reduce((acc, next) => isArray(next) ? [...acc, ...next] : [...acc, next], [])
 
-export const range = (from,to,step=1) => {
+export const range = (from, to, step = 1) => {
     let cur = from;
     const res = []
-    while(cur < to){
+    while (cur < to) {
         res.push(cur)
         cur += step
     }
     return res
 }
 
-export const repeat = curry((n,value) => {
+/**
+ * @typedef {(n:number, value:any) => any[]} repeat
+ * @param {number} n time to repeat value
+ * @param {any} value value to be repeated
+ * @returns {any[]}
+ */
+export const repeat = (n, value) => {
     const res = []
-    for( let i = 0 ; i < n ; i++ ){
+    for (let i = 0; i < n; i++) {
         res.push(value);
     }
     return res
-})
+}

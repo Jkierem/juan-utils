@@ -1,4 +1,4 @@
-import { curry, keysOf, pipe, prop } from './core'
+import { curry2 as curry, keysOf, pipe, prop } from './core'
 import { belongs, filter, reduce } from './array';
 import { not } from './logic';
 import { isNil } from './types';

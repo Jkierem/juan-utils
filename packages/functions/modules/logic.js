@@ -1,4 +1,4 @@
-import { curry, identity } from './core';
+import { curry2 as curry, identity } from './core';
 import { isNaN, isNil, isFunction } from './types'
 
 export const True = () => true;
