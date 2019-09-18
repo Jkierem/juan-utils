@@ -16,7 +16,7 @@ import {
     flatten,
     range,
     repeat
-} from './array';
+} from '../array';
 
 describe("Array functions", () => {
     describe("length",() => {

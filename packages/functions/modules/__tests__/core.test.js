@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { identity, justOf, prop, path, keysOf, memo, memoBy } from "./core";
+import { identity, justOf, prop, path, keysOf, memo, memoBy } from "../core";
 
 describe("Core", () => {
     describe("identity",() => {
