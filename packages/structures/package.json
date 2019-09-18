@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "0.0.24",
+    "version": "0.0.25",
     "main": "./dist/index.js",
     "license": "MIT",
     "publishConfig": {
@@ -17,7 +17,7 @@
         "prepublish": "yarn build"
     },
     "dependencies": {
-        "@juan-utils/functions": "^0.0.24"
+        "@juan-utils/functions": "^0.0.25"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
@@ -32,33 +32,33 @@
         "webpack-dev-server": "^3.8.0"
     },
     "babel": {
-    "presets": [
-        "@babel/env"
-    ]
+        "presets": [
+            "@babel/env"
+        ]
     },
     "jest": {
-    "verbose": true,
-    "collectCoverageFrom": [
-        "modules/*.{js,jsx}"
-    ],
-    "testMatch": [
-        "<rootDir>/modules/**/?(*.)test.{js,jsx}"
-    ],
-    "testEnvironment": "node",
-    "transform": {
-        ".js$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-        "<rootDir>/node_modules/"
-    ],
-    "moduleDirectories": [
-        "node_modules",
-        "modules"
-    ],
-    "moduleFileExtensions": [
-        "js",
-        "json",
-        "jsx"
-    ]
+        "verbose": true,
+        "collectCoverageFrom": [
+            "modules/*.{js,jsx}"
+        ],
+        "testMatch": [
+            "<rootDir>/modules/**/?(*.)test.{js,jsx}"
+        ],
+        "testEnvironment": "node",
+        "transform": {
+            ".js$": "babel-jest"
+        },
+        "transformIgnorePatterns": [
+            "<rootDir>/node_modules/"
+        ],
+        "moduleDirectories": [
+            "node_modules",
+            "modules"
+        ],
+        "moduleFileExtensions": [
+            "js",
+            "json",
+            "jsx"
+        ]
     }
 }
