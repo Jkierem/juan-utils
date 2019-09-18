@@ -3,12 +3,14 @@ var path = require('path');
 const OUTPUT_PATH = path.resolve(__dirname, 'dist');
 const ENTRY_POINT = path.resolve(__dirname, './modules/index.js');
 const BUNDLE_NAME = 'index.js'
+const LIB_TARGET = 'commonjs2';
 
 module.exports = {
     entry: ENTRY_POINT,
     output: {
         path: OUTPUT_PATH,
-        filename: BUNDLE_NAME
+        filename: BUNDLE_NAME,
+        libraryTarget: LIB_TARGET
     },
     module: {
         rules: [
