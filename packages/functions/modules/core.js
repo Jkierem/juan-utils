@@ -20,7 +20,7 @@ export const curry3 = f => (a,b,c) => {
 export const identity = x => x
 export const justOf = value => () => value
 export const prop = curry2((key,obj) => obj ? obj[key] : undefined)
-export const path = (p, delim = ".") => (obj) => p.split(delim).map(prop).reduce((prev, next) => prev && next(prev), obj)
+export const path = (p, delim = ".") => (obj) => p.split(delim).map(x => prop(x)).reduce((prev, next) => prev && next(prev), obj)
 export const keysOf = (obj) => obj ? Object.keys(obj) : []
 
 export const memo = (f) => {
@@ -48,8 +48,8 @@ export const memoBy = (keyGen , f) => {
 export const pipe = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)));
 export const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
 
-export const log = x => {
-    console.log(x);
+export const log = (x,logger=console.log) => {
+    logger(x);
     return x;
 }
 
