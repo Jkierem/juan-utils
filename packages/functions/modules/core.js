@@ -53,9 +53,19 @@ export const log = (x,logger=console.log) => {
     return x;
 }
 
-export const cardinal = (f,a,b) => f(b,a)
+export const cardinal = curry3((f,a,b) => f(b,a))
 
+const _reverse =  (x) => x.reduce((acc, obj) => [obj, ...acc], [])
 export const flip = f => (...args) => f(..._reverse(args));
-export const call = (who, ...args) => funk.call(who, ...args)
-export const bind = (who, ...args) => funk => funk.bind(who, ...args)
-export const apply = (who, args) => funk => funk.apply(who, args);
+export const call = funk => (who, ...args) => funk.call(who, ...args)
+export const bind = funk => (who, ...args) => funk.bind(who, ...args)
+export const apply = curry3((funk, who, args) => funk.apply(who, args))
+
+export const take = (n) => (...args) => args.slice(0,n)
+export const takeOrdinal = (n) => (...args) => prop(n,args)
+export const takeFirst  = takeOrdinal(0)
+export const takeSecond = takeOrdinal(1)
+export const teakeThird = takeOrdinal(2)
+
+export const callWith = (...args) => f => f(...args);
+export const applyWith = (args) => f => f(...args);

@@ -17,12 +17,12 @@ describe("Logic", () => {
 
     describe("extract", () => {
         it("should return argument if value", () => {
-            expect(extract(true)).toBeTruthy()
-            expect(extract(false)).toBeFalsy()
+            expect(extract(true)).toBe(true)
+            expect(extract(false)).toBe(false)
         })
         it("should return call if function", () => {
-            expect(extract(True)).toBeTruthy()
-            expect(extract(False)).toBeFalsy()
+            expect(extract(True)).toBe(true)
+            expect(extract(False)).toBe(false)
         })
     })
 

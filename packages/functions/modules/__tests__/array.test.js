@@ -15,8 +15,11 @@ import {
     belongs,
     flatten,
     range,
-    repeat
+    repeat,
+    difference,
+    mapOverUnary
 } from '../array';
+import sinon from 'sinon'
 
 describe("Array functions", () => {
     describe("length",() => {
@@ -114,6 +117,14 @@ describe("Array functions", () => {
             expect(union(a,b,c)).toStrictEqual(aubuc);
         })
     })
+    describe("difference", () => {
+        it("should return the difference between two arrays", () => {
+            const a = [1,3];
+            const b = [2,3];
+            expect(difference(a,b)).toStrictEqual([1])
+            expect(difference(b,a)).toStrictEqual([2])
+        })
+    })
     describe("zip", () => {
         it("should return pairs", () => {
             const a = [1,2,3];
@@ -152,6 +163,16 @@ describe("Array functions", () => {
             const data = [1,2,3]
             const elem = 4
             expect(belongs(data,elem)).toBeFalsy()
+        })
+    })
+    describe("mapOverUnary", () => {
+        it("should map an array with only values", () => {
+            const data = range(0,10);
+            const spy = sinon.spy();
+            mapOverUnary(spy,data);
+            data.forEach( x => {
+                expect(spy.calledWithExactly(x)).toBeTruthy()
+            })
         })
     })
     describe("flatten", () => {
