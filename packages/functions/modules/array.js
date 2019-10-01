@@ -6,7 +6,7 @@ export const length = prop("length");
 export const createArray = (...args) => args;
 export const map = curry2((f, data) => data.map(f))
 export const filter = curry2((f, data) => data.filter(f))
-export const reduce = (f, init) => (data) => data.reduce(f, init)
+export const reduce = (f, init) => (data) => init ? data.reduce(f, init) : data.reduce(f)
 export const isEmpty = arr => length(arr) === 0
 export const belongs = curry2((arr, value) => arr.includes(value))
 export const mapOverUnary = curry2((f,data) => map(compose( f, takeFirst ), data))
