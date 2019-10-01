@@ -14,7 +14,7 @@
         "build": "webpack --mode production --config webpack.config.js",
         "test": "rm -rf ./coverage && jest --coverage --verbose",
         "test:watch": "jest --verbose --watch",
-        "prepublish": "yarn && yarn build"
+        "prepublish": "yarn build"
     },
     "dependencies": {
         "@juan-utils/functions": "^0.0.28"
@@ -60,5 +60,6 @@
             "json",
             "jsx"
         ]
-    }
+    },
+    "gitHead": "06279d689834978d68839e77413dc1edd6308f92"
 }
