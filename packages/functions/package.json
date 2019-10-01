@@ -14,7 +14,7 @@
     "build": "webpack --mode production --config webpack.config.js",
     "test": "rm -rf ./coverage && jest --coverage --verbose",
     "test:watch": "jest --verbose --watch",
-    "prepublish": "yarn build"
+    "prepublish": "yarn && yarn build"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
