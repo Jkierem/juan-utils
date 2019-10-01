@@ -1,4 +1,4 @@
-import { prop , flatten , isArray, createArray } from '@juan-utils/functions'
+import { prop , flatten } from '@juan-utils/functions'
 
 const createNode = (data) => ({
     data,

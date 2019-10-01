@@ -1,5 +1,6 @@
-import { mapKeys, mapValues, pick, diff, omit, strip, entries, fromEntries } from '../object'
+import { mapKeys, mapValues, pick, diff, omit, strip, entries, fromEntries, clone, deepClone } from '../object'
 import { keysOf } from '../core';
+import { equals } from '../types';
 
 describe("Object", () => {
     describe("mapKeys", () => {
@@ -103,6 +104,35 @@ describe("Object", () => {
         it("should hold: fromEntries(entries(obj)) = obj", () => {
             const obj = { key: "value" }
             expect(fromEntries(entries(obj))).toEqual(obj)
+        })
+    })
+
+    describe("clone", () => {
+        it("should return a shallow copy", () => {
+            const obj = {
+                a: "some value"
+            }
+            const cloneObj = clone(obj);
+            expect(equals(obj,cloneObj)).toBeTruthy();
+            expect(cloneObj).not.toBe(obj);
+        })
+    })
+
+    describe("deepClone", () => {
+        it("should return a deep copy of an object", () => {
+            const obj = {
+                a: {
+                    b: {
+                        c: {
+                            d: 5
+                        },
+                        e: [ 1, 2, 3, 4 ]
+                    }
+                }
+            }
+            const cloneObj = deepClone(obj);
+            expect(equals(obj,cloneObj)).toBeTruthy();
+            expect(cloneObj).not.toBe(obj);
         })
     })
 })
