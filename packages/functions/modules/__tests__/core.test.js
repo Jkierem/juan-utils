@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, log, cardinal, flip, call, bind, apply, take, takeOrdinal, callWith, applyWith } from "../core";
+import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, log, cardinal, flip, call, bind, apply, take, takeOrdinal, callWith, applyWith, propMap } from "../core";
 import { range } from '../array';
 
 describe("Core", () => {
@@ -52,6 +52,19 @@ describe("Core", () => {
         })
         it("should return undefined when value is falsy", () => {
             expect(prop("something")()).toBeUndefined();
+        })
+    })
+
+    describe("propMap", () => {
+        it("should return an attribute and mapped through given function", () => {
+            const key = "key";
+            const value = "value";
+            const obj = {
+                [key]: value,
+            };
+            const f = x => "mapped "+x
+            const res = "mapped value";
+            expect(propMap(f,key,obj)).toBe(res)
         })
     })
 

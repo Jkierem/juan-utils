@@ -20,6 +20,7 @@ export const curry3 = f => (a,b,c) => {
 export const identity = x => x
 export const justOf = value => () => value
 export const prop = curry2((key,obj) => obj ? obj[key] : undefined)
+export const propMap = curry3((f,key,obj) => compose( f , prop(key) )(obj))
 export const path = (p, delim = ".") => (obj) => p.split(delim).map(x => prop(x)).reduce((prev, next) => prev && next(prev), obj)
 export const keysOf = (obj) => obj ? Object.keys(obj) : []
 
