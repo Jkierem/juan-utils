@@ -5,7 +5,7 @@ declare module "@juan-utils/functions" {
   export namespace JS {
     type Map<A, B> = (a: A, index?: number, array?: A[]) => B;
     type Filter<A> = (a: A, index?: number, array?: A[]) => boolean;
-    type Reduce<A, B> = (a: A, b: B, index?: number, array?: A[]) => A;
+    type Reduce<A, B> = (a: A, b: B, index?: number, array?: B[]) => A;
   }
 
   export type InnerMap<A> = (a: A) => A;
@@ -36,18 +36,33 @@ declare module "@juan-utils/functions" {
     (a: A, b: B, c: C): D;
   }
 
+  export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
   // Array
 
   export function length<T>(array: T[]): number;
   export function createArray(...args: any[]): any[];
 
-  export function map<A, B>(f: JS.Map<A, B>, data: A[]): B[];
-  export function map<A, B>(f: JS.Map<A, B>): (data: A[]) => B[];
+  export function map<A, B>(
+    f: (a: A, index?: number, array?: A[]) => B,
+    data: A[]
+  ): B[];
+  export function map<A, B>(
+    f: (a: A, index?: number, array?: A[]) => B
+  ): (data: A[]) => B[];
 
-  export function filter<A>(f: JS.Filter<A>, data: A[]): A[];
-  export function filter<A>(f: JS.Filter<A>): (data: A[]) => A[];
+  export function filter<A>(
+    f: (a: A, index?: number, array?: A[]) => boolean,
+    data: A[]
+  ): A[];
+  export function filter<A>(
+    f: (a: A, index?: number, array?: A[]) => boolean
+  ): (data: A[]) => A[];
 
-  export function reduce<A, B>(f: JS.Reduce<A, B>, init: A): (data: B[]) => A;
+  export function reduce<A, B>(
+    f: (a: A, b: B, index?: number, array?: B[]) => A,
+    init: A
+  ): (data: B[]) => A;
 
   export function isEmpty<T>(arr: T[]): boolean;
 
@@ -83,8 +98,8 @@ declare module "@juan-utils/functions" {
 
   export function identity<T>(a: T): T;
   export function justOf<T>(value: T): () => T;
-  export function prop<P extends keyof T, T>(key: P): (obj: T) => T[P];
   export function prop<P extends keyof T, T>(key: P, obj: T): T[P];
+  export function prop<P extends keyof T, T>(key: P): (obj: T) => T[P];
 
   export function propMap<P extends keyof T, T, B>(
     f: Map<T[P], B>,
@@ -136,8 +151,8 @@ declare module "@juan-utils/functions" {
 
   // Logic
 
-  export function True(): true;
-  export function False(): false;
+  export const True: () => true;
+  export const False: () => false;
   export function extract<T>(x: FunctionType<any, T>): T;
   export function extract(x: any): any;
   export function not(value: Function): Function;
@@ -157,50 +172,76 @@ declare module "@juan-utils/functions" {
   export function defaultTo<T, U>(def: T): (value: U) => T | U;
 
   export function unless<T>(
-    cond: Predicate<T>,
-    trans: InnerMap<T>,
+    cond: (a: T) => boolean,
+    trans: (a: T) => T,
     value: T
   ): T;
   export function unless<T>(
-    cond: Predicate<T>
-  ): (trans: InnerMap<T>, value: T) => T;
+    cond: (a: T) => boolean
+  ): (trans: (a: T) => T, value: T) => T;
   export function unless<T>(
-    cond: Predicate<T>
-  ): (trans: InnerMap<T>) => (value: T) => T;
+    cond: (a: T) => boolean
+  ): (trans: (a: T) => T) => (value: T) => T;
   export function unless<T>(
-    cond: Predicate<T>,
-    trans: InnerMap<T>
+    cond: (a: T) => boolean,
+    trans: (a: T) => T
   ): (value: T) => T;
 
-  export function until<T>(cond: Predicate<T>, trans: InnerMap<T>, value: T): T;
   export function until<T>(
-    cond: Predicate<T>
-  ): (trans: InnerMap<T>, value: T) => T;
+    cond: (a: T) => boolean,
+    trans: (a: T) => T,
+    value: T
+  ): T;
   export function until<T>(
-    cond: Predicate<T>
-  ): (trans: InnerMap<T>) => (value: T) => T;
+    cond: (a: T) => boolean
+  ): (trans: (a: T) => T, value: T) => T;
   export function until<T>(
-    cond: Predicate<T>,
-    trans: InnerMap<T>
+    cond: (a: T) => boolean
+  ): (trans: (a: T) => T) => (value: T) => T;
+  export function until<T>(
+    cond: (a: T) => boolean,
+    trans: (a: T) => T
   ): (value: T) => T;
 
   // Math
 
-  export type add = MathOperation;
-  export type sub = MathOperation;
-  export type mult = MathOperation;
-  export type div = MathOperation;
-  export type mod = MathOperation;
-  export type pow = MathOperation;
+  export function add(a: number, b: number): number;
+  export function add(a: number): (b: number) => number;
 
-  export type gte = BooleanMathOperation;
-  export type gt = BooleanMathOperation;
-  export type lte = BooleanMathOperation;
-  export type lt = BooleanMathOperation;
+  export function sub(a: number, b: number): number;
+  export function sub(a: number): (b: number) => number;
 
-  export type eq = BooleanMathOperation<any>;
-  export type neq = BooleanMathOperation<any>;
-  export type eqBy = CurriedTernaryFunction<Function, any, any>;
+  export function mult(a: number, b: number): number;
+  export function mult(a: number): (b: number) => number;
+
+  export function div(a: number, b: number): number;
+  export function div(a: number): (b: number) => number;
+
+  export function mod(a: number, b: number): number;
+  export function mod(a: number): (b: number) => number;
+
+  export function pow(a: number, b: number): number;
+  export function pow(a: number): (b: number) => number;
+
+  export function gte(a: number, b: number): boolean;
+  export function gte(a: number): (b: number) => boolean;
+
+  export function gt(a: number, b: number): boolean;
+  export function gt(a: number): (b: number) => boolean;
+
+  export function lte(a: number, b: number): boolean;
+  export function lte(a: number): (b: number) => boolean;
+
+  export function lt(a: number, b: number): boolean;
+  export function lt(a: number): (b: number) => boolean;
+
+  export function eq(a: any, b: any): boolean;
+  export function eq(a: any): (b: any) => boolean;
+
+  export function neq(a: any, b: any): boolean;
+  export function neq(a: any): (b: any) => boolean;
+
+  export function eqBy<T>(f: (a: T) => any, a: T, b: T): boolean;
 
   export function min(a: number, b: number): number;
   export function max(a: number, b: number): number;
@@ -221,4 +262,34 @@ declare module "@juan-utils/functions" {
 
   export function random(limit: number): number;
   export function integerRandom(limit: number): number;
+
+  // Object
+
+  export function mapKeys(
+    f: (a: string) => string | number,
+    obj: object
+  ): object;
+  export function mapKeys(
+    f: (a: string) => string | number
+  ): (obj: object) => object;
+
+  export function mapValues(f: (a: any) => any, obj: object): object;
+  export function mapKeys(f: (a: any) => any): (obj: object) => object;
+
+  export function pick<K extends keyof T, T>(keys: K[], obj: T): Pick<T, K>;
+  export function pick<K extends keyof T, T>(keys: K[]): (obj: T) => Pick<T, K>;
+
+  export function diff(a: object, b: object): object;
+  export function diff(a: object): (b: object) => object;
+
+  export function omit<K extends keyof T, T>(keys: K[], obj: T): Omit<T, K>;
+  export function omit<K extends keyof T, T>(keys: K[]): (obj: T) => Omit<T, K>;
+
+  export function strip(obj: object): object;
+
+  export function entries<T, K extends keyof T>(obj: T): [K, T[K]][];
+  export function fromEntries<T, K extends keyof T>(entries: [K, T[K]][]): T;
+
+  export function clone(a: object): object;
+  export function deepClone(a: object): object;
 }

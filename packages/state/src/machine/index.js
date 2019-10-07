@@ -1,5 +1,5 @@
 import { eqBy, identity, prop, omit } from '@juan-utils/functions'
-import { useState, useObservable } from "../stateFunctions";
+import { useState } from "../stateFunctions";
 
 const Node = (id,transitions=[],data={}) => ({
     id,
@@ -8,7 +8,6 @@ const Node = (id,transitions=[],data={}) => ({
         return transitions.find(f);
     }
 })
-const Transition = (id,src,dst) => ({ id, src, dst })
 compare = eqBy(prop("id"))
 
 export const useMachine = (config) => {
