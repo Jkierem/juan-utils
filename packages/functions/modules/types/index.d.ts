@@ -1,5 +1,3 @@
-import { curry3, memoBy } from "../core";
-
 declare module "@juan-utils/functions" {
   // Types
   export namespace JS {
@@ -292,4 +290,33 @@ declare module "@juan-utils/functions" {
 
   export function clone(a: object): object;
   export function deepClone(a: object): object;
+
+  // Types
+
+  export function shareConstructor(a: any, b: any): boolean;
+  export function shareConstructor(a: any): (b: any) => boolean;
+
+  export function typeEquals(a: any, b: any): boolean;
+  export function typeEquals(a: any): (b: any) => boolean;
+
+  export function isInstanceOf(a: any, b: any): boolean;
+  export function isInstanceOf(a: any): (b: any) => boolean;
+
+  export function isFunction(a: any): boolean;
+  export function isObject(a: any): boolean;
+  export function isArray(a: any): boolean;
+  export function isNil(a: any): boolean;
+  export function isDefined(a: any): boolean;
+  export function isNaN(a: any): boolean;
+
+  export function asymEquals(a: any, b: any): boolean;
+  export function asymEquals(a: any): (b: any) => boolean;
+
+  export function shallowEquals(a: any, b: any): boolean;
+  export function shallowEquals(a: any): (b: any) => boolean;
+
+  export function equals(a: any, b: any): boolean;
+
+  export function multiEquals(...objs: any[]): boolean;
+  export function multiShallowEquals(...objs: any[]): boolean;
 }
