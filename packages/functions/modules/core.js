@@ -66,7 +66,7 @@ export const take = (n) => (...args) => args.slice(0,n)
 export const takeOrdinal = (n) => (...args) => prop(n,args)
 export const takeFirst  = takeOrdinal(0)
 export const takeSecond = takeOrdinal(1)
-export const teakeThird = takeOrdinal(2)
+export const takeThird = takeOrdinal(2)
 
 export const callWith = (...args) => f => f(...args);
 export const applyWith = (args) => f => f(...args);

@@ -16,7 +16,7 @@ export const useMachine = (config) => {
         states:_states = [],
         initial = 0,
         onChange = identity,
-        comparer = Node.compare
+        comparer = compare
     } = config;
 
     const states = _states.map(info => {

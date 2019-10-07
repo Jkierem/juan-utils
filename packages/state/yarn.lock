@@ -810,6 +810,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@juan-utils/functions@^0.0.32-alpha.0":
+  version "0.0.32-alpha.0"
+  resolved "https://registry.yarnpkg.com/@juan-utils/functions/-/functions-0.0.32-alpha.0.tgz#3de9e01c2eb4c703bd6d0d062c29868f0ab1146e"
+  integrity sha512-m4r8b5q7Fe1te+xBgupASSR6Benc7Re34KTeF8sG5A6H2K4GlEH8UJX3uJW2nNr3bBcN7zQYGPIZKOUx0nS78Q==
+
 "@sinonjs/commons@^1", "@sinonjs/commons@^1.3.0", "@sinonjs/commons@^1.4.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.6.0.tgz#ec7670432ae9c8eb710400d112c201a362d83393"
