@@ -58,5 +58,6 @@
       "jsx"
     ]
   },
+  "types": "modules/types/index.d.ts",
   "gitHead": "06279d689834978d68839e77413dc1edd6308f92"
 }
