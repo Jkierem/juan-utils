@@ -1,12 +1,7 @@
 import { isObject, deepClone } from '@juan-utils/functions'
 
 export const createState = (init={}) => {
-  let state = undefined
-  if(isObject(init)){
-      state = deepClone(init);
-  } else {
-      state = init;
-  }
+  let state = isObject(init) ? deepClone(init) : init;
   return {
     getState(){ return deepClone(state) },
     setState: ( obj ) => { 
@@ -19,7 +14,14 @@ export const createState = (init={}) => {
 }
 
 export const useState = (init={}) => {
-  const { getState , setState } = createState(init)
+  let state = isObject(init) ? deepClone(init) : init;
+  const getState = () => deepClone(state);
+  const setState = ( obj ) => {
+      const wasObject = isObject(state);
+      const willBeObject = isObject(obj);
+      state = (!wasObject && willBeObject) ? {} : state ;
+      state = willBeObject ? { ...state, ...deepClone(obj) } : obj; 
+  }
   return [ getState , setState ];
 }
 
@@ -31,12 +33,7 @@ export const useObservable = (config) => {
     onGet = identity,
     mapGet = identity,
   } = config
-  let state = undefined
-  if(isObject(init)){
-      state = deepClone(init);
-  } else {
-      state = init;
-  }
+  let state = isObject(init) ? deepClone(init) : init;
   return {
     getState(){
       onGet(state)

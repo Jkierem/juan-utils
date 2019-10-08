@@ -17,7 +17,8 @@ import {
     range,
     repeat,
     difference,
-    mapOverUnary
+    mapOverUnary,
+    filterOverUnary
 } from '../array';
 import sinon from 'sinon'
 
@@ -170,6 +171,16 @@ describe("Array functions", () => {
             const data = range(0,10);
             const spy = sinon.spy();
             mapOverUnary(spy,data);
+            data.forEach( x => {
+                expect(spy.calledWithExactly(x)).toBeTruthy()
+            })
+        })
+    })
+    describe("filterOverUnary", () => {
+        it("should map an array with only values", () => {
+            const data = range(0,10);
+            const spy = sinon.spy();
+            filterOverUnary(spy,data);
             data.forEach( x => {
                 expect(spy.calledWithExactly(x)).toBeTruthy()
             })

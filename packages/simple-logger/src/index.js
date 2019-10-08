@@ -140,3 +140,100 @@ export const createIdentityLogger = (initLevel = defaultLevel , initOut = consol
     }
     return logger;
 }
+
+/**
+ * @typedef {{
+ *  group: (name: string) => void,
+ *  groupEnd: () => void,
+ *  log: UnaryOutChannel
+ * }} GroupOutChannel
+ * @typedef {{
+ *  All: (message: any) => any, 
+ *  Debug: (message: any) => any,
+ *  Info: (message: any) => any,
+ *  Warn: (message: any) => any,
+ *  Error: (message: any) => any,
+ *  Fatal: (message: any) => any,
+ *  Off: (message: any) => any,
+ *  log: (message: any) => any 
+ *  setLevel: (level:number) => void , 
+ *  setOutput: (out: (message: any) => any) => void , 
+ * }} IdentityGroupLogger
+ * @description a logger that returns what it receives. All logging functions are unary. A log call will send the message to the out channel if the level of the call is higher or equal to the current level of the logger. The return of the out channel is ignored.
+ * @param {number} [initLevel=0] initial logging level. Defaults to Levels.All
+ * @param {GroupOutChannel} [initOut=console] initial output object for logging. Defaults to console.
+ * @returns {IdentityGroupLogger} new GroupLogger object
+ */
+export const createIdentityGroupLogger = (initLevel = defaultLevel , initOut = console) => {
+    let currentLevel = initLevel
+    let out = initOut;
+    let suffix = "";
+    const getSuffix = (level,msg) => {
+        if( typeof(suffix) === "function" ){
+            return suffix(level,msg);
+        }
+        return suffix
+    }
+    const logger = {}
+    Object.keys(Levels).forEach(
+        key => {
+            logger[key] = (message, tempSuffix) => {
+                if (Levels[key] >= currentLevel) {
+                    const aux = suffix;
+                    if( tempSuffix ){
+                        suffix = tempSuffix
+                    }
+                    const s = getSuffix(key,message)
+                    out.group(key + s ? `: ${s}` : '');
+                    out.log(message)
+                    out.groupEnd()
+                    if( tempSuffix ){
+                        suffix = aux
+                    }
+                }
+                return message;
+            }
+        }
+    )
+    /**
+    * @description Works like identity function. Never logs.
+    * @param {any} message
+    * @returns {any} returns what was received
+    */
+    logger.Off = message => message
+    /**
+    * @description changes the current level of a logger
+    * @param {number} level new level
+    */
+    logger.setLevel = (level) => {
+        currentLevel = level;
+    }
+    /**
+    * @description changes the output channel a logger uses
+    * @param {OutChannel} newOut new out channel to be used
+    */
+    logger.setOutput = (newOut) => {
+        out = newOut;
+    }
+    /**
+     * @description changes the title suffix. By default the suffix is an empty string
+     * @param {string | ((level,message) => string)} newSuffix new title suffix
+     */
+    logger.setSuffix = (newSuffix) => {
+        suffix = newSuffix
+    }
+    /**
+    * @description Bypasses levels unless level is set to Levels.Off
+    * @param {any} message what is to be printed
+    * @returns {any} returns exactly what it received
+    */
+    logger.log = (message) => {
+        if (currentLevel !== Levels.Off) {
+            out.group("Log");
+            out.log(message)
+            out.groupEnd()
+        }
+        return message
+    }
+    return logger;
+}

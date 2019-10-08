@@ -23,6 +23,8 @@ declare module "@juan-utils/functions" {
     boolean
   >;
 
+  export type Key = string | number | symbol;
+
   export interface CurriedBinaryFunction<A, B, C> {
     (a: A): (b: B) => C;
     (a: A, b: B): C;
@@ -35,6 +37,11 @@ declare module "@juan-utils/functions" {
   }
 
   export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+  export type Lens = {
+    view: (obj: object) => any;
+    set: (value: any, obj: object) => object;
+  };
 
   // Array
 
@@ -69,6 +76,9 @@ declare module "@juan-utils/functions" {
 
   export function mapOverUnary<A, B>(f: Map<A, B>, data: A[]): B[];
   export function mapOverUnary<A, B>(f: Map<A, B>): (data: A[]) => B[];
+
+  export function filterOverUnary<A>(f: Predicate<A>, data: A[]): A[];
+  export function filterOverUnary<A>(f: Predicate<A>): (data: A[]) => A[];
 
   export function head<T>(array: T[]): T;
   export function tail<T>(array: T[]): T[];
@@ -115,9 +125,9 @@ declare module "@juan-utils/functions" {
     key: P
   ): (obj: T) => B;
 
-  export function keysOf(obj: object): string[];
+  export function keysOf(obj: any): Key[];
   export function memo(f: Function): Function;
-  export function memoBy(keyGen: (a: any) => any, f: Function): Function;
+  export function memoBy(keyGen: (a: any) => Key, f: Function): Function;
 
   export function pipe(...fns: Function[]): Function;
   export function compose(...fns: Function[]): Function;
@@ -147,11 +157,18 @@ declare module "@juan-utils/functions" {
   export function callWith(...args: any[]): (f: Function) => any;
   export function applyWith(args: any[]): (f: Function) => any;
 
+  // Lens
+
+  export function lens(s: Key, a: Key): Lens;
+  export function view(l: Lens, s: object): any;
+  export function set(l: Lens, v: any, s: object): object;
+  export function over(l: Lens, f: Function, s: object): object;
+
   // Logic
 
   export const True: () => true;
   export const False: () => false;
-  export function extract<T>(x: FunctionType<any, T>): T;
+  export function extract<T>(x: Function): T;
   export function extract(x: any): any;
   export function not(value: Function): Function;
   export function not(value: any): any;
@@ -239,6 +256,7 @@ declare module "@juan-utils/functions" {
   export function neq(a: any, b: any): boolean;
   export function neq(a: any): (b: any) => boolean;
 
+  export function eqBy<T>(f: (a: T) => boolean, a: T, b: T): boolean;
   export function eqBy<T>(f: (a: T) => any, a: T, b: T): boolean;
 
   export function min(a: number, b: number): number;
@@ -263,16 +281,11 @@ declare module "@juan-utils/functions" {
 
   // Object
 
-  export function mapKeys(
-    f: (a: string) => string | number,
-    obj: object
-  ): object;
-  export function mapKeys(
-    f: (a: string) => string | number
-  ): (obj: object) => object;
+  export function mapKeys(f: (a: Key) => Key, obj: object): object;
+  export function mapKeys(f: (a: Key) => Key): (obj: object) => object;
 
   export function mapValues(f: (a: any) => any, obj: object): object;
-  export function mapKeys(f: (a: any) => any): (obj: object) => object;
+  export function mapValues(f: (a: any) => any): (obj: object) => object;
 
   export function pick<K extends keyof T, T>(keys: K[], obj: T): Pick<T, K>;
   export function pick<K extends keyof T, T>(keys: K[]): (obj: T) => Pick<T, K>;

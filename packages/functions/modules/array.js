@@ -10,6 +10,7 @@ export const reduce = (f, init) => (data) => init ? data.reduce(f, init) : data.
 export const isEmpty = arr => length(arr) === 0
 export const belongs = curry2((arr, value) => arr.includes(value))
 export const mapOverUnary = curry2((f,data) => map(compose( f, takeFirst ), data))
+export const filterOverUnary = curry2((f, data) => filter(compose( f, takeFirst ), data))
 
 export const head = ([head]) => head
 export const tail = ([, ...tail]) => tail

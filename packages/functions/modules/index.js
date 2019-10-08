@@ -1,5 +1,6 @@
 export * from './array'
 export * from './core'
+export * from './lens'
 export * from './logic'
 export * from './math'
 export * from './object'

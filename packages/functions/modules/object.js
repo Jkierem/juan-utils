@@ -14,6 +14,9 @@ export const entries = obj => pipe( keysOf , map( key => [key , prop(key,obj)]) 
 export const fromEntries = entries => reduce( (prev,[key,value]) => ({ ...prev , [key]: value}) ,{})(entries)
 export const clone = a => ({...a})
 export const deepClone = obj => {
+    if( !isObject(obj) ){
+        return obj
+    }
     let res = {}
     mapKeys(key => {
         const isAttArray  = compose( isArray , prop(key) )(obj)
