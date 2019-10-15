@@ -134,5 +134,12 @@ describe("Object", () => {
             expect(equals(obj,cloneObj)).toBeTruthy();
             expect(cloneObj).not.toBe(obj);
         })
+
+        it("should clone an array", () => {
+            const arr = [1,2,{a:3},4,5]
+            const cloneObj = deepClone(arr);
+            expect(cloneObj).not.toBe(arr)
+            expect(cloneObj).toStrictEqual(arr)
+        })
     })
 })

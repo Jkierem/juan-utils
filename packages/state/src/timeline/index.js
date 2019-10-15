@@ -1,23 +1,17 @@
 import { useState } from '../stateFunctions'
 import { identity } from '@juan-utils/functions'
 
-export const createTimeline = ( onEvent = identity ) => {
-    const [ next , getTimeline] = useTimeline(onEvent);
-    return {
-        next,
-        getTimeline,
-    }
-}
-
-export const useTimeline = ( onEvent = identity ) => {
+export const useTimeline = ( 
+    onEvent = identity,
+) => {
     const [ getPast , setPast ] = useState([])
     const [ getExists , setExists ] = useState(false);
     const [ getPresent , setPresent ] = useState(undefined);
 
     const next = ( event ) => {
-        const newEvent = onEvent( event, getPast() );
+        const newEvent = onEvent( event , getPast() );
         const exists = getExists();
-        if( !exists ){
+        if ( !exists ) {
             setPresent(newEvent);
             setExists(true);
         } else {
@@ -28,5 +22,5 @@ export const useTimeline = ( onEvent = identity ) => {
 
     const getTimeline = () => [ ...getPast(), getPresent() ];
 
-    return [ next, getTimeline ]
+    return [ getTimeline, next ]
 }

@@ -16,18 +16,27 @@ export const clone = a => ({...a})
 export const deepClone = obj => {
     if( !isObject(obj) ){
         return obj
+    } else if (isArray(obj)) {
+        return obj.map(x => {
+            if( isObject(x) ){
+                return deepClone(x)
+            } else {
+                return x
+            }
+        });
+    } else {
+        let res = {}
+        mapKeys(key => {
+            const isAttArray  = compose( isArray , prop(key) )(obj)
+            const isAttObject = compose( isObject, prop(key) )(obj)
+            if( isAttArray ){
+                res[key] = [...obj[key]];
+            }else if( isAttObject ){
+                res[key] = deepClone(obj[key]);
+            }else{
+                res[key] = obj[key]
+            }
+        },obj)
+        return res
     }
-    let res = {}
-    mapKeys(key => {
-        const isAttArray  = compose( isArray , prop(key) )(obj)
-        const isAttObject = compose( isObject, prop(key) )(obj)
-        if( isAttArray ){
-            res[key] = [...obj[key]];
-        }else if( isAttObject ){
-            res[key] = deepClone(obj[key]);
-        }else{
-            res[key] = obj[key]
-        }
-    },obj)
-    return res
 }

@@ -1,25 +1,26 @@
 import { eqBy, identity, prop, omit } from '@juan-utils/functions'
-import { useState } from "../stateFunctions";
+import { useObservable } from "../stateFunctions";
 
-const Node = (id,transitions=[],data={}) => ({
+export const compare = eqBy(prop("id"))
+
+export const State = (id,transitions=[],data={}) => ({
     id,
-    ...data,
+    data,
     find(f){
         return transitions.find(f);
     }
 })
-compare = eqBy(prop("id"))
 
-export const useMachine = (config) => {
+export const useMachine = (config = {}) => {
     const {
-        states:_states = [],
+        states:_states = [ { id: 0 } ],
         initial = 0,
         onChange = identity,
         comparer = compare
     } = config;
 
     const states = _states.map(info => {
-        return Node(
+        return State(
             info.id,
             info.transitions,
             omit([ "id", "transitions" ])(info)
@@ -28,15 +29,15 @@ export const useMachine = (config) => {
     
     const current = states[initial];
 
-    const [ getCurrent, setCurrent ] = useState({
+    const [ getCurrent, setCurrent ] = useObservable({
         init: current,
         onSet: onChange
     });
 
     const sendEvent = (value) => {
-        const t = getCurrent().find(comparer(value));
+        const t = getCurrent().find(x => comparer({ id: value },x));
         if( t !== undefined ){
-            setCurrent(t);
+            setCurrent(states.find(x => x.id == t.id));
         }
     }
 
