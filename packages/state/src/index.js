@@ -1,1 +1,5 @@
+export * from './machine'
 export * from './stateFunctions'
+export * from './store'
+export * from './timeline'
+export * from './timemachine'
