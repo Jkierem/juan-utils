@@ -1,3 +1,4 @@
+export * from './entity'
 export * from './machine'
 export * from './stateFunctions'
 export * from './store'

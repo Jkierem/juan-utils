@@ -19,11 +19,6 @@ export const useState = ( init = {} ) => {
   return [ getState , setState ];
 }
 
-export const createState = (init) => {
-  const [ getState , setState ] = useState(init)
-  return { getState , setState }
-}
-
 export const useObservable = (config) => {
   const {
     init,

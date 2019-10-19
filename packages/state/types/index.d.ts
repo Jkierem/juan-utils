@@ -34,6 +34,10 @@ declare module "@juan-utils/state" {
     comparer: (a: Transition, b: Transition) => boolean;
   };
 
+  export type Actions = {
+    [key: string]: (data: any, ...arg: any[]) => any;
+  };
+
   export function useState(initialValue: any): [Getter, Setter];
   export function useObservable(config: ObservableConfig): [Getter, Setter];
 
@@ -49,4 +53,9 @@ declare module "@juan-utils/state" {
   export function useTimemachine(
     config: MachineConfig
   ): [Getter<any[]>, EmitEvent];
+
+  export function useEntity(
+    initialValue: any,
+    actions: Actions
+  ): [Getter, Actions];
 }
