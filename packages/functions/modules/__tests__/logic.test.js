@@ -1,6 +1,5 @@
 import sinon from 'sinon'
 import { True, False, not, and, extract, or, allPass, anyPass, nonePass, conditional, defaultTo, unless, until } from "../logic";
-import { identity } from '../core';
 
 describe("Logic", () => {
     describe("True", () => {

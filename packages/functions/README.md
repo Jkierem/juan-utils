@@ -52,8 +52,6 @@ module with array functions. All functions are iteratee first, data second. Incl
 - reduce
 - isEmpty
 - belongs
-- mapOverUnary
-- filterOverUnary
 - head
 - tail
 - reverse

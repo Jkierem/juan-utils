@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, log, cardinal, flip, call, bind, apply, take, takeOrdinal, callWith, applyWith, propMap } from "../core";
+import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, flip, call, apply, take, takeOrdinal, propMap, partial, _, effect, converge, diverge, propApply, propCall, reverseArgs, unapply, arity, trampoline, branch, createPathFunction, curryN } from "../core";
 import { range } from '../array';
 
 describe("Core", () => {
@@ -20,6 +20,40 @@ describe("Core", () => {
             expect(currySum(2, 4)(6)).toBe(12)
             expect(currySum(2)(4, 6)).toBe(12)
             expect(currySum(2, 4, 6)).toBe(12)
+        })
+    })
+
+    describe("curryN", () => {
+        it("should auto curry a function given the arity", () => {
+            const sum = (a,b,c,d) => a+b+c+d;
+            const currySum = curryN(4,sum);
+            expect(currySum(2)(4)(6)(8)).toBe(20)
+            expect(currySum(2, 4, 6, 8)).toBe(20)
+            expect(currySum(2)(4, 6, 8)).toBe(20)
+            expect(currySum(2)(4)(6, 8)).toBe(20)
+            expect(currySum(2)(4, 6)(8)).toBe(20)
+            expect(currySum(2, 4)(6, 8)).toBe(20)
+            expect(currySum(2, 4)(6)(8)).toBe(20)
+            expect(currySum(2, 4, 6)(8)).toBe(20)
+        })
+    })
+
+    describe("partial", () => {
+        it("should do partial aplication", () => {
+            const f = sinon.spy()
+            const fixedArgs = [1,2,3];
+            const nextArgs = [4,5,6];
+            const allArgs = [ ...fixedArgs, ...nextArgs ];
+            partial(f,...fixedArgs)(...nextArgs);
+            expect(f.calledWith(...allArgs)).toBeTruthy();
+        })
+        it("should allow use of the placeholder", () => {
+            const f = sinon.spy()
+            const fixedArgs = [1,2,3];
+            const nextArgs = [4,5,6];
+            const allArgs = [ ...fixedArgs, ...nextArgs ];
+            partial(f,1,_,3)(2,...nextArgs);
+            expect(f.calledWith(...allArgs)).toBeTruthy();
         })
     })
 
@@ -68,6 +102,32 @@ describe("Core", () => {
         })
     })
 
+    describe("propApply", () => {
+        it("should get an attribute and apply it", () => {
+            const key = "funk";
+            const value = sinon.spy();
+            const args = [1,2,3,4]
+            const obj = {
+                [key]: value,
+            }
+            propApply(key,args,obj);
+            expect(value.calledWith(...args)).toBeTruthy();
+        })
+    })
+
+    describe("propCall", () => {
+        it("should get an attribute and call it", () => {
+            const key = "funk";
+            const value = sinon.spy();
+            const args = [1,2,3,4]
+            const obj = {
+                [key]: value,
+            }
+            propCall(key,obj,...args);
+            expect(value.calledWith(...args)).toBeTruthy();
+        })
+    })
+
     describe("path",() => {
         it("should get a value in a nested object", () => {
             const p = "a.b.c.d";
@@ -84,7 +144,7 @@ describe("Core", () => {
             const obj = {
                 a: { b: { c: { d: value } } }
             }
-            expect(path(p,delimiter)(obj)).toBe(value)
+            expect(createPathFunction(delimiter)(p,obj)).toBe(value)
         })
         it("should return undefined when non existant key", () => {
             const p = "a.b.c.d";
@@ -161,40 +221,32 @@ describe("Core", () => {
         })
     })
 
-    describe("log",() => {
-        let spy;
-
-        beforeEach(() => {
-            spy = sinon.spy(console,"log");
-        })
-
-        afterEach(() => {
-            console.log.restore()
-        })
-
-        it("should return the given argument and log it", () => {
-            const value = "Something"
-            expect(log(value)).toBe(value);
-            expect(spy.calledOnceWith(value)).toBeTruthy()
-        })
-    })
-
-    describe("cardinal", () => {
-        it("should call given binary functions with the given arguments flipped", () => {
-            const args = [ 1, 2 ];
-            const spy = sinon.spy()
-            const cardinalSpy = cardinal(spy);
-            cardinalSpy(...args)
-            expect(spy.calledWith(2,1)).toBeTruthy();
+    describe("effect",() => {
+        it("should call an effect and return the value", () => {
+            const eff = sinon.spy();
+            const x = 5
+            const res = effect(eff)(x)
+            expect(res).toBe(x)
+            expect(eff.calledOnceWith(x)).toBeTruthy()
         })
     })
 
     describe("flip", () => {
-        it("should reverse the order of arguments", () => {
+        it("should reverse the order of the first two arguments", () => {
             const args = [1,2,3,4];
             const spy = sinon.spy();
             const flippedSpy = flip(spy);
             flippedSpy(...args);
+            expect(spy.calledWith(...[2,1,3,4])).toBeTruthy();
+        })
+    })
+
+    describe("reverseArgs", () => {
+        it("should reverse the order of the arguments", () => {
+            const args = [1,2,3,4];
+            const spy = sinon.spy();
+            const reversedSpy = reverseArgs(spy);
+            reversedSpy(...args);
             expect(spy.calledWith(...[4,3,2,1])).toBeTruthy();
         })
     })
@@ -202,36 +254,37 @@ describe("Core", () => {
     describe("call", () => {
         it("should call the given function", () => {
             const args = [1,2,3,4];
-            const spy = {
-                call: sinon.spy(),
-            }
-            const callSpy = call(spy);
-            callSpy(...args);
-            expect(spy.call.calledWith(...args)).toBeTruthy();
-        })
-    })
-
-    describe("bind", () => {
-        it("should bind the given function", () => {
-            const args = [1,2,3,4];
-            const spy = {
-                bind: sinon.spy(),
-            }
-            const boundSpy = bind(spy);
-            boundSpy(...args);
-            expect(spy.bind.calledWith(...args)).toBeTruthy();
+            const spy =  sinon.spy()
+            call(spy,...args);
+            expect(spy.calledWith(...args)).toBeTruthy();
         })
     })
 
     describe("apply", () => {
         it("should apply the given function", () => {
             const args = [1,[2,3,4]];
-            const spy = {
-                apply: sinon.spy(),
-            }
-            const applySpy = apply(spy);
-            applySpy(...args);
-            expect(spy.apply.calledWith(...args)).toBeTruthy();
+            const spy =  sinon.spy()
+            apply(spy)(args);
+            expect(spy.calledWith(...args)).toBeTruthy();
+        })
+    })
+
+    describe("arity", () => {
+        it("should change the arity of a function", () => {
+            const randArity = Math.ceil(Math.random() * 100);
+            const args = range(0,102);
+            const funk = sinon.spy();
+            arity(randArity)(funk)(...args);
+            expect(funk.calledWithExactly(...args.slice(0,randArity))).toBeTruthy();
+        })
+    })
+
+    describe("unapply", () => {
+        it("should unapply the given function", () => {
+            const args = [1,2,3,4];
+            const spy =  sinon.spy()
+            unapply(apply(spy))(args);
+            expect(spy.calledWith(args)).toBeTruthy();
         })
     })
 
@@ -253,23 +306,59 @@ describe("Core", () => {
         })
     })
 
-    describe("callWith", () => {
-        it("should call a function with the given arguments", () => {
-            const args = range(0,10);
-            const spy = sinon.spy()
-            const callWithArgs = callWith(...args);
-            callWithArgs(spy);
-            expect(spy.calledOnceWith(...args)).toBeTruthy();
+    describe("converge", () => {
+        it("should converge various outputs to a single function", () => {
+            const converger = sinon.spy();
+            const branches = [
+                x => x + 1,
+                x => x - 1,
+                x => x * 2
+            ]
+            converge( converger , branches )(5)
+            expect(converger.calledWith(...branches.map(f => f(5)))).toBeTruthy();
         })
     })
 
-    describe("applyWith", () => {
-        it("should call a function with the given arguments array", () => {
-            const args = range(0,10);
-            const spy = sinon.spy();
-            const applyWithArgs = applyWith(args);
-            applyWithArgs(spy);
-            expect(spy.calledOnceWith(...args)).toBeTruthy();
+    describe("diverge", () => {
+        it("should pass the output to various functions", () => {
+            const diverger = () => 5
+            const branches = [
+                sinon.spy(),
+                sinon.spy()
+            ]
+            diverge(diverger,branches)();
+            expect(branches.every(s => s.calledOnceWith(5))).toBeTruthy()
+        })
+    })
+
+    describe("trampoline", () => {
+        it("should avoid max stack size error", () => {
+            let i = 20000;
+            const funk1 = (i) => funk1(i-1);
+            const funk2 = (i) => {
+                if( i >= 0 ){
+                    return () => funk2(i-1);
+                }
+            }
+            const throwableFunk = sinon.spy(funk1);
+            const trampolineFunk = sinon.spy(trampoline(funk2));
+            try{
+                throwableFunk(i);
+            } catch {}
+            trampolineFunk(i);
+            expect(throwableFunk.threw()).toBeTruthy();
+            expect(trampolineFunk.threw()).toBeFalsy();
+        })
+    })
+
+    describe("branch", () => {
+        it("should call array of function with their respective values in array", () => {
+            const values = range(0,10);
+            const funks = values.map(x => sinon.spy());
+            branch(funks)(values);
+            funks.forEach( (f,index) => {
+                expect(f.calledOnceWith(values[index])).toBeTruthy();
+            })
         })
     })
 })

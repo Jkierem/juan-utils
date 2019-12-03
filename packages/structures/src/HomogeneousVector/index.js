@@ -1,4 +1,4 @@
-import { map, compose, call, mult, isNil, reduce, add } from "@juan-utils/functions";
+import { map, compose, mult, isNil, reduce, add } from "@juan-utils/functions";
 
 const HomogeneousVector = (values) => {
     const data = values;
@@ -17,7 +17,7 @@ const HomogeneousVector = (values) => {
 
         get(i){ return isNil(i) ? data : (data[i] || 1)  },
         map(f){ return compose( HomogeneousVector , map(f) )(data) },
-        open(f){ return compose( call("get") , map(f) )(this) },
+        open(f){ return this.map(f).get() },
         morph(of){ return of(data) },
         transmorph(of,f){ return compose( of , f )(data) }
     }

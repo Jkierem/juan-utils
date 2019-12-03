@@ -25,7 +25,7 @@ const defaultLevel = Levels.All
  *  Off: (...args:any[]) => void 
  *  log: (...args:any[]) => void
  *  setLevel: (level:number) => void , 
- *  setOutput: (out: (...args:any[]) => any ) => void , 
+ *  setOutput: (out: (...args:any[]) => any ) => void ,
  * }} Logger
  * @description A simple logger. Log calls do not return anything. A log call will send the message to the out channel if the level of the call is higher or equal to the current level of the logger. The return of the out channel is ignored. 
  * @param {number} [initLevel=0] initial logging level. Defaults to Levels.All

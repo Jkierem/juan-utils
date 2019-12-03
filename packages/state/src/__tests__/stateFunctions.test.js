@@ -1,4 +1,4 @@
-import { useState, createState, useObservable } from "../stateFunctions";
+import { useState, useObservable } from "../stateFunctions";
 
 describe("stateFunctions", () => {
     describe("useState", () => {
@@ -40,13 +40,5 @@ describe("stateFunctions", () => {
             expect(get()).toStrictEqual({ ...init , another: "value" })
         })
 
-    })
-
-    describe("createState", () => {
-        it("should return object with get and set", () => {
-            const s = createState(7);
-            expect(s instanceof Array).toBeFalsy();
-            expect(s.getState()).toBe(7)
-        })
     })
 })

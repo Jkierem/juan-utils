@@ -1,6 +1,5 @@
 import { curry2 as curry, compose, pipe, curry3 } from './core'
 import { length, reduce } from './array';
-import { not } from './logic'
 
 export const add = curry((a,b) => b + a);
 export const sub = curry((a,b) => b - a)
@@ -13,7 +12,7 @@ export const gt = curry((a,b) => b > a)
 export const lte = curry((a,b) => b <= a )
 export const lt = curry((a,b) => b < a)
 export const eq = curry((a,b) => a === b)
-export const neq = not(eq);
+export const neq = curry((a,b) => a !== b)
 export const eqBy = curry3((f,a,b) => eq(f(a),f(b)) )
 export const min = (a,b) => a < b ? a : b;
 export const max = (a,b) => a > b ? a : b;
@@ -32,6 +31,6 @@ export const toRadians = degs => (degs*Math.PI)/180;
 export const inc = add(1);
 export const dec = sub(1);
 
-export const mean = arr => compose(compose(div,length)(arr) , reduce(add) )(arr);
+export const mean = arr => compose(compose(div,length)(arr) , reduce(add,0) )(arr);
 export const random = limit => Math.random() * limit
 export const integerRandom = compose( Math.floor , random );

@@ -6,7 +6,7 @@ export const False = () => false;
 
 export const extract = x => isFunction(x) ? x() : x
 
-export const not = (value) => isFunction(value) ? (...args) => !value(...args) : !value
+export const not = (value) => isFunction(value) ? ((...args) => !value(...args)) : !value
 export const and = curry((a,b) => extract(a) && extract(b));
 export const or = curry((a,b) => extract(a) || extract(b))
 

@@ -2,7 +2,8 @@ import {
     length, 
     createArray, 
     map, 
-    filter, 
+    filter,
+    fold, 
     reduce, 
     isEmpty,
     head, 
@@ -17,10 +18,17 @@ import {
     range,
     repeat,
     difference,
-    mapOverUnary,
-    filterOverUnary
+    countBy,
+    group,
+    pushTo,
+    append,
+    mapReducer,
+    transduce,
+    pipeReducers,
+    filterReducer,
 } from '../array';
-import sinon from 'sinon'
+import { identity } from '../core';
+import { isOdd, mult } from '../math';
 
 describe("Array functions", () => {
     describe("length",() => {
@@ -63,11 +71,41 @@ describe("Array functions", () => {
             expect(filter(f,data)).toStrictEqual(data.filter(f))
         })
     })
+    describe("fold", () => {
+        it("should fold the data", () => {
+            const data = [1,2,3,4];
+            const f = (x,y) => x+y;
+            expect(fold(f,data)).toStrictEqual(data.reduce(f))
+        })
+    })
     describe("reduce", () => {
         it("should reduce the data", () => {
             const data = [1,2,3,4]
             const f = (x,y) => x+y
             expect(reduce(f,0)(data)).toStrictEqual(data.reduce(f,0))
+        })
+    })
+    describe("transduce", () => {
+        it("should compose reducers", () => {
+            const data = [1,2,3,4,5];
+            const expected = data.filter(isOdd).map(mult(2));
+            const filterOddThenMult2 = transduce(
+                pipeReducers(
+                    filterReducer(isOdd),
+                    mapReducer(mult(2))
+                ),
+                append,
+                [],
+                data
+            )
+            expect(filterOddThenMult2).toStrictEqual(expected)
+        })
+    })
+    describe("countBy", () => {
+        it("should map then count by ocurrence using an object", () => {
+            const data = [1,2,2,2,3,3,4];
+            const res = countBy(identity,data);
+            expect(res).toStrictEqual({ 1:1 , 2:3 , 3:2 , 4:1 })
         })
     })
     describe("head", () => {
@@ -166,26 +204,6 @@ describe("Array functions", () => {
             expect(belongs(data,elem)).toBeFalsy()
         })
     })
-    describe("mapOverUnary", () => {
-        it("should map an array with only values", () => {
-            const data = range(0,10);
-            const spy = sinon.spy();
-            mapOverUnary(spy,data);
-            data.forEach( x => {
-                expect(spy.calledWithExactly(x)).toBeTruthy()
-            })
-        })
-    })
-    describe("filterOverUnary", () => {
-        it("should map an array with only values", () => {
-            const data = range(0,10);
-            const spy = sinon.spy();
-            filterOverUnary(spy,data);
-            data.forEach( x => {
-                expect(spy.calledWithExactly(x)).toBeTruthy()
-            })
-        })
-    })
     describe("flatten", () => {
         it("should return a flat array",() => {
             const arr = [1,[2,3],4]
@@ -207,6 +225,54 @@ describe("Array functions", () => {
         it("should return an array with a repeated value", () => {
             const res = [1,1,1,1];
             expect(repeat(4,1)).toStrictEqual(res)
+        })
+    })
+    describe("group", () => {
+        it("should return an array of all contiguos n size groups of the array", () => {
+            const data = [1,2,3,4,5];
+            const groupings = group(3,data);
+            const res = [
+                [1,2,3],
+                [2,3,4],
+                [3,4,5]
+            ]
+            expect(groupings).toStrictEqual(res);
+        })
+    })
+    describe("pushTo", () => {
+        it("should push to an array", () => {
+            const arr = []
+            pushTo(arr)(1);
+            expect(arr).toStrictEqual([1])
+        })
+    })
+    describe("appendTo", () => {
+        it("should push and return a new array", () => {
+            const arr = []
+            const res = append(arr)(1)
+            expect(arr).not.toBe(res);
+            expect(res).toStrictEqual([1])
+            expect(arr).toStrictEqual([])
+        })
+    })
+
+    describe("mapReducer", () => {
+        it("should return a reducer function, given a mapper and combiner", () => {
+            const mapper = x => x + 1;
+            const data = [1,2,3,4,5];
+            const mapperTransducer = mapReducer(mapper)(append)
+            const expected = map(mapper,data);
+            expect(reduce(mapperTransducer,[],data)).toStrictEqual(expected);
+        })
+    })
+
+    describe("filterReducer", () => {
+        it("should return a reducer function, given a predicate and combiner", () => {
+            const predicate = isOdd;
+            const data = [1,2,3,4,5];
+            const filterTransducer = filterReducer(predicate)(append);
+            const expected = filter(predicate,data);
+            expect(reduce(filterTransducer,[],data)).toStrictEqual(expected);
         })
     })
 })

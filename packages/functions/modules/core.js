@@ -1,41 +1,80 @@
 //Core
 
-export const curry2 = f => (a,b) => {
-    if( b === undefined ){
-        return (b) => f(a,b)
-    }
-    return f(a,b)
-}
-
-export const curry3 = f => (a,b,c) => {
-    if( b === undefined && c === undefined ){
-        return curry2((b,c) => f(a,b,c))
-    } else if( c === undefined ) {
-        return (c) => f(a,b,c);
-    } else {
-        return f(a,b,c)
-    }
-}
-
 export const identity = x => x
 export const justOf = value => () => value
-export const prop = curry2((key,obj) => obj ? obj[key] : undefined)
-export const propMap = curry3((f,key,obj) => compose( f , prop(key) )(obj))
-export const path = (p, delim = ".") => (obj) => p.split(delim).map(x => prop(x)).reduce((prev, next) => prev && next(prev), obj)
-export const keysOf = (obj) => obj ? Object.keys(obj) : []
 
-export const memo = (f) => {
-    const mem = {};
-    return (...args) => {
-        const key = args.join(",");
-        if (!(key in mem)) {
-            mem[key] = f(...args);
+const placeholder = "___PLACEHOLDER___";
+export const _ = placeholder;
+
+export const curry2 = f => {
+    const _curried = (a,b) => {
+        if( b === undefined ){
+            return (b) => f(a,b)
         }
-        return mem[key];
+        return f(a,b)
     }
+    _curried.decurry = f;
+    return _curried
 }
 
-export const memoBy = (keyGen , f) => {
+export const curry3 = f => {
+    const _curried = (a,b,c) => {
+        if( b === undefined && c === undefined ){
+            return curry2((b,c) => f(a,b,c))
+        } else if( c === undefined ) {
+            return (c) => f(a,b,c);
+        } else {
+            return f(a,b,c)
+        }
+    }
+    _curried.decurry = f;
+    return _curried;
+}
+
+const _curryN = (n,f,...prev) => {
+    const _curried = (...next) => {
+        const nArgs = [...prev,...next].length
+        if( nArgs >= n ){
+            return f(...prev,...next);
+        } else {
+            return _curryN(n, f, ...prev, ...next);
+        }
+    }
+    _curried.decurry = f;
+    return _curried;
+}
+
+export const curryN = (n,f) => _curryN(n,f);
+
+export const prop = curry2((key,obj) => obj ? obj[key] : undefined)
+
+export const decurry = prop("decurry");
+
+const partial = (f,...args1) => {
+    const coalesce = (prev,next) => {
+        let pivot = 0;
+        const replaced = prev.map(x => {
+            if( x === partial.placeholder ){
+                const rep = next[pivot];
+                pivot++;
+                return rep;
+            }else{
+                return x
+            }
+        })
+        return [ ...replaced, ...next.slice(pivot) ];
+    }
+    return (...args2) => f(...coalesce(args1,args2));
+}
+
+partial.placeholder = placeholder;
+export { partial };
+
+export const createPathFunction = (delim) => curry2((p, obj) => p.split(delim).map(x => prop(x)).reduce((prev, next) => prev && next(prev), obj))
+export const path = createPathFunction(".");
+export const keysOf = (obj) => obj ? Object.keys(obj) : []
+
+export const memoBy = curry2((keyGen , f) => {
     const mem = {};
     return (...args) => {
         const key = keyGen(args);
@@ -44,23 +83,20 @@ export const memoBy = (keyGen , f) => {
         }
         return mem[key];
     }
-}
+})
+
+export const memo = memoBy(args => JSON.stringify(args))
 
 export const pipe = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)));
 export const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
 
-export const log = (x,logger=console.log) => {
-    logger(x);
+export const effect = curry2((effect,x) => {
+    effect(x)
     return x;
-}
+})
 
-export const cardinal = curry3((f,a,b) => f(b,a))
-
-const _reverse =  (x) => x.reduce((acc, obj) => [obj, ...acc], [])
-export const flip = f => (...args) => f(..._reverse(args));
-export const call = funk => (who, ...args) => funk.call(who, ...args)
-export const bind = funk => (who, ...args) => funk.bind(who, ...args)
-export const apply = curry3((funk, who, args) => funk.apply(who, args))
+export const flip = f => (a,b,...rest) => f(b,a,...rest)
+export const reverseArgs = f => (...args) => f(...args.reverse());
 
 export const take = (n) => (...args) => args.slice(0,n)
 export const takeOrdinal = (n) => (...args) => prop(n,args)
@@ -68,5 +104,31 @@ export const takeFirst  = takeOrdinal(0)
 export const takeSecond = takeOrdinal(1)
 export const takeThird = takeOrdinal(2)
 
-export const callWith = (...args) => f => f(...args);
-export const applyWith = (args) => f => f(...args);
+export const apply = f => (args) => f(...args)
+export const unapply = f => (...args) => f(args)
+export const call = (f,...args) => f(...args)
+export const applyWith = (args) => f => f(...args)
+export const callWith = (...args) => f => f(...args)
+
+export const propMap = curry3((f,key,obj) => compose( f , prop(key) )(obj))
+export const propApply = curry3((key,args,obj) => compose( applyWith(args) , prop(key) )(obj))
+export const propCall = (key,obj,...args) => compose( callWith(...args) , prop(key) )(obj)
+
+export const arity = (n) => (f) => (...args) => f(...args.slice(0,n))
+export const nullary = arity(0)
+export const unary = arity(1);
+export const binary = arity(2);
+export const ternary = arity(3);
+
+export const converge = ( f, branches ) => (...inputs) => apply(f)(branches.map(applyWith(inputs)))
+export const diverge = ( f, branches ) => (...inputs) => branches.map(callWith(f(...inputs)))
+
+export const trampoline = f => (...args) => {
+    let result = f(...args)
+    while(typeof result === "function"){
+        result = result()
+    }
+    return result;
+}
+
+export const branch = (fns) => (values) => fns.map( (f,index) => f(values[index]));

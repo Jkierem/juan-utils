@@ -1,4 +1,4 @@
-import { prop, mapOverUnary as map } from "@juan-utils/functions";
+import { prop, map } from "@juan-utils/functions";
 import { useTimemachine } from "../timemachine";
 
 describe("timemachine", () => {

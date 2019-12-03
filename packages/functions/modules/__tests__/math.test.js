@@ -1,6 +1,5 @@
-import { add, sub, div, mult, mod, pow, gte, eq, gt, lte, lt, eqBy, min, max, abs, toDegrees, toRadians, random, mean } from '../math'
+import { add, sub, div, mult, mod, pow, gte, eq, neq, gt, lte, lt, eqBy, min, max, abs, toDegrees, toRadians, random, mean } from '../math'
 import { compose } from '../core';
-import { length, reduce } from '../array';
 
 describe("Math", () => {
     describe("add", () => {
@@ -94,6 +93,14 @@ describe("Math", () => {
             const [a,b,c] = [5,5,4]
             expect(eq(a,b)).toBeTruthy();
             expect(eq(a,c)).toBeFalsy();
+        })
+    })
+
+    describe("neq", () => {
+        it("should return true if values are not equal", () => {
+            const [a,b,c] = [5,4,5]
+            expect(neq(a,b)).toBeTruthy();
+            expect(neq(a,c)).toBeFalsy();
         })
     })
 

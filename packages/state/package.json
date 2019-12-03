@@ -53,8 +53,7 @@
       "<rootDir>/node_modules/"
     ],
     "moduleDirectories": [
-      "node_modules",
-      "modules"
+      "node_modules"
     ],
     "moduleFileExtensions": [
       "js",

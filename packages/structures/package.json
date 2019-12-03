@@ -39,10 +39,10 @@
     "jest": {
         "verbose": true,
         "collectCoverageFrom": [
-            "modules/*.{js,jsx}"
+            "src/*.{js,jsx}"
         ],
         "testMatch": [
-            "<rootDir>/modules/**/?(*.)test.{js,jsx}"
+            "<rootDir>/src/**/?(*.)test.{js,jsx}"
         ],
         "testEnvironment": "node",
         "transform": {

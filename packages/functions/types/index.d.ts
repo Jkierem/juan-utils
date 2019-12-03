@@ -8,8 +8,9 @@ declare module "@juan-utils/functions" {
 
   export type InnerMap<A> = (a: A) => A;
   export type Map<A, B> = (a: A) => B;
-  export type Reduce<A, B> = (a: A, b: B) => A;
+  export type Reducer<A, B> = (a: A, b: B) => A;
   export type Predicate<A> = (a: A) => boolean;
+  export type Transducer<A, B> = (reducer: Function) => Reducer<A, B>;
   export type Condition = [
     (...args: any[]) => boolean,
     (...args: any[]) => any
@@ -48,37 +49,24 @@ declare module "@juan-utils/functions" {
   export function length<T>(array: T[]): number;
   export function createArray(...args: any[]): any[];
 
-  export function map<A, B>(
-    f: (a: A, index?: number, array?: A[]) => B,
-    data: A[]
-  ): B[];
-  export function map<A, B>(
-    f: (a: A, index?: number, array?: A[]) => B
-  ): (data: A[]) => B[];
-
-  export function filter<A>(
-    f: (a: A, index?: number, array?: A[]) => boolean,
-    data: A[]
-  ): A[];
-  export function filter<A>(
-    f: (a: A, index?: number, array?: A[]) => boolean
-  ): (data: A[]) => A[];
-
-  export function reduce<A, B>(
-    f: (a: A, b: B, index?: number, array?: B[]) => A,
-    init: A
-  ): (data: B[]) => A;
-
   export function isEmpty<T>(arr: T[]): boolean;
 
   export function belongs<T>(arr: T[], value: any): boolean;
   export function belongs<T>(arr: T[]): (value: any) => boolean;
 
-  export function mapOverUnary<A, B>(f: Map<A, B>, data: A[]): B[];
-  export function mapOverUnary<A, B>(f: Map<A, B>): (data: A[]) => B[];
+  export function map<A, B>(f: Map<A, B>, data: A[]): B[];
+  export function map<A, B>(f: Map<A, B>): (data: A[]) => B[];
 
-  export function filterOverUnary<A>(f: Predicate<A>, data: A[]): A[];
-  export function filterOverUnary<A>(f: Predicate<A>): (data: A[]) => A[];
+  export function filter<A>(f: Predicate<A>, data: A[]): A[];
+  export function filter<A>(f: Predicate<A>): (data: A[]) => A[];
+
+  export function fold<A, B>(f: Reducer<A, B>): (data: A[]) => B;
+  export function fold<A, B>(f: Reducer<A, B>, data: A[]): B;
+
+  export function reduce<A, B>(f: Reducer<A, B>, init: A, data: A[]): B;
+  export function reduce<A, B>(f: Reducer<A, B>): (init: A, data: A[]) => B;
+  export function reduce<A, B>(f: Reducer<A, B>, init: A): (data: A[]) => B;
+  export function reduce<A, B>(f: Reducer<A, B>): (init: A) => (data: A[]) => B;
 
   export function head<T>(array: T[]): T;
   export function tail<T>(array: T[]): T[];
@@ -93,8 +81,38 @@ declare module "@juan-utils/functions" {
   export function flatten(arr: any[]): any[];
   export function range(from: number, to: number, step?: number): number[];
   export function repeat<T>(n: number, value: T): T[];
+  export function group<T>(n: number, data: T[]): T[];
+  export function pushTo<T>(data: T[]): (value: T) => void;
+  export function pushTo<T>(data: T[], value: T): void;
+  export function append<T>(data: T[]): (value: T) => T[];
+  export function append<T>(data: T[], value: T): T[];
+
+  export function transduce<A, B>(
+    transducer: Transducer<A, B>,
+    converger: Reducer<A, B>,
+    initialValue: A,
+    data: B[]
+  );
+
+  export function pipeReducers<A, B>(
+    ...reducers: Reducer<A, B>[]
+  ): Transducer<A, B>;
+  export function composeReducers<A, B>(
+    ...reducers: Reducer<A, B>[]
+  ): Transducer<A, B>;
+  export function createTransducer<A, B>(
+    ...reducers: Reducer<A, B>[]
+  ): Transducer<A, B>;
+  export function mapReducer<A, B>(
+    f: Map<A, B>
+  ): (combine: Reducer<B[], A>) => Reducer<B[], A>;
+  export function filterReducer<A>(
+    f: Predicate<A>
+  ): (combine: Reducer<A[], A>) => A[];
 
   //Core
+  export type Placeholder = "__PLACEHOLDER__";
+  export const _: Placeholder;
 
   export function curry2<A, B, C>(
     f: (a: A, b: B) => C
@@ -104,6 +122,12 @@ declare module "@juan-utils/functions" {
     f: (a: A, b: B, c: C) => D
   ): CurriedTernaryFunction<A, B, C, D>;
 
+  export function curryN(n: number, f: Function): Function;
+
+  export function partial<A, B>(
+    f: (...args: A[]) => B,
+    ...args: A[]
+  ): (...args: A[]) => B;
   export function identity<T>(a: T): T;
   export function justOf<T>(value: T): () => T;
   export function prop<P extends keyof T, T>(key: P, obj: T): T[P];
@@ -125,28 +149,48 @@ declare module "@juan-utils/functions" {
     key: P
   ): (obj: T) => B;
 
+  export function propApply<P extends keyof T, T>(
+    key: P,
+    args: any[],
+    obj: T
+  ): any;
+  export function propApply<P extends keyof T, T>(
+    key: P
+  ): (args: any[], obj: T) => any;
+  export function propApply<P extends keyof T, T>(
+    key: P,
+    args: any[]
+  ): (obj: T) => any;
+  export function propApply<P extends keyof T, T>(
+    key: P
+  ): (args: any[]) => (obj: T) => any;
+
+  export function propCall<T, K extends keyof T>(
+    key: K,
+    obj: T,
+    ...args: any[]
+  ): any;
+
+  export function createPathFunction(delimiter: string): typeof path;
+
+  export function path(p: string, obj: object): any;
+  export function path(p: string): (obj: object) => any;
+
   export function keysOf(obj: any): Key[];
   export function memo(f: Function): Function;
   export function memoBy(keyGen: (a: any) => Key, f: Function): Function;
+  export function memoBy(keyGen: (a: any) => Key): (f: Function) => Function;
 
   export function pipe(...fns: Function[]): Function;
   export function compose(...fns: Function[]): Function;
-  export function log<T>(x: T, logger: (...args: any[]) => void): T;
 
-  export function cardinal<A, B, C>(f: (b: B, a: A) => C, a: A, b: B): C;
-  export function cardinal<A, B, C>(f: (b: B, a: A) => C): (a: A, b: B) => C;
-  export function cardinal<A, B, C>(
-    f: (b: B, a: A) => C
-  ): (a: A) => (b: B) => C;
-  export function cardinal<A, B, C>(f: (b: B, a: A) => C, a: A): (b: B) => C;
+  export function effect(eff: Function, x: any): any;
+  export function effect(eff: Function): (x: any) => any;
 
-  export function flip(f: Function): (...args: any[]) => any;
-  export function call(f: Function): (who: any, ...args: any) => any;
-  export function bind(f: Function): (who: any, ...args: any) => any;
-
-  export function apply(f: Function, who: any, args: any[]): any;
-  export function apply(f: Function): (who: any, args: any[]) => any;
-  export function apply(f: Function): (who: any) => (args: any[]) => any;
+  export function flip<A>(f: (...args: any[]) => A): (...args: any[]) => A;
+  export function reverseArgs<A>(
+    f: (...args: any[]) => A
+  ): (...args: any[]) => A;
 
   export function take(n: number): (...args: any[]) => any[];
   export function takeOrdinal(n: number): (...args: any[]) => any;
@@ -154,15 +198,38 @@ declare module "@juan-utils/functions" {
   export function takeSecond(...args: any[]): any;
   export function takeThird(...args: any[]): any;
 
-  export function callWith(...args: any[]): (f: Function) => any;
+  export function apply(f: (...args: any[]) => any): (args: any[]) => any;
+  export function unapply(f: (args: any[]) => any): (...args: any[]) => any;
+  export function call<A>(f: (...args: any[]) => A, ...args: any[]): A;
   export function applyWith(args: any[]): (f: Function) => any;
+  export function callWith(...args: any[]): (f: Function) => any;
+
+  export function arity(n: number): (f: Function) => (...args: any[]) => any;
+  export function nullary<A>(f: (...args: any[]) => A): () => A;
+  export function unary<A>(f: (...args: any[]) => A): (a: any) => A;
+  export function binary<A>(f: (...args: any[]) => A): (a: any, b: any) => A;
+  export function ternary<A>(
+    f: (...args: any[]) => A
+  ): (a: any, b: any, c: any) => A;
+
+  export function converge(
+    converger: Function,
+    branches: Function[]
+  ): (...inputs: any[]) => any;
+  export function diverge(
+    diverger: Function,
+    branches: Function[]
+  ): (...inputs) => any[];
+
+  export function trampoline(f: Function): (...args: any[]) => any;
+  export function branch(fns: Function[]): (values: any[]) => any[];
 
   // Lens
 
-  export function lens(s: Key, a: Key): Lens;
-  export function view(l: Lens, s: object): any;
-  export function set(l: Lens, v: any, s: object): object;
-  export function over(l: Lens, f: Function, s: object): object;
+  export function lens(setter: Key, access: Key): Lens;
+  export function view(lens: Lens, container: object): any;
+  export function set(lens: Lens, value: any, container: object): object;
+  export function over(lens: Lens, f: Function, container: object): object;
 
   // Logic
 
