@@ -1,4 +1,4 @@
-import { Type } from "./Type";
+import { Type } from './type'
 
 const Constants = {
     Equals: "fantasy-land/equals",
