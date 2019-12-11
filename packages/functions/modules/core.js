@@ -3,7 +3,7 @@
 export const identity = x => x
 export const justOf = value => () => value
 
-const placeholder = "___PLACEHOLDER___";
+const placeholder = { ["@@one/placeholder"]: true };
 export const _ = placeholder;
 
 export const curry2 = f => {
@@ -50,11 +50,12 @@ export const prop = curry2((key,obj) => obj ? obj[key] : undefined)
 
 export const decurry = prop("decurry");
 
-const partial = (f,...args1) => {
+export const partial = (f,...args1) => {
+    const isPlaceholder = prop("@@one/placeholder");
     const coalesce = (prev,next) => {
         let pivot = 0;
         const replaced = prev.map(x => {
-            if( x === partial.placeholder ){
+            if( isPlaceholder(x) ){
                 const rep = next[pivot];
                 pivot++;
                 return rep;
@@ -67,12 +68,8 @@ const partial = (f,...args1) => {
     return (...args2) => f(...coalesce(args1,args2));
 }
 
-partial.placeholder = placeholder;
-export { partial };
-
 export const createPathFunction = (delim) => curry2((p, obj) => p.split(delim).map(x => prop(x)).reduce((prev, next) => prev && next(prev), obj))
 export const path = createPathFunction(".");
-export const keysOf = (obj) => obj ? Object.keys(obj) : []
 
 export const memoBy = curry2((keyGen , f) => {
     const mem = {};
@@ -113,9 +110,16 @@ export const callWith = (...args) => f => f(...args)
 export const propMap = curry3((f,key,obj) => compose( f , prop(key) )(obj))
 export const propApply = curry3((key,args,obj) => compose( applyWith(args) , prop(key) )(obj))
 export const propCall = (key,obj,...args) => compose( callWith(...args) , prop(key) )(obj)
+export const propOf = curry2((obj,key) => prop(key,obj))
+export const keysOf = (obj) => obj ? Object.keys(obj) : []
+export const valuesOf = (obj) => keysOf(obj).map(propOf(obj))
 
-export const arity = (n) => (f) => (...args) => f(...args.slice(0,n))
-export const nullary = arity(0)
+export const arity = (n) => (f) => {
+    const fn = (...args) => f(...args.slice(0,n))
+    Object.defineProperty( fn , "length" ,{ value: n });
+    return fn;
+}
+export const nullary = arity(0);
 export const unary = arity(1);
 export const binary = arity(2);
 export const ternary = arity(3);
@@ -131,4 +135,4 @@ export const trampoline = f => (...args) => {
     return result;
 }
 
-export const branch = (fns) => (values) => fns.map( (f,index) => f(values[index]));
+export const branch = fns => values => fns.map( (f,index) => f(values[index]));

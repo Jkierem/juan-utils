@@ -1,17 +1,19 @@
 import { Type } from './type';
 import * as _Fantasy_ from './fantasy';
+import { omit } from '@juan-utils/functions';
 
-export const Functor = Type([],["map"],[]);
-export const Filterable = Type([],["filter"],[]);
-export const Foldable = Type([],["reduce"],[]);
-export const Empty = Type([],[],["empty"]);
-export const Creator = Type([],[],["of"]);
-export const Morpheable = Creator.inherit(["morph"],[]);
-export const Transmorpheable = Type.combine(Functor,Morpheable).inherit(["transmorph"]);
-export const Container = Creator.inherit(["open","get"],[]);
-export const Setoid = Type([],["equals"],["equals"]);
-export const Order = Setoid.inherit(["lte"],["lte"]);
+export const Functor = Type("Functor",[],["map"],[]);
+export const Filterable = Type("Filterable",[],["filter"],[]);
+export const Foldable = Type("Foldable",[],["reduce"],[]);
+export const Empty = Type("Empty",[],[],["empty"]);
+export const Creator = Type("Creator",[],[],["of"]);
+export const Morpheable = Creator.inherit("Morpheable",["morph"],[]);
+export const Transmorpheable = Type.combine("debug",[Functor,Morpheable],[]).inherit("debug",["transmorph"]);
+export const Container = Creator.inherit("Container",["open","get"],[]);
+export const Setoid = Type("Setoid",[],["equals"],["equals"]);
+export const Order = Setoid.inherit("Order",["lte"],["lte"]);
 
 export const Fantasy = {
-    ..._Fantasy_
+    ...omit("Constants" ,_Fantasy_),
+    Names: _Fantasy_.Constants,
 }

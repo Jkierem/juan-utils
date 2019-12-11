@@ -19,6 +19,9 @@ declare module "@juan-utils/functions" {
     (a: Parameter, b: Parameter): Return;
     (a: Parameter): (b: Parameter) => Return;
   }
+  export interface Placeholder {
+    '@@one/placeholder': boolean;
+  }
   export type BooleanMathOperation<Parameter = number> = MathOperation<
     Parameter,
     boolean
@@ -111,8 +114,7 @@ declare module "@juan-utils/functions" {
   ): (combine: Reducer<A[], A>) => A[];
 
   //Core
-  export type Placeholder = "__PLACEHOLDER__";
-  export const _: Placeholder;
+  export const _ : Placeholder;
 
   export function curry2<A, B, C>(
     f: (a: A, b: B) => C

@@ -1,4 +1,4 @@
-import { mapKeys, mapValues, pick, diff, omit, strip, entries, fromEntries, clone, deepClone } from '../object'
+import { mapKeys, mapValues, pick, diff, omit, strip, entries, fromEntries, clone, deepClone, filterKeys, filterValues, reduceValues } from '../object'
 import { keysOf } from '../core';
 import { equals } from '../types';
 
@@ -25,6 +25,43 @@ describe("Object", () => {
         })
     })
 
+    describe("filterKeys", () => {
+        it("should return new object with the key-value pairs where the key passes some predicate", () => {
+            const obj = {
+                1: 1,
+                2: 2,
+                3: 3
+            }
+            const filteredKeys = filterKeys(key => key < 3)(obj);
+            const expected = omit(["3"],obj);
+            expect(filteredKeys).toStrictEqual(expected)
+            expect(filteredKeys).not.toBe(obj)
+        })
+    })
+    describe("filterValues", () => {
+        it("should return new object with the key-value pairs where the value passes some predicate", () => {
+            const obj = {
+                1: 1,
+                2: 2,
+                3: 3
+            }
+            const filteredValues = filterValues(val => val < 3)(obj);
+            const expected = omit(["3"],obj);
+            expect(filteredValues).toStrictEqual(expected)
+            expect(filteredValues).not.toBe(obj)
+        })
+    })
+    describe("reduceValues", () => {
+        it("reduces the values of an object", () => {
+            const obj = {
+                1: 1,
+                2: 2,
+                3: 3
+            }
+            const reduction = reduceValues((x,y) => x+y, 0 , obj);
+            expect(reduction).toBe(6)
+        })
+    })
     describe("pick",() => {
         it("should return a new object with only the specified keys", () => {
             const obj = {

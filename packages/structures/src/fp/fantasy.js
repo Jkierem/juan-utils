@@ -1,6 +1,7 @@
 import { Type } from './type'
+import { _ } from '@juan-utils/functions';
 
-const Constants = {
+export const Constants = {
     Equals: "fantasy-land/equals",
     Lte: "fantasy-land/lte",
     Compose: "fantasy-land/compose",
@@ -25,27 +26,27 @@ const Constants = {
     Promap: "fantasy-land/promap",
 }
 
-export const Setoid = Type([],[ Constants.Equals ], []);
-export const Ord = Setoid.inherit([ Constants.Lte ], []);
-export const Semigroupoid = Type([], [ Constants.Compose ], []);
-export const Category = Semigroupoid.inherit([], [ Constants.Id ]);
-export const Semigroup = Type([],[ Constants.Concat ], []);
-export const Monoid = Semigroup.inherit([],[ Constants.Empty ]);
-export const Group = Monoid.inherit([ Constants.Invert ],[]);
-export const Filterable = Type([],[ Constants.Filter ],[]);
-export const Contravariant = Type([],[ Constants.Contramap ],[]);
-export const Functor = Type([],[ Constants.Map ],[]);
-export const Apply = Functor.inherit([ Constants.Ap ],[]);
-export const Applicative = Apply.inherit([],[ Constants.Of ]);
-export const Alt = Functor.inherit([ Constants.Alt ],[]);
-export const Plus = Alt.inherit([],[ Constants.Zero ]);
-export const Alternative = Type.combine(Applicative,Plus);
-export const Foldable = Type([],[ Constants.Reduce ],[]);
-export const Traversable = Type.combine(Functor,Foldable).inherit([ Constants.Traverse ],[]);
-export const Chain = Apply.inherit([ Constants.Chain ],[]);
-export const ChainRec = Chain.inherit([],[ Constants.ChainRec ]);
-export const Monad = Type.combine( Applicative , Chain );
-export const Extend = Functor.inherit([ Constants.Extend ],[]);
-export const Comonad = Extend.inherit([ Constants.Extract ],[]);
-export const Bifunctor = Functor.inherit([ Constants.Bimap ],[]);
-export const Profunctor = Functor.inherit([ Constants.Profunctor ],[]);
+export const Setoid = Type("Setoid",[],[ Constants.Equals ], []);
+export const Ord = Setoid.inherit("Ord",[ Constants.Lte ], []);
+export const Semigroupoid = Type("Semigroupoid", [], [ Constants.Compose ], []);
+export const Category = Semigroupoid.inherit("Category",[], [ Constants.Id ]);
+export const Semigroup = Type("Semigroup",[],[ Constants.Concat ], []);
+export const Monoid = Semigroup.inherit("Monoid",[],[ Constants.Empty ]);
+export const Group = Monoid.inherit("Group",[ Constants.Invert ],[]);
+export const Filterable = Type("Filterable",[],[ Constants.Filter ],[]);
+export const Contravariant = Type("Contravariant",[],[ Constants.Contramap ],[]);
+export const Functor = Type("Functor",[],[ Constants.Map ],[]);
+export const Apply = Functor.inherit("Apply",[ Constants.Ap ],[]);
+export const Applicative = Apply.inherit("Applicative",[],[ Constants.Of ]);
+export const Alt = Functor.inherit("Alt",[ Constants.Alt ],[]);
+export const Plus = Alt.inherit("Plus",[],[ Constants.Zero ]);
+export const Alternative = Type.combine("Alternative",[Applicative,Plus]);
+export const Foldable = Type("Foldable",[],[ Constants.Reduce ],[]);
+export const Traversable = Type.combine(_,[Functor,Foldable]).inherit("Traversable",[ Constants.Traverse ],[]);
+export const Chain = Apply.inherit("Chain",[ Constants.Chain ],[]);
+export const ChainRec = Chain.inherit("ChainRec",[],[ Constants.ChainRec ]);
+export const Monad = Type.combine( "Monad" ,[ Applicative , Chain ]);
+export const Extend = Functor.inherit("Extend",[ Constants.Extend ],[]);
+export const Comonad = Extend.inherit("Comonad",[ Constants.Extract ],[]);
+export const Bifunctor = Functor.inherit("Bifunctor",[ Constants.Bimap ],[]);
+export const Profunctor = Functor.inherit("Profunctor",[ Constants.Promap ],[]);

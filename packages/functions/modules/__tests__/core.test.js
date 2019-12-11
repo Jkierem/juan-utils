@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, flip, call, apply, take, takeOrdinal, propMap, partial, _, effect, converge, diverge, propApply, propCall, reverseArgs, unapply, arity, trampoline, branch, createPathFunction, curryN } from "../core";
+import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, flip, call, apply, take, takeOrdinal, propMap, partial, _, effect, converge, diverge, propApply, propCall, reverseArgs, unapply, arity, trampoline, branch, createPathFunction, curryN, propOf, valuesOf, decurry } from "../core";
 import { range } from '../array';
 
 describe("Core", () => {
@@ -35,6 +35,21 @@ describe("Core", () => {
             expect(currySum(2, 4)(6, 8)).toBe(20)
             expect(currySum(2, 4)(6)(8)).toBe(20)
             expect(currySum(2, 4, 6)(8)).toBe(20)
+        })
+    })
+
+    describe("decurry", () => {
+        it("should return a decurried funciton", () => {
+            const sum = (a,b,c,d) => a+b+c+d;
+            const decurrySum = decurry(curryN(4,sum));
+            expect(decurrySum(2, 4, 6, 8)).toBe(20)
+            expect(() => decurrySum(2)(4)(6)(8)).toThrow()
+            expect(() => decurrySum(2)(4, 6, 8)).toThrow()
+            expect(() => decurrySum(2)(4)(6, 8)).toThrow()
+            expect(() => decurrySum(2)(4, 6)(8)).toThrow()
+            expect(() => decurrySum(2, 4)(6, 8)).toThrow()
+            expect(() => decurrySum(2, 4)(6)(8)).toThrow()
+            expect(() => decurrySum(2, 4, 6)(8)).toThrow()
         })
     })
 
@@ -128,6 +143,17 @@ describe("Core", () => {
         })
     })
 
+    describe("propOf", () => {
+        it("should return a prop of an object", () => {
+            const key = "value";
+            const value = Math.random()
+            const obj = {
+                [key]: value,
+            }
+            expect(propOf(obj)(key)).toBe(value);
+        })
+    })
+
     describe("path",() => {
         it("should get a value in a nested object", () => {
             const p = "a.b.c.d";
@@ -161,6 +187,17 @@ describe("Core", () => {
         })
         it("should return an empty array on falsy value",() => {
             expect(keysOf(undefined)).toStrictEqual([]);
+        })
+    })
+
+    describe("valuesOf",() => {
+        it("should return an array of values",() => {
+            const obj = {a:1,b:2,c:3}
+            const values = [1,2,3]
+            expect(valuesOf(obj)).toStrictEqual(values)
+        })
+        it("should return an empty array on falsy value",() => {
+            expect(valuesOf(undefined)).toStrictEqual([]);
         })
     })
 
@@ -274,7 +311,9 @@ describe("Core", () => {
             const randArity = Math.ceil(Math.random() * 100);
             const args = range(0,102);
             const funk = sinon.spy();
-            arity(randArity)(funk)(...args);
+            const farity = arity(randArity)(funk);
+            farity(...args);
+            expect(farity.length).toBe(randArity);
             expect(funk.calledWithExactly(...args.slice(0,randArity))).toBeTruthy();
         })
     })

@@ -3,7 +3,8 @@ import {
     createArray, 
     map, 
     filter,
-    fold, 
+    foldLeft, 
+    foldRight,
     reduce, 
     isEmpty,
     head, 
@@ -71,11 +72,18 @@ describe("Array functions", () => {
             expect(filter(f,data)).toStrictEqual(data.filter(f))
         })
     })
-    describe("fold", () => {
-        it("should fold the data", () => {
+    describe("foldLeft", () => {
+        it("should fold an array from left to right", () => {
             const data = [1,2,3,4];
             const f = (x,y) => x+y;
-            expect(fold(f,data)).toStrictEqual(data.reduce(f))
+            expect(foldLeft(f,"",data)).toStrictEqual(data.reduce(f,""))
+        })
+    })
+    describe("foldRight", () => {
+        it("should fold an array from right to left", () => {
+            const data = [1,2,3,4];
+            const f = (x,y) => x+y;
+            expect(foldRight(f,"",data)).toStrictEqual(data.reduceRight(f,""))
         })
     })
     describe("reduce", () => {

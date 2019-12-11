@@ -5,11 +5,14 @@ import { eq, gt } from './math';
 
 export const length = prop("length");
 export const createArray = (...args) => args;
+export const head = ([head]) => head
+export const tail = ([, ...tail]) => tail
 export const isEmpty = arr => length(arr) === 0
 export const belongs = curry2((arr, value) => arr.includes(value))
 export const map = curry2((f,data) => data.map(unary(f)))
 export const filter = curry2((f, data) => data.filter(unary(f)))
-export const fold = curry2((f,data) => data.reduce(binary(f)))
+export const foldLeft = curry3((f,init,data) => !length(data) ? init : foldLeft(f,f(init,head(data)),tail(data)))
+export const foldRight = curry3((f,init,data) => !length(data) ? init : f(foldRight(f,init,tail(data)),head(data)) )
 export const reduce = curry3((f, init, data) => data.reduce(binary(f),init)) 
 export const transduce = ( transducer , converge , init , data ) => reduce(transducer(converge),init,data)
 
@@ -18,11 +21,9 @@ export const countBy = curry2((f,data) => compose( reduce( (acc,next) => ({
     [next]: acc[next] ? acc[next] + 1 : 1,
 }) , {}) , map(f) )(data))
 
-export const head = ([head]) => head
-export const tail = ([, ...tail]) => tail
 export const reverse = (arr) => arr.reduce((acc, obj) => [obj, ...acc], [])
 export const binaryUnion = curry2((arr1, arr2) => [...arr1, ...arr2].reduce((acc, cur) => acc.includes(cur) ? acc : [...acc, cur], []));
-export const union = (...arrs) => arrs.reduce(binaryUnion)
+export const union = (...arrs) => reduce(binaryUnion,[],arrs);
 export const difference = curry2((a, b) => filter(not(belongs(b)))(a))
 export const zip = (...arrs) => arrs.some(isEmpty) ? [] : [arrs.map(head), ...zip(...arrs.map(tail))]
 export const inclusiveZip = (...arrs) => arrs.every(isEmpty) ? [] : [[...arrs.map(head)], ...inclusiveZip(...arrs.map(tail))]
