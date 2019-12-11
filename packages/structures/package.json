@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "2.0.2-alpha.0",
+    "version": "2.1.0",
     "main": "./dist/index.js",
     "license": "MIT",
     "publishConfig": {
@@ -17,7 +17,7 @@
         "prepublish": "yarn build"
     },
     "dependencies": {
-        "@juan-utils/functions": "^2.0.2-alpha.0"
+        "@juan-utils/functions": "^2.1.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
