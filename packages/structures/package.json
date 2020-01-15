@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "main": "./dist/index.js",
     "module": "./src/index.js",
     "type": "module",
@@ -19,7 +19,7 @@
         "prepublish": "yarn build"
     },
     "dependencies": {
-        "@juan-utils/functions": "^2.1.0"
+        "@juan-utils/functions": "^2.2.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
