@@ -237,7 +237,7 @@ declare module "@juan-utils/functions" {
 
   export const True: () => true;
   export const False: () => false;
-  export function extract<T>(x: Function): T;
+  export function extract<T>(x: () => T): T;
   export function extract(x: any): any;
   export function not(value: Function): Function;
   export function not(value: any): any;
@@ -347,6 +347,16 @@ declare module "@juan-utils/functions" {
 
   export function random(limit: number): number;
   export function integerRandom(limit: number): number;
+
+  export function clamp(min:number, max:number, value:number): number;
+  export function clamp(min:number, max:number): (value:number) => number;
+  export function clamp(min:number): ( max:number, value:number) => number;
+  export function clamp(min:number): (max:number) => (value:number) => number;
+
+  export function isBetween(min:number, max:number, value:number): boolean;
+  export function isBetween(min:number, max:number): (value:number) => boolean;
+  export function isBetween(min:number): ( max:number, value:number) => boolean;
+  export function isBetween(min:number): (max:number) => (value:number) => boolean;
 
   // Object
 

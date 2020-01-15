@@ -1,13 +1,19 @@
 import { keysOf, belongs, prop, isFunction, union, True, diverge, identity, compose } from "@juan-utils/functions";
 
+const propOf = obj => x => prop(x,obj);
+
 const Checker = (type) => (creator) => {
-    const { attributes: attrs , methods, rep, test } = type;
+    const { rep, test } = type;
     const obj = creator();
-    const propOf = obj => x => prop(x,obj);
-    return union(attrs,methods).every(belongs(keysOf(obj)))
-    && methods.every(compose(isFunction, propOf(obj)))
+    return validateObject(type)(obj) 
     && rep.every(compose( isFunction , propOf(creator)))
-    && test(creator);
+    && test(creator)
+}
+
+const validateObject = (type) => (obj) => {
+    const { attributes: attrs , methods } = type;
+    return union(attrs,methods).every(belongs(keysOf(obj)))
+    && methods.every(compose(isFunction, propOf(obj)));
 }
 
 const Type = (id="[Nothing]",attributes=[],methods=[],rep=[],test=True) => {
@@ -21,6 +27,7 @@ const Type = (id="[Nothing]",attributes=[],methods=[],rep=[],test=True) => {
     type.extend = (id,attr,meths,reps) => Type( id, union(attributes,attr) , union(methods,meths), union(rep,reps));
     type.inherit = (id,meths,reps=[]) => Type( id, attributes, union(methods,meths), union(rep,reps));
     type.is = Checker(type);
+    type.isInstance = validateObject(type);
     return type;
 }
 

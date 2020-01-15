@@ -1,8 +1,65 @@
 import sinon from 'sinon'
-import { lens, set, view } from "@juan-utils/functions";
+import { lens, set, view, justOf, takeSecond, compose } from "@juan-utils/functions";
 import { applyMiddleware, useStore, combineReducers } from "../store";
 
 describe("Store", () => {
+
+    describe("useStore", () => {
+        const init = {
+            one: false,
+            two: ''
+        }
+        const actions = {
+            noData(){ return { type: 1 } },
+            withData(data){ return { type: 2, payload:data }},
+        }
+        const reducer = (state=init,action={}) => {
+            switch(action.type){
+                case 1:
+                    return { ...state, one: !state.one }
+                case 2:
+                    return { ...state, two: action.payload }
+                default:
+                    return state
+            }
+        }
+        const otherReducer = justOf("Something else");
+        it("should return a store tuple",() => {
+            const [ getState , dispatch ] = useStore(reducer,init);
+            expect(getState()).toStrictEqual(init)
+            dispatch(actions.noData())
+            dispatch(actions.withData("data"))
+            expect(getState()).toStrictEqual({
+                one: true,
+                two: "data"
+            })
+        })
+        it("should allow subscription and notify on changes",() => {
+            const [ getState , dispatch , subscribe ] = useStore(reducer,init);
+            const subSpy = sinon.spy();
+            subscribe(subSpy);
+            dispatch(actions.noData());
+            expect(subSpy.callCount).toBe(1);
+        })
+        it("should allow unsubscription to changes",() => {
+            const [ getState , dispatch , subscribe ] = useStore(reducer,init);
+            const subSpy = sinon.spy();
+            const one = subscribe(() => {})
+            const unsub = subscribe("spy",subSpy);
+            const two = subscribe(() => {})
+            unsub()
+            one()
+            two()
+            dispatch(actions.noData());
+            expect(subSpy.callCount).toBe(0);
+        })
+        it("should allow replacing of reducer",() => {
+            const [getState,dispatch,,replaceReducer] = useStore(reducer,init);
+            replaceReducer(otherReducer)
+            dispatch({})
+            expect(getState()).toBe("Something else")
+        })
+    })
 
     describe("applyMiddleware", () => {
         it("should combine middleware into a single enhancer", () => {
@@ -15,7 +72,7 @@ describe("Store", () => {
                 test.push(2)
                 next(action)
             }
-            const reducer = (action,state) => {
+            const reducer = () => {
                 test.push(3)
             }
             const combined = applyMiddleware(first,second)
@@ -31,7 +88,7 @@ describe("Store", () => {
                     next(action)
                 }
             }
-            const reducer = (action,state) => {
+            const reducer = (state,action) => {
                 return [ ...state , action ]
             }
             const [ get, dispatch] = useStore(reducer,[],applyMiddleware(catchOnes))
@@ -44,7 +101,7 @@ describe("Store", () => {
             const appendA = store => next => action => {
                 next(action + "A")
             }
-            const reducer = action => action
+            const reducer = compose((action) => action, takeSecond);
             const [ get , dispatch ] = useStore(reducer,"",applyMiddleware(appendA));
             dispatch("hey there ")
             expect(get()).toBe("hey there A")
@@ -71,10 +128,10 @@ describe("Store", () => {
     describe("combineReducers", () => {
         it("should compose reducers", () => {
             const l = lens("value","value")
-            const add = (action,state) => set(l, view(l,state) + action, state )
-            const mult = (action,state) => set(l, view(l,state) * action, state )
+            const add = (state,action) => set(l, view(l,state) + action, state )
+            const mult = (state,action) => set(l, view(l,state) * action, state )
             const addAndMult = combineReducers(add,mult);
-            expect(addAndMult(2,{ value: 7 })).toStrictEqual({ value: 18 })
+            expect(addAndMult({ value: 7 },2)).toStrictEqual({ value: 18 })
         })
 
         it("should be able to namespace reducers", () => {

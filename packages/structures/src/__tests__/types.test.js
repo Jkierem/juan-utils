@@ -1,8 +1,8 @@
 import * as Lib from '../fp'
 import { Type } from '../fp/type';
-import { _, mapValues, omit, identity } from '@juan-utils/functions';
+import { _, mapValues, omit, identity, set, lens, add, True, False } from '@juan-utils/functions';
 
-const TypeClasses = omit("Fantasy",Lib);
+const TypeClasses = omit(["Fantasy","Empty","matchContainer","getClass"],Lib);
 
 const mockCreator = (methods,repres) => {
     const creator = () => methods.reduce( (obj,next) => set(lens(next,next),identity,obj), {});
@@ -18,6 +18,27 @@ const Mocks = mapValues( (type) => {
 } , TypeClasses)
 
 describe("Types", () => {
+    describe("matchContainer", () => {
+        const value = {
+            get __class__(){ return "A" },
+            get(){ return 42 }
+        }
+        it("should match by __class__ prop", () => {
+            const res = Lib.matchContainer({
+                A: (val) => val
+            },value);
+            expect(res).toBe(42)
+        })
+        it("should default to identity of get", () => {
+            expect(Lib.matchContainer({},value)).toBe(42);
+        })
+        it("should match with wild card", () => {
+            expect(Lib.matchContainer({
+                B: () => 50,
+                _: add(1)
+            },value)).toBe(43);
+        })
+    })
     describe("Type", () => {
         it("should call is", () => {
             const fakeType = {
@@ -75,6 +96,47 @@ describe("Types", () => {
             it(`${type.id} should return true for an appropiate creator`, () => {
                 expect(type.is(Mocks[type.id])).toBeTruthy();
             })
+            it(`${type.id} should return false when creator does not meet criteria`, () => {
+                expect(type.is(() => {})).toBeFalsy()
+            })
         })(TypeClasses)
+        it("Empty should return true for an appropiate creator", () => {
+            const c = () => ({ isEmpty(){} })
+            c.empty = {}
+            expect(Lib.Empty.is(c)).toBeTruthy()
+        })
+        it("Empty should return false when creator does not meet criteria", () => {
+            const c = () => {}
+            expect(Lib.Empty.is(c)).toBeFalsy()
+        })
+    })
+    describe("matchContainer", () => {
+        it("should match using __class__ attribute", () => {
+            const obj = {
+                get __class__(){
+                    return "one"
+                }
+            }
+            expect(Lib.matchContainer({
+                one: True,
+                _ : False
+            },obj)).toBeTruthy();
+        })
+        it("should fallback to identity when container is not matched", () => {
+            const obj = {
+                get __class__(){
+                    return "two"
+                }
+            }
+            expect(Lib.matchContainer({
+                one: True,
+                _ : False
+            },obj)).toStrictEqual(obj);
+        })
+        it("should be identity when received value is not a Container",() => {
+            expect(Lib.matchContainer({
+                _ : False
+            },true)).toBeTruthy();
+        })
     })
 })

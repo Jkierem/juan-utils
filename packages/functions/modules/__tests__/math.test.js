@@ -1,4 +1,4 @@
-import { add, sub, div, mult, mod, pow, gte, eq, neq, gt, lte, lt, eqBy, min, max, abs, toDegrees, toRadians, random, mean } from '../math'
+import { add, sub, div, mult, mod, pow, gte, eq, neq, gt, lte, lt, eqBy, min, max, abs, toDegrees, toRadians, random, mean, clamp, isBetween } from '../math'
 import { compose } from '../core';
 
 describe("Math", () => {
@@ -171,6 +171,29 @@ describe("Math", () => {
             const r = random(a);
             expect(r).toBeLessThan(a)
             expect(r).toBeGreaterThanOrEqual(0)
+        })
+    })
+
+    describe("clamp",() => {
+        it("clamp(x) = x if x >= min and x < max", () => {
+            const min = 10;
+            const max = 20;
+            const f = clamp(min,max);
+            expect(f(5)).toBe(10);
+            expect(f(15)).toBe(15);
+            expect(f(25)).toBe(20);
+        })
+    })
+
+    describe("isBetween", () => {
+        it("true if value is between min (inclusive) and max (non-inclusive)", () => {
+            const min = 10;
+            const max = 20;
+            const f = isBetween(min,max);
+            expect(f(5)).toBeFalsy();
+            expect(f(15)).toBeTruthy();
+            expect(f(20)).toBeFalsy();
+            expect(f(25)).toBeFalsy();
         })
     })
 })

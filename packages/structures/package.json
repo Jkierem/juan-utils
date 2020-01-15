@@ -2,6 +2,8 @@
     "name": "@juan-utils/structures",
     "version": "2.1.0",
     "main": "./dist/index.js",
+    "module": "./src/index.js",
+    "type": "module",
     "license": "MIT",
     "publishConfig": {
         "access": "public"
@@ -25,6 +27,7 @@
         "@babel/preset-env": "^7.5.5",
         "babel-jest": "^24.9.0",
         "babel-loader": "^8.0.6",
+        "babel-polyfill": "^6.26.0",
         "jest": "^24.9.0",
         "sinon": "^7.4.1",
         "webpack": "^4.39.3",
@@ -33,7 +36,7 @@
     },
     "babel": {
         "presets": [
-            "@babel/env"
+            "@babel/preset-env"
         ]
     },
     "jest": {
@@ -60,6 +63,9 @@
             "js",
             "json",
             "jsx"
+        ],
+        "setupFilesAfterEnv": [
+            "./setupTests.js"
         ]
     },
     "gitHead": "06279d689834978d68839e77413dc1edd6308f92"

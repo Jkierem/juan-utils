@@ -8,7 +8,7 @@ export const createTransactional = ({ init, onCommit=identity }) => {
             return this;
         },
         get(key){
-            return path(key)(value);
+            return path(key)(init);
         },
         commit(handler){
             const consistent = stagedChanges.reduce((obj,next) => next(obj) , init);
@@ -17,6 +17,7 @@ export const createTransactional = ({ init, onCommit=identity }) => {
         },
         rollback(){
             stagedChanges = [];
+            return this
         }
     }
 }

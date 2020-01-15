@@ -35,5 +35,15 @@ describe("transactional", () => {
             .set("value",42).commit();
             expect(called).toBeTruthy();
         })
+
+        it("should be able to rollback staged changes", () => {
+            const trans = createTransactional({
+                init: { value : 42 }
+            })
+            const preCommit = trans.set("value",20).get("value");
+            const postCommit = trans.rollback().commit().get("value");
+            expect(preCommit).toBe(42);
+            expect(postCommit).toBe(42);
+        })
     })
 })

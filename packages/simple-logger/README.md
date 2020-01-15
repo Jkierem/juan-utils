@@ -80,7 +80,14 @@ logger.Warn("Logged in Warn or lower config");
 logger.Error("Logged in Error or lower config"); 
 logger.Fatal("Logged in Fatal or lower config"); 
 logger.Off("Never logs");
-logger.log("Bypasses levels. Logs unless level is Off"); 
+logger.log("Bypasses levels. Logs unless level is Off");
+
+logger.All([
+    "Many separate messages",
+    "In a single group",
+    "Can be passed as an Array",
+    "Or anything with a forEach method"
+])
 
 // logger.setLevel :: (level:number) => void
 logger.setLevel( Levels.All ); //Changes level.
@@ -88,6 +95,6 @@ logger.setLevel( Levels.All ); //Changes level.
 logger.setOutput( console ); //Changes output channel. 
 // logger.setSuffix :: (suffix: string ) => void
 logger.setSuffix( "Some message is being logged" );
-// logger.setSuffix :: (suffix :: (level: string, message: any) => string ) => void
+// logger.setSuffix :: (suffix: (level: string, message: any) => string ) => void
 logger.setSuffix( () => "Some message is being logged" );
 ```

@@ -1,7 +1,9 @@
 {
   "name": "@juan-utils/state",
   "version": "2.1.0",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
+  "module": "./src/index.js",
+  "type": "module",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

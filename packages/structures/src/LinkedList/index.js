@@ -1,140 +1,176 @@
-import { prop , flatten } from '@juan-utils/functions'
+import { prop, equals, False, True } from '@juan-utils/functions'
 
-const createNode = (data) => ({
-    data,
-    next: null,
-    link(next){ this.next = next },
-    unlink(){ this.next = null }
-})
-
-const LinkedList = (..._data) => {
-    const data = flatten(_data);
-    const nodes = data.map(createNode)
-    nodes.length && nodes.reduce( (prev,next) => {
-        prev.link(next);
-        return next;
-    })
-    let head = nodes[0] || null;
-    let tail = nodes[nodes.length - 1] || head;
-    let length = nodes.length;
-    const calculateLength = (head) => {
-        let i = 0;
-        let current = head;
-        while(current){
-            current = current.next;
-            i++;
-        }
-        length = i;
-    }
+const Node = (data) => {
+    let next = undefined;
+    let prev = undefined;
     return {
-        head(){ return this.get(0) },
-        tail(){
-            return this.filter( (x,index) => index !== 0 );
-        },
-        length(){ return length },
-        map(f){
-            const newList = LinkedList();
-            let current = length > 0 ? head : undefined;
-            let i = 0;
-            while(current) {
-                newList.append(f(current.data,i,this))
-                current = current.next;
-                i++
-            }
-            return newList
-        },
-        filter(f) {
-            const newList = LinkedList();
-            let current = length > 0 ? head : undefined;
-            let i = 0;
-            while(current) {
-                if( f(current.data,i,this) ){
-                    newList.append(current.data)
-                }
-                current = current.next;
-                i++;
-            }
-            return newList
-        },
-        reduce(f,init) {
-            if( length <= 1){
-                return (head && head.data) || init
-            }
-            let acc = init || head.data;
-            let current = head.next;
-            let i = 1;
-            while(current){
-                acc = f(acc,current.data,i,this);
-                current = current.next;
-            }
-            return acc;
-        },
-        append:(data) => {
-            const newNode = createNode(data);
-            if( length === 0 ){
-                head = newNode;
-                tail = head;
-            }else{
-                tail.link(newNode);
-                tail = tail.next;
-            }
-            calculateLength(head);
-        },
-        preppend:(data) => {
-            const newHead = createNode(data);
-            if( length === 0 ){
-                head = newHead
-                tail = head
-            }else{
-                newHead.link(head);
-                head = newHead;
-            }
-            calculateLength(head);
-        },
-        get(index) {
-            return prop("data")(this.getNode(index));
-        },
-        getNode:(index) => {
-            if( index >= 0 && index < length){
-                let i = 0;
-                let current = head;
-                while( i < index && current.next ){
-                    current = current.next;
-                }
-                return current
+        data,
+        next: (_next) => {
+            if( _next ){
+                next = _next.isEmpty() ? undefined : _next;
+            } else {
+                return next;
             }
         },
-        delete: (index) => {
-            if( index >=0 && index < length ){
-                if( index === 0 ){
-                    head = head.next;
-                } else {
-                    const before = this.get(index-1)
-                    before.next = before.next.next;
-                }
-                calculateLength(head)
+        prev: (_prev) => {
+            if(_prev){
+                prev = _prev;
+            } else {
+                return prev;
             }
         },
-        toArray(){ return [...this] },
-        [Symbol.iterator]: function*(){
-            let current = head;
-            if( length !== 0 ){
-                yield current.data
-            }
-            while( current && current.next !== null ){
-                current = current.next;
-                yield current.data;
-            }
+        unlink: () => { 
+            next = undefined 
+            prev = undefined
         },
-        morph(of){
-            return of([...this]);
-        },
-        transmorph(of,f){
-            return of([...this.map(f)])
-        }
+        isEmpty: False
     }
 }
 
-LinkedList.of = LinkedList;
+Node.empty = {
+    ...Node(),
+    isEmpty: True,
+};
+
+const LinkedList = () => {
+    let head = undefined;
+    let tail = undefined;
+
+    const getNode = (index) => {
+        let i = 0;
+        let cur = head;
+        while( cur && i !== index ){
+            cur = cur.next()
+            i++;
+        }
+        return cur || Node.empty;
+    }
+    
+    const o = {
+        get __class__(){
+            return "LinkedList"
+        },
+        extend(node){
+            if( !head ){
+                head = node;
+                tail = node;
+            } else {
+                tail.next(node);
+                node.prev(tail);
+                tail = node;
+            }
+        },
+        head: () => head.data,
+        tail: () => {
+            const res = LinkedList();
+            res.extend(head.next())
+            return res
+        },
+        append(data) {
+            const node = Node(data);
+            this.extend(node)
+            return node;
+        },
+        preppend: (data) => {
+            const n = Node(data);
+            if( !head ){
+                head = n;
+                tail = n;
+            } else {
+                n.next(head)
+                head = n;
+            }
+            return n;
+        },
+        length: () => {
+            let i = 0;
+            let cur = head;
+            while( cur ){
+                i++;
+                cur = cur.next()
+            }
+            return i;
+        },
+        isEmpty(){ return this.length() == 0 },
+        getValue: (index) => prop("data",getNode(index)),
+
+        // Functor
+        map: (f) => {
+            const res = LinkedList();
+            let cur = head;
+            while( cur ){
+                res.append(f(cur.data));
+                cur = cur.next();
+            }
+            return res
+        },
+
+        // Filterable
+        filter: (f) => {
+            const res = LinkedList();
+            let cur = head;
+            while( cur ){
+                if( f(cur.data) ){
+                    res.append(cur.data);
+                }
+                cur = cur.next();
+            }
+            return res
+        },
+
+        // Foldable
+        reduce: (f,init) => {
+            let acc = init;
+            let cur = head;
+            while( cur ){
+                acc = f(acc,cur.data);
+                cur = cur.next()
+            }
+            return acc
+        },
+
+        // Extra
+        remove: (index) => {
+            if( index == 0 && head ){
+                head = head.next();
+            } else {
+                const n = getNode(index)
+                const prev = n.prev();
+                const next = n.next();
+                if( prev ){
+                    prev.next(next || Node.empty);
+                }
+                if( next ){
+                    next.prev(prev);
+                }
+                n.unlink();
+            }
+        },
+        get(){ return this.toArray() },
+        toArray(){ return [...this] },
+        [Symbol.iterator]: function*(){
+            let cur = head;
+            while( cur ){
+                yield cur.data;
+                cur = cur.next()
+            } 
+        },
+
+        //Setoid
+        equals(l1){
+            return LinkedList.equals(this,l1)
+        }
+    }
+    return o
+}
+
+LinkedList.empty = LinkedList();
+LinkedList.of = (...data) => {
+    const list = LinkedList();
+    data.forEach(list.append.bind(list));
+    return list;
+}
+LinkedList.from = (data) => LinkedList.of(...data)
+LinkedList.equals = (l1,l2) => equals(l1.toArray(),l2.toArray())
 
 export { LinkedList };

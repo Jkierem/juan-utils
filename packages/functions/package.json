@@ -2,6 +2,8 @@
   "name": "@juan-utils/functions",
   "version": "2.1.0",
   "main": "./dist/index.js",
+  "module": "./modules/index.js",
+  "type": "module",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

@@ -13,6 +13,9 @@ export const Levels = {
 
 const defaultLevel = Levels.All
 
+const limit = (value) => Math.floor(value > 6 ? 6 : value < 0 ? 0 : value);
+const getLevel = (value) => typeof(value) === "string" ? Levels[value] || defaultLevel : limit(value)
+
 /**
  * @typedef {(...args:any[]) => any} OutChannel
  * @typedef {{
@@ -22,8 +25,8 @@ const defaultLevel = Levels.All
  *  Warn: (...args:any[]) => void,
  *  Error: (...args:any[]) => void,
  *  Fatal: (...args:any[]) => void,
- *  Off: (...args:any[]) => void 
- *  log: (...args:any[]) => void
+ *  Off: (...args:any[]) => void,
+ *  log: (...args:any[]) => void,
  *  setLevel: (level:number) => void , 
  *  setOutput: (out: (...args:any[]) => any ) => void ,
  * }} Logger
@@ -33,7 +36,7 @@ const defaultLevel = Levels.All
  * @returns {Logger} new Logger object
  */
 export const createLogger = (initLevel = defaultLevel, initOut = console.log) => {
-    let currentLevel = initLevel
+    let currentLevel = getLevel(initLevel)
     let out = initOut;
     const logger = {}
     Object.keys(Levels).forEach(
@@ -84,9 +87,9 @@ export const createLogger = (initLevel = defaultLevel, initOut = console.log) =>
  *  Error: (message: any) => any,
  *  Fatal: (message: any) => any,
  *  Off: (message: any) => any,
- *  log: (message: any) => any 
- *  setLevel: (level:number) => void , 
- *  setOutput: (out: (message: any) => any) => void , 
+ *  log: (message: any) => any,
+ *  setLevel: (level:number) => void, 
+ *  setOutput: (out: (message: any) => any) => void, 
  * }} IdentityLogger
  * @description a logger that returns what it receives. All logging functions are unary. A log call will send the message to the out channel if the level of the call is higher or equal to the current level of the logger. The return of the out channel is ignored.
  * @param {number} [initLevel=0] initial logging level. Defaults to Levels.All
@@ -94,7 +97,7 @@ export const createLogger = (initLevel = defaultLevel, initOut = console.log) =>
  * @returns {IdentityLogger} new PipeLogger object
  */
 export const createIdentityLogger = (initLevel = defaultLevel , initOut = console.log) => {
-    let currentLevel = initLevel
+    let currentLevel = getLevel(initLevel)
     let out = initOut;
     const logger = {}
     Object.keys(Levels).forEach(
@@ -155,9 +158,10 @@ export const createIdentityLogger = (initLevel = defaultLevel , initOut = consol
  *  Error: (message: any) => any,
  *  Fatal: (message: any) => any,
  *  Off: (message: any) => any,
- *  log: (message: any) => any 
+ *  log: (message: any) => any,
  *  setLevel: (level:number) => void , 
- *  setOutput: (out: (message: any) => any) => void , 
+ *  setOutput: (out: (message: any) => any) => void ,
+ *  setSuffix: (suffix: string | ((level?: string, message?: string) => string) ) => void,
  * }} IdentityGroupLogger
  * @description a logger that returns what it receives. All logging functions are unary. A log call will send the message to the out channel if the level of the call is higher or equal to the current level of the logger. The return of the out channel is ignored.
  * @param {number} [initLevel=0] initial logging level. Defaults to Levels.All
@@ -165,7 +169,7 @@ export const createIdentityLogger = (initLevel = defaultLevel , initOut = consol
  * @returns {IdentityGroupLogger} new GroupLogger object
  */
 export const createIdentityGroupLogger = (initLevel = defaultLevel , initOut = console) => {
-    let currentLevel = initLevel
+    let currentLevel = getLevel(initLevel)
     let out = initOut;
     let suffix = "";
     const getSuffix = (level,msg) => {
@@ -184,8 +188,9 @@ export const createIdentityGroupLogger = (initLevel = defaultLevel , initOut = c
                         suffix = tempSuffix
                     }
                     const s = getSuffix(key,message)
+                    const msgs = message.forEach ? message : [message];
                     out.group(key + s ? `: ${s}` : '');
-                    out.log(message)
+                    msgs.forEach(msg => out.log(msg));
                     out.groupEnd()
                     if( tempSuffix ){
                         suffix = aux

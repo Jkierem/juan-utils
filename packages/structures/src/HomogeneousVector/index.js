@@ -1,28 +1,41 @@
-import { map, compose, mult, isNil, reduce, add } from "@juan-utils/functions";
+import { map, mult, reduce, add } from "@juan-utils/functions";
+import { makeTransmorpheable, makeAppliable } from "../fp/helpers";
 
-const HomogeneousVector = (values) => {
+let HomogenousVector = (...values) => {
     const data = values;
-    return {
-        scale(s){ return compose( HomogeneousVector , map(mult(s)))(data) },
-        add(v){ return this.map( (value,index) => v.get(index) + value )},
-        sub(v){ return this.map( (value,index) => v.get(index) - value )},
-        mult(v){ return this.map( (value,index) => v.get(index) * value )},
-        mod(){ return Math.sqrt(reduce(add)(data)) },
-        _normalize(i=1){ return this.scale(this.mod()).scale(i) },
-        normalize(i=1){ this._normalize()._normalize(i) },
+    const o = {
+        get __class__(){
+            return "HomogenousVector"
+        },
+        get x(){ return this.getValue(0) },
+        get y(){ return this.getValue(1) },
+        get z(){ return this.getValue(2) },
+        scale(s){ return HomogenousVector.from(map(mult(s),data)) },
+        add(v){ return this.map( (value,index) => v.getValue(index) + value )},
+        sub(v){ return this.map( (value,index) => value - v.getValue(index) )},
+        mult(v){ return this.map( (value,index) => v.getValue(index) * value )},
+        mod(){ return Math.sqrt(data.map(x => x*x).reduce((acc,next) => acc + next ,0)) },
+        normalize(i=1){ return this.map(v => v/this.mod()).scale(i) },
         distance(v){ return this.sub(v).mod() },
-        toArray(){ return this.get() },
-
+        toArray(){ return data },
+        elevate(n){ return HomogenousVector.of(...data , n) },
+        toString(){ return `[${data}]` },
+        getValue(i){ return data[i] || 1 },
+        
+        // Foldable
         reduce(f,init){ return reduce(f,init)(data) },
-
-        get(i){ return isNil(i) ? data : (data[i] || 1)  },
-        map(f){ return compose( HomogeneousVector , map(f) )(data) },
+        // Container
+        get(){ return data  },
         open(f){ return this.map(f).get() },
-        morph(of){ return of(data) },
-        transmorph(of,f){ return compose( of , f )(data) }
+        // Functor
+        map(f){ return HomogenousVector.from(data.map(f)) },
+        // Morpheable
+        morph(creator){ return creator.of(data) },
     }
+    return makeTransmorpheable(o)
 }
 
-HomogeneousVector.of = HomogeneousVector;
+HomogenousVector.of = HomogenousVector;
+HomogenousVector = makeAppliable(HomogenousVector);
 
-export { HomogeneousVector }
+export { HomogenousVector }

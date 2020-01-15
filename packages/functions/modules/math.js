@@ -34,3 +34,5 @@ export const dec = sub(1);
 export const mean = arr => compose(compose(div,length)(arr) , reduce(add,0) )(arr);
 export const random = limit => Math.random() * limit
 export const integerRandom = compose( Math.floor , random );
+export const clamp = curry3((min,max,value) => value > max ? max : value < min ? min : value);
+export const isBetween = curry3((min,max,value) => value < max && value >= min)
