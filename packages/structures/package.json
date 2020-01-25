@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "2.2.2",
+    "version": "2.2.3",
     "main": "./dist/index.js",
     "module": "./src/index.js",
     "license": "MIT",
