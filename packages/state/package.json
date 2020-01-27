@@ -12,6 +12,10 @@
     "type": "git",
     "url": "https://github.com/Jkierem/juan-utils"
   },
+  "files":[
+    "dist",
+    "types"
+  ],
   "types": "types/index.d.ts",
   "scripts": {
     "build": "rollup -c",

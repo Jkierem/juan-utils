@@ -12,6 +12,10 @@
     "type": "git",
     "url": "https://github.com/Jkierem/juan-utils"
   },
+  "files":[
+    "dist",
+    "types"
+  ],
   "scripts": {
     "build": "rollup -c",
     "test": "rm -rf ./coverage && jest --coverage --verbose",
