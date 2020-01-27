@@ -1,8 +1,9 @@
 {
   "name": "@juan-utils/functions",
   "version": "2.2.2",
-  "main": "./dist/index.js",
-  "module": "./modules/index.js",
+  "main": "./dist/cjs/juan-utils-functions.cjs.js",
+  "module": "./dist/esm/juan-utils-functions.esm.js",
+  "browser": "./dist/umd/juan-utils-functions.umd.js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -12,7 +13,7 @@
     "url": "https://github.com/Jkierem/juan-utils"
   },
   "scripts": {
-    "build": "webpack --mode production --config webpack.config.js",
+    "build": "rollup -c",
     "test": "rm -rf ./coverage && jest --coverage --verbose",
     "test:watch": "jest --verbose --watch",
     "prepublish": "yarn build"
@@ -21,18 +22,13 @@
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "jest": "^24.9.0",
-    "sinon": "^7.4.1",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.8.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/env"
-    ]
+    "rollup": "^1.30.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "sinon": "^7.4.1"
   },
   "jest": {
     "verbose": true,

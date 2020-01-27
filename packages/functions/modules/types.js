@@ -1,15 +1,5 @@
 import { union, inclusiveZip, zip, tail } from './array'
-import { curry2 as curry, keysOf, prop, takeFirst, compose } from './core'
-
-export const shareConstructor = curry((a, b) => a instanceof b.constructor && b instanceof a.constructor)
-export const typeEquals = curry((type,value) => typeof value === type)
-export const isInstanceOf = curry((a,b) => b instanceof a);
-export const isFunction = typeEquals("function")
-export const isObject = typeEquals("object")
-export const isArray = isInstanceOf(Array);
-export const isNil = (value) => value === undefined || value === null
-export const isDefined = (obj) => obj !== undefined && obj !== null
-export const isNaN = x => x !== x;
+import { curry2 as curry, keysOf, prop, takeFirst, compose, shareConstructor } from './core'
 
 export const asymEquals = curry((obj1, obj2) => keysOf(obj1).map(compose(prop , takeFirst)).every(keyOf => keyOf(obj1) === keyOf(obj2)))
 export const shallowEquals = curry((obj1, obj2) => union(keysOf(obj1), keysOf(obj2)).map(compose(prop , takeFirst)).every(keyOf => keyOf(obj1) === keyOf(obj2)));

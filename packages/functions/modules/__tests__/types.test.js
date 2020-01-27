@@ -1,23 +1,7 @@
-import { shareConstructor, isDefined, asymEquals, shallowEquals, equals, multiEquals, multiShallowEquals } from '../types'
+import { asymEquals, shallowEquals, equals, multiEquals, multiShallowEquals } from '../types'
 import { range } from '../array';
 
 describe("Types", () => {
-    describe("shareConstructor", () => {
-        it("should return if two objects share the same constructor",() => {
-            const a = new Array()
-            const b = new Array()
-            const c = new Object()
-            expect(shareConstructor(a,b)).toBeTruthy()
-            expect(shareConstructor(a,c)).toBeFalsy()
-        })
-    })
-
-    describe("isDefined", () => {
-        it("false if not undefined or null, true otherwise", () => {
-            expect(isDefined(null)).toBeFalsy()
-            expect(isDefined(undefined)).toBeFalsy()
-        })
-    })
 
     describe("asymEquals", () => {
         it("should return true if every key in A has the same value as B", () => {

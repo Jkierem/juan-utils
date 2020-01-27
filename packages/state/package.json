@@ -1,8 +1,9 @@
 {
   "name": "@juan-utils/state",
   "version": "2.2.2",
-  "main": "./dist/index.js",
-  "module": "./src/index.js",
+  "main": "./dist/cjs/juan-utils-state.cjs.js",
+  "module": "./dist/esm/juan-utils-state.esm.js",
+  "browser": "./dist/umd/juan-utils-state.umd.js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -13,7 +14,7 @@
   },
   "types": "types/index.d.ts",
   "scripts": {
-    "build": "webpack --mode production --config webpack.config.js",
+    "build": "rollup -c",
     "test": "rm -rf ./coverage && jest --coverage --verbose",
     "test:watch": "jest --verbose --watch",
     "prepublish": "yarn build"
@@ -25,18 +26,13 @@
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "jest": "^24.9.0",
-    "sinon": "^7.4.1",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.8.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/env"
-    ]
+    "rollup": "^1.30.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "sinon": "^7.4.1"
   },
   "jest": {
     "verbose": true,

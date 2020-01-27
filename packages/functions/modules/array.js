@@ -1,7 +1,5 @@
-import { prop, curry2, curry3, unary, binary, compose, justOf, pipe } from './core'
-import { isArray } from './types'
+import { prop, curry2, curry3, unary, binary, compose, justOf, pipe, isArray } from './core'
 import { not, conditional, True } from './logic'
-import { eq, gt } from './math';
 
 export const length = prop("length");
 export const createArray = (...args) => args;
@@ -48,8 +46,8 @@ export const repeat = (n, value) => {
 }
 
 export const group = (n,data) => conditional([
-    [ gt(data.length), justOf([]) ],
-    [ eq(data.length), justOf(data) ],
+    [ n => n > data.length , justOf([]) ],
+    [ n => n == data.length , justOf(data) ],
     [ True , () =>  range(0,data.length - (n-1)).map( s => data.slice(s,s + n)) ]
 ])(n)
 

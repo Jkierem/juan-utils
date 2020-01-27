@@ -1,6 +1,5 @@
-import { curry2, curry3, keysOf, pipe, prop, propOf, compose } from './core'
+import { curry2, curry3, keysOf, pipe, prop, propOf, compose,  isNil, isObject, isArray } from './core'
 import { map, reduce, difference } from './array';
-import { isNil, isObject, isArray } from './types';
 
 export const mapKeys = curry2((f,obj) => keysOf(obj).reduce((prev,key) => ({...prev, [f(key)]: obj[key]}),{}));
 export const mapValues = curry2((f,obj) => keysOf(obj).reduce((prev,key) => ({...prev, [key]: f(obj[key])}),{}));

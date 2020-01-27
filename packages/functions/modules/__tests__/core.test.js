@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, flip, call, apply, take, takeOrdinal, propMap, partial, _, effect, converge, diverge, propApply, propCall, reverseArgs, unapply, arity, trampoline, branch, createPathFunction, curryN, propOf, valuesOf, decurry } from "../core";
+import { identity, justOf, prop, path, keysOf, memo, memoBy, curry2, curry3, pipe, compose, flip, call, apply, take, takeOrdinal, propMap, partial, _, effect, converge, diverge, propApply, propCall, reverseArgs, unapply, arity, trampoline, branch, createPathFunction, curryN, propOf, valuesOf, decurry, shareConstructor, isDefined } from "../core";
 import { range } from '../array';
 
 describe("Core", () => {
@@ -398,6 +398,23 @@ describe("Core", () => {
             funks.forEach( (f,index) => {
                 expect(f.calledOnceWith(values[index])).toBeTruthy();
             })
+        })
+    })
+
+    describe("shareConstructor", () => {
+        it("should return if two objects share the same constructor",() => {
+            const a = new Array()
+            const b = new Array()
+            const c = new Object()
+            expect(shareConstructor(a,b)).toBeTruthy()
+            expect(shareConstructor(a,c)).toBeFalsy()
+        })
+    })
+
+    describe("isDefined", () => {
+        it("false if not undefined or null, true otherwise", () => {
+            expect(isDefined(null)).toBeFalsy()
+            expect(isDefined(undefined)).toBeFalsy()
         })
     })
 })

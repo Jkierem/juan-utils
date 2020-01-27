@@ -1,6 +1,6 @@
 var path = require('path');
 
-const OUTPUT_PATH = path.resolve(__dirname, 'dist');
+const OUTPUT_PATH = path.resolve(__dirname, 'dist/cjs');
 const ENTRY_POINT = path.resolve(__dirname, './src/index.js');
 const BUNDLE_NAME = 'index.js'
 const LIB_TARGET = 'commonjs2';
