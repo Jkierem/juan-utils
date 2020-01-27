@@ -1,6 +1,6 @@
 {
   "name": "@juan-utils/functions",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "main": "./dist/cjs/juan-utils-functions.cjs.js",
   "module": "./dist/esm/juan-utils-functions.esm.js",
   "browser": "./dist/umd/juan-utils-functions.umd.js",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/Jkierem/juan-utils"
   },
-  "files":[
+  "files": [
     "dist",
     "types"
   ],

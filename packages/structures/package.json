@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "2.2.4",
+    "version": "2.3.0",
     "main": "./dist/cjs/juan-utils-structs.cjs.js",
     "module": "./dist/esm/juan-utils-structs.esm.js",
     "browser": "./dist/umd/juan-utils-structs.umd.js",
@@ -12,7 +12,7 @@
         "type": "git",
         "url": "https://github.com/Jkierem/juan-utils"
     },
-    "files":[
+    "files": [
         "dist",
         "types"
     ],
@@ -23,7 +23,7 @@
         "prepublish": "yarn build"
     },
     "dependencies": {
-        "@juan-utils/functions": "^2.2.4"
+        "@juan-utils/functions": "^2.3.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
