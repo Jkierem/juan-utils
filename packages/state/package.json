@@ -1,6 +1,6 @@
 {
   "name": "@juan-utils/state",
-  "version": "2.2.2",
+  "version": "2.2.4",
   "main": "./dist/cjs/juan-utils-state.cjs.js",
   "module": "./dist/esm/juan-utils-state.esm.js",
   "browser": "./dist/umd/juan-utils-state.umd.js",
@@ -20,7 +20,7 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@juan-utils/functions": "^2.2.2"
+    "@juan-utils/functions": "^2.2.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
