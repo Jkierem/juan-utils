@@ -29,4 +29,6 @@ const Result = {
     Ok
 }
 
+Result.fromError = (e) => e instanceof Error ? _Error(e) : Ok(e);
+
 export { Result }
