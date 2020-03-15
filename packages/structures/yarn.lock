@@ -880,10 +880,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@juan-utils/functions@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@juan-utils/functions/-/functions-2.2.2.tgz#b06d8d1a34af5197e99a77dccac92eb67c2eb842"
-  integrity sha512-6dG1Sk/ChfxAGmGEsZnWwZ3QByVVcgQXvo/cvpO9e9ml8c2M27rCpH5iMk8gdwVbhe1RbVr9/iYcbReZt00KkQ==
+"@juan-utils/functions@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@juan-utils/functions/-/functions-2.4.0.tgz#be7f9879e727e2acf75bf00ef52f9c9797f2d928"
+  integrity sha512-PFQgOb5CbI4oNn6d9i2fpoLmHo6JMK3dkh61ASQ+YsY6YhjOs6CZRNqOjTnAuWujH7iuAeqjHA0KNC01Ik54pg==
 
 "@rollup/plugin-node-resolve@^7.0.0":
   version "7.0.0"
@@ -1221,9 +1221,9 @@ acorn-walk@^6.0.1:
   integrity sha512-7evsyfH1cLOCdAzZAd43Cic04yKydNx0cF+7tiA19p1XnLLPU4dpCQOqpjqwokFe//vS0QqfqqjCS2JkiIs0cA==
 
 acorn@^5.5.3:
-  version "5.7.3"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.3.tgz#67aa231bf8812974b85235a96771eb6bd07ea279"
-  integrity sha512-T/zvzYRfbVojPWahDsE5evJdHb3oJoQfFbsrKM7w5Zcs++Tr257tia3BmMP8XYVjp1S9RZXQMh7gao96BlqZOw==
+  version "5.7.4"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.4.tgz#3e8d8a9947d0599a1796d10225d7432f4a4acf5e"
+  integrity sha512-1D++VG7BhrtvQpNbBzovKNc1FLGGEE/oGe7b9xJm/RFHMBeUaUGpluV9RLjZa47YFdPcDAenEYuq9pQPcMdLJg==
 
 acorn@^6.0.1, acorn@^6.2.1:
   version "6.4.0"
