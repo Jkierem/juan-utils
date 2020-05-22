@@ -1,4 +1,4 @@
-import { ifElse, is, apply, identity, propOr, F } from 'ramda'
+import { ifElse, is, apply, identity, propOr, F, __ } from 'ramda'
 
 /**
  * @description if the value given is a function, applies it with "data" as arguments and returns the result. Otherwise, it is equal to R.identity
