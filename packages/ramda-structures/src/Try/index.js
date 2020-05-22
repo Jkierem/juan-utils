@@ -44,14 +44,6 @@ const Try = {
             return Failure(e) 
         } 
     },
-    fromPromise: async p => {
-        try {
-            const val = await p()
-            return Success(val)
-        } catch(e) {
-            return Failure(e)
-        }
-    },
     fromResult: r => r.match({ Ok: Success , Err: Failure }),
     equals: curryN(2,(a,b) => equals(a,b))
 }

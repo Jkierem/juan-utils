@@ -1,7 +1,9 @@
 {
     "name": "@juan-utils/ramda-structures",
-    "version": "2.7.0",
+    "version": "2.6.0",
     "main": "./dist/cjs/juan-utils-ramda-structs.cjs.js",
+    "module": "./dist/esm/juan-utils-ramda-structs.esm.js",
+    "browser": "./dist/umd/juan-utils-ramda-structs.umd.js",
     "license": "MIT",
     "publishConfig": {
         "access": "public"
