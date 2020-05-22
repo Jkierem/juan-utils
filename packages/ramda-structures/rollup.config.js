@@ -10,17 +10,6 @@ const config = {
             file: pkg.main,
             sourceMaps: true,
             format: 'cjs'
-        },
-        {
-            file: pkg.module,
-            sourceMaps: true,
-            format: 'esm'
-        },
-        {
-            file: pkg.browser,
-            sourceMaps: true,
-            format: "umd",
-            name: "JuanRamdaStructures"
         }
     ],
     external: [ "ramda" ],
