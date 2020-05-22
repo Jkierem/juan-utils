@@ -13,8 +13,7 @@
         "url": "https://github.com/Jkierem/juan-utils"
     },
     "files": [
-        "dist",
-        "types"
+        "dist"
     ],
     "scripts": {
         "build": "rollup -c",
