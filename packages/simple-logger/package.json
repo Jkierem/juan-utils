@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/simple-logger",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "module": "./src/index.js",
     "type": "module",
     "gitHead": "06279d689834978d68839e77413dc1edd6308f92",
