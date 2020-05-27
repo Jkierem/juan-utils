@@ -20,7 +20,10 @@ const config = {
             file: pkg.browser,
             sourceMaps: true,
             format: "umd",
-            name: "JuanFunction"
+            name: "JuanFunction",
+            globals: {
+                ramda: "ramda"
+            }
         }
     ],
     plugins: [

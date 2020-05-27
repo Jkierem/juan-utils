@@ -20,7 +20,10 @@ const config = {
             file: pkg.browser,
             sourceMaps: true,
             format: "umd",
-            name: "JuanRamdaStructures"
+            name: "JuanRamdaStructures",
+            globals: {
+                ramda: "ramda"
+            }
         }
     ],
     external: [ "ramda" ],

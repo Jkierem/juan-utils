@@ -20,7 +20,10 @@ const config = {
             file: pkg.browser,
             sourceMaps: true,
             format: "umd",
-            name: "JuanState"
+            name: "JuanState",
+            globals: {
+                "@juan-utils/functions": "JuanFunctions"
+            }
         }
     ],
     external: [ "@juan-utils/functions" ],
