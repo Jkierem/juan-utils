@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "2.8.3",
+    "version": "2.8.4",
     "main": "./dist/cjs/juan-utils-structs.cjs.js",
     "module": "./dist/esm/juan-utils-structs.esm.js",
     "browser": "./dist/umd/juan-utils-structs.umd.js",
@@ -23,7 +23,7 @@
         "prepublish": "yarn build"
     },
     "dependencies": {
-        "@juan-utils/functions": "^2.8.3"
+        "@juan-utils/functions": "^2.8.4"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
