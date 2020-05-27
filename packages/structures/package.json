@@ -1,6 +1,6 @@
 {
     "name": "@juan-utils/structures",
-    "version": "2.8.1",
+    "version": "2.8.2",
     "main": "./dist/cjs/juan-utils-structs.cjs.js",
     "module": "./dist/esm/juan-utils-structs.esm.js",
     "browser": "./dist/umd/juan-utils-structs.umd.js",
