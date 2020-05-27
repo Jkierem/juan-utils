@@ -28,7 +28,8 @@ const config = {
         resolve(),
         babel({
             exclude: ['node_modules/**'],
-            sourceMaps: true
+            sourceMaps: false,
+            babelHelpers: "bundled"
         })
     ]
 }
