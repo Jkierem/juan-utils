@@ -1,6 +1,6 @@
 {
   "name": "@juan-utils/functions",
-  "version": "2.5.0",
+  "version": "2.8.1",
   "main": "./dist/cjs/juan-utils-functions.cjs.js",
   "module": "./dist/esm/juan-utils-functions.esm.js",
   "browser": "./dist/umd/juan-utils-functions.umd.js",
