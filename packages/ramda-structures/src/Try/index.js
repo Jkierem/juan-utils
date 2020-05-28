@@ -1,14 +1,12 @@
-import { equals, curryN } from 'ramda'
-import { callPropOrFalse, extractWith } from '../utils'
+import { equals } from 'ramda'
+import { callPropOrFalse, extractWith, getCase } from '../utils'
 
 const Success = v => ({
-    match(cases){
-        return cases["Success"](v);
-    },
+    match: (cases) => extractWith([v])(getCase("success",cases)),
     get: () => v,
     map: f => Success(f(v)),
     chain: f => f(v),
-    equals(b){ return b && callPropOrFalse("isSuccess",b) && equals(v, b.get())},
+    equals: (b) => b && callPropOrFalse("isSuccess",b) && equals(v, b.get()),
     catch: () => v,
     onFailure: () => v,
     isSuccess: () => true,
@@ -16,13 +14,11 @@ const Success = v => ({
 })
 
 const Failure = e => ({
-    match(cases){
-        return cases["Failure"](e);
-    },
+    match: (cases) => extractWith([e])(getCase("failure",cases)),
     get: () => e,
     map: f => Failure(f(e)),
     chain: f => f(e),
-    equals(b){ return b && callPropOrFalse("isFailure",b) && equals(e, b.get())},
+    equals: (b) =>  b && callPropOrFalse("isFailure",b) && equals(e, b.get()),
     catch: f => f(e),
     onFailure: f => extractWith(e)(f),
     isSuccess: () => false,
@@ -45,7 +41,7 @@ const Try = {
         } 
     },
     fromResult: r => r.match({ Ok: Success , Err: Failure }),
-    equals: curryN(2,(a,b) => equals(a,b))
+    equals
 }
 
 export default Try;

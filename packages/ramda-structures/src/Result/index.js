@@ -1,36 +1,28 @@
-import { equals, curryN } from 'ramda'
-import { callPropOrFalse, extractWith } from '../utils'
+import { equals } from 'ramda'
+import { callPropOrFalse, extractWith, getCase } from '../utils'
 
-const Ok = (val) => {
-    return {
-        match(cases){
-            return cases["Ok"](val)
-        },
-        get(){ return val; },
-        map(f){ return Ok(f(val)) },
-        chain(f){ return f(val) },
-        equals(b){ return b && callPropOrFalse("isOk",b) && equals(val, b.get())},
-        onError(f){ return val },
-        isOk(){ return true },
-        isErr(){ return false },
-        concat(...x){ return Ok([val,x].flat())}
-    }
-}
-const Err = (err) => {
-    return {
-        match(cases){
-            return cases["Err"](err)
-        },
-        get(){ return err; },
-        map(f){ return this },
-        chain(f){ return f(err) },
-        equals(b){ return b && callPropOrFalse("isErr",b) && equals(val, b.get())},
-        onError(f){ return extractWith(err)(f) },
-        isOk(){ return false },
-        isErr(){ return true },
-        concat(...e){ return Err([ err, e.map(r => r.get())].flat())}
-    }
-}
+const Ok = (val) => ({
+    match: (cases) => extractWith([val])(getCase("ok",cases)),
+    get: () => val,
+    map: (f) => Ok(f(val)),
+    chain: (f) => f(val),
+    equals: (b) => b && callPropOrFalse("isOk",b) && equals(val, b.get()),
+    onError: () => val,
+    isOk: () => true,
+    isErr: () => false,
+})
+
+const Err = (err) => ({
+    match: (cases) =>extractWith([err])(getCase("err",cases)),
+    get: () => err,
+    map(f){ return this },
+    chain: (f) => f(err) ,
+    equals: (b) => b && callPropOrFalse("isErr",b) && equals(val, b.get()),
+    onError: (f) => extractWith(err)(f) ,
+    isOk: () => false ,
+    isErr: () => true ,
+})
+
 
 const Result = {
     Ok,Err,
@@ -45,7 +37,7 @@ const Result = {
             return Err(e)
         }
     },
-    equals: curryN(2,(a,b) => equals(a,b))
+    equals
 }
 
 export default Result;

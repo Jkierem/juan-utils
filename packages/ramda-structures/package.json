@@ -43,8 +43,8 @@
     "jest": {
         "verbose": true,
         "collectCoverageFrom": [
-            "src/*/*.{js,jsx}",
-            "src/*/*/*.{js,jsx}"
+            "src/*.{js,jsx}",
+            "src/*/*.{js,jsx}"
         ],
         "testMatch": [
             "<rootDir>/src/**/?(*.)test.{js,jsx}"

@@ -1,26 +1,26 @@
-import { equals, curryN } from 'ramda'
-import { extract, callPropOrFalse } from '../utils'
+import { equals } from 'ramda'
+import { extract, callPropOrFalse, getCase, extractWith } from '../utils'
 
 const Just = x => ({
-    match(cases){ return cases["Just"](x) },
-    get(){ return x },
-    map(f){ return Just(f(x)) },
-    chain(f){ return f(x) },
-    equals(b){ return b && callPropOrFalse("isJust",b) && equals(x,b.get()) },
-    onNone(f){ return x },
-    isJust(){ return true },
-    isNone(){ return false }
+    match: (cases) => extractWith([x])(getCase("just",cases)),
+    get: () => x,
+    map: (f) => Just(f(x)),
+    chain: (f) => f(x),
+    equals: (b) => b && callPropOrFalse("isJust",b) && equals(x,b.get()),
+    onNone: () => x,
+    isJust: () => true,
+    isNone: () => false
 })
 
 const _None = {
-    match(cases){ return cases["None"]() },
-    get(){ return undefined },
+    match: (cases) => extract(getCase("none",cases)),
+    get: () => undefined,
     map(){ return this },
-    chain(f){ return f() },
-    equals(b){ return b && callPropOrFalse("isNone",b) },
-    onNone(f){ return extract(f) },
-    isJust(){ return false },
-    isNone(){ return true }
+    chain: (f) => f(),
+    equals: (b) => b && callPropOrFalse("isNone",b),
+    onNone: (f) => extract(f),
+    isJust: () => false,
+    isNone: () => true
 }
 
 const Maybe = {
@@ -29,7 +29,7 @@ const Maybe = {
     fromFalsy: x => x ? Just(x) : _None,
     fromArray: x => x.length === 0 ? _None : Just(x),
     fromNullish: x => x === null || x === undefined ? _None : Just(x),
-    equals: curryN(2,(a,b) => equals(a,b))
+    equals
 }
 
 export default Maybe;
