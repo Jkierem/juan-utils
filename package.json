@@ -5,7 +5,9 @@
   "description": "Util library",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bootstrap": "lerna bootstrap",
+    "release": "lerna publish",
+    "test": "lerna run test --stream"
   },
   "repository": {
     "type": "git",

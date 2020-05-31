@@ -27,12 +27,24 @@ describe("Maybe", () => {
             expect(just42.equals(Maybe.Just(42))).toBeTruthy();
             expect(just42.equals(Maybe.Just(43))).toBeFalsy();
             expect(just42.equals(just42)).toBeTruthy()
+            expect(just42.equals(42)).toBeFalsy()
             expect(none.equals(Maybe.None())).toBeTruthy()
+            
+            expect(Maybe.equals(just42,Maybe.Just(42))).toBeTruthy();
+            expect(Maybe.equals(just42,Maybe.Just(43))).toBeFalsy();
+            expect(Maybe.equals(just42,just42)).toBeTruthy()
+            expect(Maybe.equals(just42,42)).toBeFalsy()
+            expect(Maybe.equals(none,Maybe.None())).toBeTruthy()
         })
     })
 
     describe("constructors", () => {
         [
+            ["from"       , "false"       , false    , "none" ],
+            ["from"       , "undefined"   , undefined, "none" ],
+            ["from"       , "0"           , 0        , "none" ],
+            ["from"       , "empty string", ""       , "none" ],
+            ["from"       , "null"        , null     , "none" ],
             ["fromFalsy"  , "false"       , false    , "none" ],
             ["fromFalsy"  , "undefined"   , undefined, "none" ],
             ["fromFalsy"  , "0"           , 0        , "none" ],

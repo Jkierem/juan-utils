@@ -1,5 +1,5 @@
 import { equals } from 'ramda'
-import { callPropOrFalse, extractWith, getCase } from '../utils'
+import { callPropOrFalse, extractWith, getCase } from '../_internals'
 
 const Ok = (val) => ({
     match: (cases) => extractWith([val])(getCase("ok",cases)),
@@ -15,7 +15,7 @@ const Ok = (val) => ({
 const Err = (err) => ({
     match: (cases) =>extractWith([err])(getCase("err",cases)),
     get: () => err,
-    map(f){ return this },
+    map(){ return this },
     chain: (f) => f(err) ,
     equals: (b) => b && callPropOrFalse("isErr",b) && equals(val, b.get()),
     onError: (f) => extractWith(err)(f) ,
@@ -26,11 +26,13 @@ const Err = (err) => ({
 
 const Result = {
     Ok,Err,
-    fromFalsy: val => val ? Ok(val) : Err(val),
+    from:  val => val instanceof Error ? Err(val) : Ok(val),
     fromError: val => val instanceof Error ? Err(val) : Ok(val),
-    fromTry: t => t.match({ Success: Ok , Failure: Err }),
-    fromMaybe: m => m.match({ Just: Ok, None: Err }),
-    try: f => {
+    fromFalsy: val => val ? Ok(val) : Err(val),
+    fromTry: t => t?.match?.({ Success: Ok , Failure: Err }),
+    fromMaybe: m => m?.match?.({ Just: Ok, None: Err }),
+    match: (val,cases) => val?.match?.(cases),
+    attempt: f => {
         try {
             return Ok(f())
         } catch(e) {
