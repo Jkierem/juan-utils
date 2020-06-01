@@ -1,6 +1,6 @@
 {
   "name": "@juan-utils/state",
-  "version": "2.8.4",
+  "version": "2.10.0",
   "main": "./dist/cjs/juan-utils-state.cjs.js",
   "module": "./dist/esm/juan-utils-state.esm.js",
   "browser": "./dist/umd/juan-utils-state.umd.js",
