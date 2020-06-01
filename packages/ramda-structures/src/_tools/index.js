@@ -1,11 +1,4 @@
 import { curryN } from "ramda";
+import { safeMatch } from "../_internals";
 
-const _match = (cases,value) => {
-    if(typeof(value?.match) === "function"){
-        return value.match?.(cases)
-    } else {
-        return cases?.default?.(value) || cases?._?.(value)
-    }
-}
-
-export const match = curryN(2,_match)
+export const match = curryN(2,safeMatch)

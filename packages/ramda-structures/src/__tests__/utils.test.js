@@ -1,5 +1,5 @@
 import { __ } from 'ramda'
-import { getCase } from '../utils';
+import { getCase } from '../_internals';
 
 describe("Utils", () => {
     describe("getCase", () => {

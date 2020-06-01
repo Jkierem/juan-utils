@@ -1,5 +1,6 @@
-import { equals } from 'ramda'
+import { equals, isNil, isEmpty } from 'ramda'
 import { extract, getCase, extractWith } from '../_internals'
+import { match } from '../_tools'
 
 const Just = x => ({
     match: (cases) => extractWith([x])(getCase("just",cases)),
@@ -9,7 +10,8 @@ const Just = x => ({
     equals: (b) => b?.match?.({ Just: equals(x) , _: () => false }) || false,
     onNone: () => x,
     isJust: () => true,
-    isNone: () => false
+    isNone: () => false,
+    empty: () => _None
 })
 
 const _None = {
@@ -20,7 +22,8 @@ const _None = {
     equals: (b) => b?.match?.({ None: () => true, _: () => false }) || false,
     onNone: (f) => extract(f),
     isJust: () => false,
-    isNone: () => true
+    isNone: () => true,
+    empty: () => _None
 }
 
 const Maybe = {
@@ -29,10 +32,12 @@ const Maybe = {
     from: x => x ? Just(x) : _None,
     fromFalsy: x => x ? Just(x) : _None,
     fromArray: x => x.length === 0 ? _None : Just(x),
-    fromNullish: x => x === null || x === undefined ? _None : Just(x),
+    fromNullish: x => isNil(x) ? _None : Just(x),
+    fromEmpty: x => isEmpty(x) ? _None : Just(x),
     fromTry: t => t?.match?.({ Success: Just, Failure: () => _None }),
     fromResult: r => r?.match?.({ Ok: Just, Err: () => _None }),
-    match: (val,cases) => val?.match?.(cases),
+    isEmpty: x => x?.isNone() || false,
+    match,
     equals
 }
 

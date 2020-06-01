@@ -1,4 +1,5 @@
 import Maybe from '../Maybe'
+import { isEmpty } from 'ramda'
 
 describe("Maybe", () => {
     describe("object methods", () => {
@@ -8,6 +9,14 @@ describe("Maybe", () => {
         it("should match", () => {
             expect(just42).toTypeMatch("Just");
             expect(none).toTypeMatch("None");
+            expect(Maybe.match(just42,{ Just: () => true, _ : () => false })).toBeTruthy()
+            expect(Maybe.match(none,{ None: () => true, _ : () => false })).toBeTruthy()
+            expect(Maybe.match(42,({ Just: () => false, None: () => false, _: x => x }))).toBe(42)
+        })
+
+        it("isEmpty should return true if None", () => {
+            expect(isEmpty(just42)).toBeFalsy()
+            expect(isEmpty(none)).toBeTruthy()
         })
     
         it("should not call map when is none", () => {
@@ -53,9 +62,17 @@ describe("Maybe", () => {
             ["fromNullish", "null"        , null     , "none" ],
             ["fromNullish", "undefined"   , undefined, "none" ],
             ["fromArray"  , "empty array" , []       , "none" ],
-            ["fromFalsy"  , "true"           , true  , "just" ],
+            ["fromEmpty"  , "empty object", {}       , "none" ],
+            ["fromEmpty"  , "empty string", ""       , "none" ],
+            ["fromEmpty"  , "empty array" , []       , "none" ],
+            ["fromEmpty"  , "empty of a type", Maybe.None(), "none" ],
+            ["from"       , "truthy value"   , true  , "just" ],
+            ["fromFalsy"  , "truthy value"   , true  , "just" ],
             ["fromArray"  , "non empty array", [ 1 ] , "just" ],
-            ["fromNullish", "neither null or undefined", 42 , "just" ]
+            ["fromNullish", "neither null or undefined", 42 , "just" ],
+            ["fromEmpty"  , "non-empty object",{ a: 42 }, "just" ],
+            ["fromEmpty"  , "non-empty array", [ 42 ]   , "just" ],
+            ["fromEmpty"  , "something else" , null     , "just" ]
         ].forEach(([cons,label,val,type]) => {
             it(`${cons} should create a ${type} with ${label}`,() => {
                 expect(Maybe[cons](val)).toTypeMatch(type);

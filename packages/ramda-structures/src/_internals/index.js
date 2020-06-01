@@ -30,3 +30,5 @@ const getFirstCaseInsensitive = (ps,obj) => {
 }
 
 export const getCase = (name,obj) => getFirstCaseInsensitive([name,"default","_"],obj)
+
+export const safeMatch = (val,cases) => val?.match?.(cases) || cases?.default?.(val) || cases?._?.(val)

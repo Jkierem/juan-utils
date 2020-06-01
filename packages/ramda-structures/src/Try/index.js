@@ -1,5 +1,6 @@
 import { equals } from 'ramda'
 import { callPropOrFalse, extractWith, getCase } from '../_internals'
+import { match } from '../_tools'
 
 const Success = v => ({
     match: (cases) => extractWith([v])(getCase("success",cases)),
@@ -50,6 +51,7 @@ const Try = {
     },
     fromResult: r => r.match({ Ok: Success , Err: Failure }),
     fromMaybe: m => m?.match?.({ Just: Success, None: Failure}),
+    match,
     equals
 }
 

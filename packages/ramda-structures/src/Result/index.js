@@ -1,5 +1,6 @@
 import { equals } from 'ramda'
 import { callPropOrFalse, extractWith, getCase } from '../_internals'
+import { match } from '../_tools'
 
 const Ok = (val) => ({
     match: (cases) => extractWith([val])(getCase("ok",cases)),
@@ -13,7 +14,7 @@ const Ok = (val) => ({
 })
 
 const Err = (err) => ({
-    match: (cases) =>extractWith([err])(getCase("err",cases)),
+    match: (cases) => extractWith([err])(getCase("err",cases)),
     get: () => err,
     map(){ return this },
     chain: (f) => f(err) ,
@@ -31,7 +32,6 @@ const Result = {
     fromFalsy: val => val ? Ok(val) : Err(val),
     fromTry: t => t?.match?.({ Success: Ok , Failure: Err }),
     fromMaybe: m => m?.match?.({ Just: Ok, None: Err }),
-    match: (val,cases) => val?.match?.(cases),
     attempt: f => {
         try {
             return Ok(f())
@@ -39,6 +39,7 @@ const Result = {
             return Err(e)
         }
     },
+    match,
     equals
 }
 
