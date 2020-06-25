@@ -19,7 +19,7 @@ const Err = (err) => ({
     map(){ return this },
     chain: (f) => f(err) ,
     equals: (b) => b && callPropOrFalse("isErr",b) && equals(val, b.get()),
-    onError: (f) => extractWith(err)(f) ,
+    onError: (f) => extractWith([err])(f) ,
     isOk: () => false ,
     isErr: () => true ,
 })

@@ -21,7 +21,7 @@ const Failure = e => ({
     chain: f => f(e),
     equals: (b) =>  b && callPropOrFalse("isFailure",b) && equals(e, b.get()),
     catch: f => f(e),
-    onFailure: f => extractWith(e)(f),
+    onFailure: f => extractWith([e])(f),
     isSuccess: () => false,
     isFailure: () => true,
 })
