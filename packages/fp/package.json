@@ -1,0 +1,63 @@
+{
+  "name": "@juan-utils/fp",
+  "version": "1.0.0",
+  "main": "./dist/cjs/juan-utils-fp.cjs.js",
+  "module": "./dist/esm/juan-utils-fp.esm.js",
+  "browser": "./dist/umd/juan-utils-fp.umd.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jkierem/juan-utils"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "rm -rf ./coverage && jest --coverage --verbose",
+    "test:watch": "jest --verbose --watch",
+    "prepublish": "yarn build"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "babel-jest": "^24.9.0",
+    "babel-loader": "^8.0.6",
+    "jest": "^24.9.0",
+    "rollup": "^1.30.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "sinon": "^7.4.1"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverageFrom": [
+      "src/*.{js,jsx}"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/?(*.)test.{js,jsx}"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      ".js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx"
+    ]
+  },
+  "types": "types/index.d.ts"
+}

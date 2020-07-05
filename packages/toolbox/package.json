@@ -1,0 +1,20 @@
+{
+  "name": "@juan-utils/toolbox",
+  "version": "0.0.1",
+  "description": "Typescript toolbox",
+  "main": "./dist/cjs/juan-utils-toolbox.cjs.js",
+  "module": "./dist/esm/juan-utils-toolbox.esm.js",
+  "repository": "https://github.com/Jkierem/juan-utils",
+  "author": "Juan Miguel Gomez",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "rollup -c",
+    "start": "tsc --watch"
+  },
+  "devDependencies": {
+    "rollup": "^1.31.1",
+    "rollup-plugin-typescript2": "^0.26.0",
+    "typescript": "^3.8.2"
+  }
+}
