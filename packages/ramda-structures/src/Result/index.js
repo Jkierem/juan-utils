@@ -18,17 +18,18 @@ const Err = (err) => ({
     get: () => err,
     map(){ return this },
     chain: (f) => f(err) ,
-    equals: (b) => b && callPropOrFalse("isErr",b) && equals(val, b.get()),
+    equals: (b) => b && callPropOrFalse("isErr",b) && equals(err, b.get()),
     onError: (f) => extractWith([err])(f) ,
     isOk: () => false ,
     isErr: () => true ,
 })
 
+const from =  val => val instanceof Error ? Err(val) : Ok(val)
 
 const Result = {
     Ok,Err,
-    from:  val => val instanceof Error ? Err(val) : Ok(val),
-    fromError: val => val instanceof Error ? Err(val) : Ok(val),
+    from,
+    fromError: from,
     fromFalsy: val => val ? Ok(val) : Err(val),
     fromTry: t => t?.match?.({ Success: Ok , Failure: Err }),
     fromMaybe: m => m?.match?.({ Just: Ok, None: Err }),

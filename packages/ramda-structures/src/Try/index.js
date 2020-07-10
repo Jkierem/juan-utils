@@ -11,7 +11,7 @@ const Success = v => ({
     catch: () => v,
     onFailure: () => v,
     isSuccess: () => true,
-    isFailure: () => false,
+    isFailure: () => false
 })
 
 const Failure = e => ({
@@ -23,32 +23,32 @@ const Failure = e => ({
     catch: f => f(e),
     onFailure: f => extractWith([e])(f),
     isSuccess: () => false,
-    isFailure: () => true,
+    isFailure: () => true
 })
 
+const from = f => { 
+    try { 
+        return Success(f()) 
+    } catch(e) { 
+        return Failure(e) 
+    } 
+}
+const fromAsync = async (p) => {
+    try {
+        const val = await p;
+        return Success(val);
+    } catch (e) {
+        return Failure(e)
+    }
+}
+
 const Try = {
-    from: f => { 
-        try { 
-            return Success(f()) 
-        } catch(e) { 
-            return Failure(e) 
-        } 
-    },
-    attempt: f => { 
-        try { 
-            return Success(f()) 
-        } catch(e) { 
-            return Failure(e) 
-        } 
-    },
-    fromPromise: async (p) => {
-        try {
-            const val = await p();
-            return Success(val);
-        } catch (e) {
-            return Failure(e)
-        }
-    },
+    Success,
+    Failure,
+    from,
+    attempt: from,
+    fromAsync,
+    fromPromise: fromAsync,
     fromResult: r => r.match({ Ok: Success , Err: Failure }),
     fromMaybe: m => m?.match?.({ Just: Success, None: Failure}),
     match,

@@ -26,11 +26,13 @@ const _None = {
     empty: () => _None
 }
 
+const from =  x => x ? Just(x) : _None
+
 const Maybe = {
     Just,
     None: () => _None,
-    from: x => x ? Just(x) : _None,
-    fromFalsy: x => x ? Just(x) : _None,
+    from,
+    fromFalsy: from,
     fromArray: x => x.length === 0 ? _None : Just(x),
     fromNullish: x => isNil(x) ? _None : Just(x),
     fromEmpty: x => isEmpty(x) ? _None : Just(x),

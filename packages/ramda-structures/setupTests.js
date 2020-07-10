@@ -1,8 +1,9 @@
+import "babel-polyfill";
 expect.extend({
     toTypeMatch(value,name) {
-        if(!value.match){
+        if(!value?.match){
             return {
-                pass: false,
+                pass: this.isNot,
                 message: () => `Expected ${value} to have match function`
             }
         } else {

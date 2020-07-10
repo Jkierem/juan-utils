@@ -1,4 +1,6 @@
 import Maybe from '../Maybe'
+import Result from '../Result'
+import Try from '../Try'
 import { isEmpty } from 'ramda'
 
 describe("Maybe", () => {
@@ -14,9 +16,38 @@ describe("Maybe", () => {
             expect(Maybe.match(42,({ Just: () => false, None: () => false, _: x => x }))).toBe(42)
         })
 
+        it("should return inner value", () => {
+            expect(just42.get()).toBe(42)
+            expect(none.get()).toBeUndefined();
+        })
+
+        it("should chain", () => {
+            const expectValue = v => x => {
+                expect(x).toBe(v)
+                return x
+            }
+            expect(just42.chain(expectValue(42))).toBe(42);
+            expect(none.chain(expectValue(undefined))).toBeUndefined();
+        })
+
         it("isEmpty should return true if None", () => {
             expect(isEmpty(just42)).toBeFalsy()
             expect(isEmpty(none)).toBeTruthy()
+            expect(Maybe.isEmpty(just42)).toBeFalsy()
+            expect(Maybe.isEmpty(none)).toBeTruthy()
+        })
+
+        it("onNone should return inner value on Just, extract argument otherwise", () => {
+            expect(just42.onNone()).toBe(42)
+            expect(none.onNone(() => 43)).toBe(43)
+            expect(none.onNone(43)).toBe(43)
+        })
+
+        it("should allow to check if Just or None", () => {
+            expect(just42.isJust()).toBeTruthy()
+            expect(just42.isNone()).toBeFalsy()
+            expect(none.isJust()).toBeFalsy()
+            expect(none.isNone()).toBeTruthy()
         })
     
         it("should not call map when is none", () => {
@@ -25,7 +56,7 @@ describe("Maybe", () => {
             none.map(fn)
             expect(called).toBeFalsy();
         })
-    
+
         it("should return new object on map", () => {
             const mapped = just42.map(x => x);
             expect(mapped).not.toBe(just42)
@@ -38,6 +69,8 @@ describe("Maybe", () => {
             expect(just42.equals(just42)).toBeTruthy()
             expect(just42.equals(42)).toBeFalsy()
             expect(none.equals(Maybe.None())).toBeTruthy()
+            expect(none.equals(42)).toBeFalsy()
+            expect(none.equals(just42)).toBeFalsy()
             
             expect(Maybe.equals(just42,Maybe.Just(42))).toBeTruthy();
             expect(Maybe.equals(just42,Maybe.Just(43))).toBeFalsy();
@@ -72,7 +105,11 @@ describe("Maybe", () => {
             ["fromNullish", "neither null or undefined", 42 , "just" ],
             ["fromEmpty"  , "non-empty object",{ a: 42 }, "just" ],
             ["fromEmpty"  , "non-empty array", [ 42 ]   , "just" ],
-            ["fromEmpty"  , "something else" , null     , "just" ]
+            ["fromEmpty"  , "something else" , null     , "just" ],
+            ["fromResult" , "Result.Ok"      , Result.Ok(42), "just"],
+            ["fromResult" , "Result.Err"     , Result.Err(42), "none"],
+            ["fromTry"    , "Try.Success"    , Try.Success(42), "just"],
+            ["fromTry"    , "Try.Failure"    , Try.Failure(42), "none"],
         ].forEach(([cons,label,val,type]) => {
             it(`${cons} should create a ${type} with ${label}`,() => {
                 expect(Maybe[cons](val)).toTypeMatch(type);
