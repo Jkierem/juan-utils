@@ -5,6 +5,7 @@
     "module": "./dist/esm/juan-utils-ramda-structs.esm.js",
     "browser": "./dist/umd/juan-utils-ramda-structs.umd.js",
     "license": "MIT",
+    "types": "types/index.d.ts",
     "publishConfig": {
         "access": "public"
     },
@@ -13,7 +14,8 @@
         "url": "https://github.com/Jkierem/juan-utils"
     },
     "files": [
-        "dist"
+        "dist",
+        "types"
     ],
     "scripts": {
         "build": "rollup -c",
