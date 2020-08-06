@@ -19,7 +19,7 @@ const _None = {
     match: (cases) => extract(getCase("none",cases)),
     get: () => undefined,
     map(){ return this },
-    effect: (f) => None,
+    effect(){ return this },
     chain: (f) => f(),
     equals: (b) => b?.match?.({ None: () => true, _: () => false }) || false,
     onNone: (f) => extract(f),
