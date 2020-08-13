@@ -38,7 +38,7 @@ declare module "@juan-utils/ramda-structures" {
         None: () => None;
         from: <T>(x: T) => Maybe<T>;
         fromFalsy: <T>(x: T) => Maybe<T>;
-        fromArray: <T>(x: [T]) => Maybe<[T]>;
+        fromArray: <T>(x: T[]) => Maybe<T[]>;
         fromNullish: <T>(x: T) => Maybe<T>;
         fromEmpty: <T>(x: T) => Maybe<T>;
         fromTry: <T>(t: Try<T,any>) => Maybe<T>;
