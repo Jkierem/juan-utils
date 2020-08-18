@@ -1,5 +1,5 @@
 import { equals } from 'ramda'
-import { callPropOrFalse, extractWith, getCase } from '../_internals'
+import { callPropOrFalse, extractWith, getCase, extract } from '../_internals'
 import { match } from '../_tools'
 
 const Ok = (val) => ({
@@ -33,6 +33,7 @@ const Result = {
     from,
     fromError: from,
     fromFalsy: val => val ? Ok(val) : Err(val),
+    fromPredicate: (pred,val) => pred(val) ? Ok(val) : Err(val),
     fromTry: t => t?.match?.({ Success: Ok , Failure: Err }),
     fromMaybe: m => m?.match?.({ Just: Ok, None: Err }),
     attempt: f => {

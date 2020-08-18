@@ -51,6 +51,7 @@ const Try = {
     attempt: from,
     fromAsync,
     fromPromise: fromAsync,
+    fromPredicate: (pred,val) => pred(val) ? Success(val) : Failure(val),
     fromResult: r => r.match({ Ok: Success , Err: Failure }),
     fromMaybe: m => m?.match?.({ Just: Success, None: Failure}),
     match,

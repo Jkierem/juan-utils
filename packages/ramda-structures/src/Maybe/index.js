@@ -38,6 +38,7 @@ const Maybe = {
     fromArray: x => x.length === 0 ? _None : Just(x),
     fromNullish: x => isNil(x) ? _None : Just(x),
     fromEmpty: x => isEmpty(x) ? _None : Just(x),
+    fromPredicate: (pred,val) => pred(val) ? Just(val) : _None,
     fromTry: t => t?.match?.({ Success: Just, Failure: () => _None }),
     fromResult: r => r?.match?.({ Ok: Just, Err: () => _None }),
     isEmpty: x => x?.isNone() || false,

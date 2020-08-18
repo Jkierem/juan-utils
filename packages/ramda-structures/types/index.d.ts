@@ -41,6 +41,7 @@ declare module "@juan-utils/ramda-structures" {
         fromArray: <T>(x: T[]) => Maybe<T[]>;
         fromNullish: <T>(x: T) => Maybe<T>;
         fromEmpty: <T>(x: T) => Maybe<T>;
+        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Maybe<A>
         fromTry: <T>(t: Try<T,any>) => Maybe<T>;
         fromResult: <T>(r: Result<T,any>) => Maybe<T>;
         isEmpty: <T>(x: Maybe<T>) => boolean;
@@ -63,7 +64,7 @@ declare module "@juan-utils/ramda-structures" {
     export interface Ok<A> {
         match: (cases: ResultCases) => any;
         get: () => A;
-        map: <B>(fn: (a:A) => B) => Ok<B>;
+        map: <B>(fn: (a:A) => B) => Result<B,any>;
         effect: (fn: (a: any) => any) => Result<A,any>;
         chain: <B,C>(fn: (a:A) => Result<B,C>) => Result<B,C>;
         equals: (b: any) => boolean;
@@ -75,7 +76,7 @@ declare module "@juan-utils/ramda-structures" {
     export interface Err<A> {
         match: (cases: ResultCases) => any;
         get: () => A;
-        map: <B>(fn: (a:A) => B) => Err<B>;
+        map: <B>(fn: (a:A) => B) => Result<B,any>;
         effect: (fn: (a: any) => any) => Result<A,any>;
         chain: <B,C>(fn: (a:A) => Result<B,C>) => Result<B,C>;
         equals: (b: any) => boolean;
@@ -92,6 +93,7 @@ declare module "@juan-utils/ramda-structures" {
         from: <A>(val: A) => Result<A,Error>;
         fromError: <A,Error>(val: A | Error) => Result<A,Error>;
         fromFalsy: <A>(val: A) => Result<true,false>;
+        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Result<A,A>
         fromTry: <A,B>(val: Try<A,B>) => Result<A,B>;
         fromMaybe: <A>(val: Maybe<A>) => Result<A,undefined>;
         attempt: <A>(fn: (a:any) => A) => Result<A,Error>;
@@ -143,6 +145,7 @@ declare module "@juan-utils/ramda-structures" {
         from: <A>(fn: () => A) => Try<A,Error>;
         attempt: <A>(fn: () => A) => Try<A,Error>;
         fromAsync: <A>(fn: Promise<any>) => Promise<Try<A,Error>>;
+        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Try<A,A>
         fromPromise: <A>(fn: Promise<any>) => Promise<Try<A,Error>>;
         fromResult: <A,B>(r: Result<A,B>) => Try<A,B>;
         fromMaybe: <A>(r: Maybe<A>) => Try<A,undefined>;
