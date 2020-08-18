@@ -91,8 +91,8 @@ declare module "@juan-utils/ramda-structures" {
         Ok: <A>(val: A) => Ok<A>;
         Err: <A>(err: A) => Err<A>;
         from: <A>(val: A) => Result<A,Error>;
-        fromError: <A,Error>(val: A | Error) => Result<A,Error>;
-        fromFalsy: <A>(val: A) => Result<true,false>;
+        fromError: <A>(val: A) => Result<A,Error>;
+        fromFalsy: <A>(val: A) => Result<A,A>;
         fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Result<A,A>
         fromTry: <A,B>(val: Try<A,B>) => Result<A,B>;
         fromMaybe: <A>(val: Maybe<A>) => Result<A,undefined>;
