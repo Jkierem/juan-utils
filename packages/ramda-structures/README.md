@@ -1,10 +1,10 @@
 # Ramda Structures
 
-Implementations of common structures using ramda for utilities. No inheritance. Just plain objects
+Implementations of common structures using ramda for utilities. ~~No inheritance. Just plain objects~~ Now with inheritance!
 
 - Maybe
 - Result
-- Try
+- ~~Try (was the same as Result)~~
 
 All structures share a common set of functions to be used. In terms of nomenclature, all constructor functions start with "from". All structures have a default "from" that marks the most common use of the structure. They all have a "match" function that is case-insensitive to make matches. Due to the use of objects for matching, Order of cases does not alter the result. Matching has two reserved keys for default cases: "default" and "_"(underscore). "default" precedes over underscore and a matching type precedes over default cases.
 The function signature notation used is similar to haskell's type notations with a little more information: for object method calls, the type of the object is given using the "~>" as seen in this example:
@@ -39,7 +39,7 @@ Maybe should be used when communicating the posibility of a falsy value is expec
 | fromArray :: [a] -> Maybe [a] | returns None on empty array. Just otherwise |
 | fromNullish :: a -> Maybe a   | returns None on null or undefined. Just otherwise |
 | fromEmpty :: a -> Maybe a     | returns None if the value provided is the empty value for the type. Just otherwise. Uses ramda's isEmpty function |
-| fromPredicate :: (a -> Boolean) -> a -> Maybe a | returns Just if the predicate returns a truthy value. None otherwise |
+| fromPredicate :: (a -> Boolean) -> a -> Maybe a | returns Just if the predicate returns a truthy value. None otherwise. The second argument is used to evaluate the predicate |
 | fromTry :: Try a => a -> Maybe a | returns Just on a Success. None on a Failure |
 | fromResult :: Result a => a -> Maybe a | returns Just on a Ok. None on a Err |
 | isEmpty :: Maybe a -> Boolean | returns true on None. False otherwise |
@@ -78,7 +78,7 @@ Result marks the possibility of an Error. The default constructor returns Err wh
 | from :: a -> Result a         | returns Err on Error Object. Ok otherwise |
 | fromError :: a -> Result a    | returns Err on Error Object. Ok otherwise |
 | fromFalsy :: a -> Result a     | returns Err on falsy value. Ok otherwise  |
-| fromPredicate :: (a -> Boolean) -> a -> Result a | returns Ok if the predicate returns a truthy value. Err otherwise |
+| fromPredicate :: (a -> Boolean) -> a -> Result a | returns Ok if the predicate returns a truthy value. Err otherwise. The second argument is used to evaluate the predicate |
 | fromTry :: Try a => a -> Result a | returns Ok on a Success. Err on a Failure |
 | fromMaybe :: Maybe a => a -> Result a | returns Ok on a Just. Err of undefined on a None |
 | attempt :: (() -> a) -> Result a | returns Ok if the functions returns. Err if the function throws |

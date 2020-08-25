@@ -41,8 +41,7 @@ declare module "@juan-utils/ramda-structures" {
         fromArray: <T>(x: T[]) => Maybe<T[]>;
         fromNullish: <T>(x: T) => Maybe<T>;
         fromEmpty: <T>(x: T) => Maybe<T>;
-        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Maybe<A>
-        fromTry: <T>(t: Try<T,any>) => Maybe<T>;
+        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Maybe<A>;
         fromResult: <T>(r: Result<T,any>) => Maybe<T>;
         isEmpty: <T>(x: Maybe<T>) => boolean;
         match: (...a: readonly any[]) => any;
@@ -93,8 +92,7 @@ declare module "@juan-utils/ramda-structures" {
         from: <A>(val: A) => Result<A,Error>;
         fromError: <A>(val: A) => Result<A,Error>;
         fromFalsy: <A>(val: A) => Result<A,A>;
-        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Result<A,A>
-        fromTry: <A,B>(val: Try<A,B>) => Result<A,B>;
+        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Result<A,A>;
         fromMaybe: <A>(val: Maybe<A>) => Result<A,undefined>;
         attempt: <A>(fn: (a:any) => A) => Result<A,Error>;
         match: <A,B>(cases: ResultCases) => Result<A,B>;
@@ -107,53 +105,4 @@ declare module "@juan-utils/ramda-structures" {
 
     export function Ok<T>(val: T): Ok<T>;
     export function Err<T>(err: T): Err<T>;
-
-    type TryCases = {
-        success?: any;
-        failure?: any;
-    }
-    export interface Success<A> {
-        match: (cases:TryCases) => any;
-        get: () => A
-        map: <B>(fn: (a:A) => B) => Try<B,any>;
-        effect: (fn: (a: any) => any) => Try<A,any>;
-        chain: <B,C>(fn: (a:A) => Try<B,C>) => Try<B,C>;
-        equals: (b: any) => boolean;
-        catch: <B>(fn: (a: A) => B) => A;
-        onFailure: (fn: any) => A;
-        isSuccess: () => boolean;
-        isFailure: () => boolean;
-    }
-
-    export interface Failure<A> {
-        match: (cases:TryCases) => any;
-        get: () => A
-        map: <B>(fn: (a:A) => B) => Try<B,any>;
-        effect: (fn: (a: any) => any) => Try<A,any>;
-        chain: <B,C>(fn: (a:A) => Try<B,C>) => Try<B,C>;
-        equals: (b: any) => boolean;
-        catch: <B>(fn: (a: A) => B) => B;
-        onFailure: (fn: any) => A;
-        isSuccess: () => boolean;
-        isFailure: () => boolean;
-    }
-
-    export type Try<A,B> = Success<A> | Failure<B>;
-    export const Try: {
-        Success: <A>(val: A) => Success<A>;
-        Failure: <A>(err: A) => Failure<A>;
-        from: <A>(fn: () => A) => Try<A,Error>;
-        attempt: <A>(fn: () => A) => Try<A,Error>;
-        fromAsync: <A>(fn: Promise<any>) => Promise<Try<A,Error>>;
-        fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Try<A,A>
-        fromPromise: <A>(fn: Promise<any>) => Promise<Try<A,Error>>;
-        fromResult: <A,B>(r: Result<A,B>) => Try<A,B>;
-        fromMaybe: <A>(r: Maybe<A>) => Try<A,undefined>;
-        match: (cases: TryCases) => any;
-        equals: {
-            <T>(__: Placeholder, b: T): (a: T) => boolean;
-            <T>(a: T, b: T): boolean;
-            <T>(a: T): (b: T) => boolean;
-        };
-    }
 }

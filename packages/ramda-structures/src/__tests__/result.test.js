@@ -1,14 +1,11 @@
 import Maybe from '../Maybe'
 import Result from '../Result'
-import Try from '../Try'
 
 describe("Result", () => {
     describe("constructors", () => {
         const error = new Error(42);
         const truthy = 42;
         const falsy = 0;
-        const success = Try.from(() => 42)
-        const failure = Try.fromMaybe(Maybe.None());
         const just = Maybe.Just(42);
         const none = Maybe.None();
         const fnFails = () => { throw 42 };
@@ -18,8 +15,6 @@ describe("Result", () => {
             ["from", "Ok", "Non-Error value", truthy],
             ["fromFalsy", "Err", "falsy value", falsy],
             ["fromFalsy", "Ok", "truthy value", truthy],
-            ["fromTry"  , "Err", "Failure", failure],
-            ["fromTry"  , "Ok", "Success", success],
             ["fromMaybe", "Err", "None", none],
             ["fromMaybe", "Ok", "Just", just],
             ["attempt", "Err", "function that throws", fnFails],
@@ -80,10 +75,12 @@ describe("Result", () => {
         it("should compare by type and inner value", () => {
             expect(err42.equals(Result.Err(42))).toBeTruthy();
             expect(err42.equals(Result.Err(43))).toBeFalsy();
+            expect(err42.equals(Result.Ok(42))).toBeFalsy();
             expect(err42.equals(42)).toBeFalsy()
 
             expect(ok42.equals(Result.Ok(42))).toBeTruthy();
             expect(ok42.equals(Result.Ok(43))).toBeFalsy();
+            expect(ok42.equals(Result.Err(42))).toBeFalsy();
             expect(ok42.equals(42)).toBeFalsy()
         })
 

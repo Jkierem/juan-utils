@@ -1,50 +1,88 @@
-import { equals } from 'ramda'
-import { callPropOrFalse, extractWith, getCase } from '../_internals'
+import { equals as rEquals } from 'ramda'
+import { extractWith, getCase, setInnerValue, getInnerValue } from '../_internals'
 import { match } from '../_tools'
 
-const Ok = (val) => ({
-    match: (cases) => extractWith([val])(getCase("ok",cases)),
-    get: () => val,
-    map: (f) => Ok(f(val)),
-    effect(f){ f(val); return this },
-    chain: (f) => f(val),
-    equals: (b) => b && callPropOrFalse("isOk",b) && equals(val, b.get()),
-    onError: () => val,
-    isOk: () => true,
-    isErr: () => false,
-})
+class Result {}
 
-const Err = (err) => ({
-    match: (cases) => extractWith([err])(getCase("err",cases)),
-    get: () => err,
-    map(){ return this },
-    effect(f){ return this },
-    chain: (f) => f(err) ,
-    equals: (b) => b && callPropOrFalse("isErr",b) && equals(err, b.get()),
-    onError: (f) => extractWith([err])(f) ,
-    isOk: () => false ,
-    isErr: () => true ,
-})
+class Ok extends Result {
+    constructor(val){
+        super();
+        setInnerValue(this,val);
+    }
+    get(){ 
+        return getInnerValue(this) 
+    }
+    match(cases){
+        return extractWith([this.get()])(getCase("ok",cases))
+    }
+    map(f){ 
+        return new Ok(f(this.get()))
+    }
+    effect(f){ 
+        f(this.get()); 
+        return this 
+    }
+    chain(f){
+        return f(this.get())
+    }
+    equals(b){
+        return b?.match?.({ 
+            Ok: rEquals(this.get()),
+            _: () => false
+        }) || false
+    }
+    onError(){ return this.get() }
+    isOk(){ return true }
+    isErr(){ return false }
+}
 
-const from =  val => val instanceof Error ? Err(val) : Ok(val)
+class Err extends Result {
+    constructor(val){
+        super();
+        setInnerValue(this,val);
+    }
+    get(){ 
+        return getInnerValue(this) 
+    }
+    match(cases){
+        return extractWith([this.get()])(getCase("err",cases))
+    }
+    map(){ return this }
+    effect(){ return this }
+    chain(){ return this }
+    equals(b){
+        return b?.match?.({ 
+            Err: rEquals(this.get()),
+            _: () => false
+        }) || false
+    }
+    onError(f){ return extractWith([this.get()])(f) }
+    isOk(){ return false }
+    isErr(){ return true }
+}
 
-const Result = {
-    Ok,Err,
+const from =  val => val instanceof Error ? new Err(val) : new Ok(val)
+
+export default {
+    Ok: (x) => new Ok(x),
+    Err: (x) => new Err(x),
     from,
     fromError: from,
-    fromFalsy: val => val ? Ok(val) : Err(val),
-    fromPredicate: (pred,val) => pred(val) ? Ok(val) : Err(val),
-    fromTry: t => t?.match?.({ Success: Ok , Failure: Err }),
-    fromMaybe: m => m?.match?.({ Just: Ok, None: Err }),
+    fromFalsy: val => val ? new Ok(val) : new Err(val),
+    fromPredicate: (pred,val) => pred(val) ? new Ok(val) : new Err(val),
+    fromMaybe(m){ 
+        return m?.match?.({ 
+            Just: this.Ok, 
+            None: this.Err 
+        }) 
+    },
     attempt: f => {
         try {
-            return Ok(f())
+            return new Ok(f())
         } catch(e) {
-            return Err(e)
+            return new Err(e)
         }
     },
     match,
-    equals
+    equals: rEquals
 }
-
-export default Result;

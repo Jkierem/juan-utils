@@ -1,6 +1,5 @@
 import Maybe from '../Maybe'
 import Result from '../Result'
-import Try from '../Try'
 import { isEmpty } from 'ramda'
 
 describe("Maybe", () => {
@@ -26,8 +25,11 @@ describe("Maybe", () => {
                 expect(x).toBe(v)
                 return x
             }
+            let called = false
+            const fn = () => called = true;
             expect(just42.chain(expectValue(42))).toBe(42);
-            expect(none.chain(expectValue(undefined))).toBeUndefined();
+            expect(none.chain(fn)).toTypeMatch("None");
+            expect(called).toBe(false);
         })
 
         it("isEmpty should return true if None", () => {
@@ -119,9 +121,7 @@ describe("Maybe", () => {
             ["fromEmpty"  , "non-empty array", [ 42 ]   , "just" ],
             ["fromEmpty"  , "something else" , null     , "just" ],
             ["fromResult" , "Result.Ok"      , Result.Ok(42), "just"],
-            ["fromResult" , "Result.Err"     , Result.Err(42), "none"],
-            ["fromTry"    , "Try.Success"    , Try.Success(42), "just"],
-            ["fromTry"    , "Try.Failure"    , Try.Failure(42), "none"],
+            ["fromResult" , "Result.Err"     , Result.Err(42), "none"]
         ].forEach(([cons,label,val,type]) => {
             it(`${cons} should create a ${type} with ${label}`,() => {
                 expect(Maybe[cons](val)).toTypeMatch(type);

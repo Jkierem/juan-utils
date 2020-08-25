@@ -1,49 +1,63 @@
-import { equals, isNil, isEmpty } from 'ramda'
-import { extract, getCase, extractWith } from '../_internals'
-import { match } from '../_tools'
+import { equals as rEquals, isNil, isEmpty } from 'ramda'
+import { extract, getCase, extractWith, setInnerValue, getInnerValue } from '../_internals'
+import { match as globalMatch } from '../_tools'
 
-const Just = x => ({
-    match: (cases) => extractWith([x])(getCase("just",cases)),
-    get: () => x,
-    map: (f) => Just(f(x)),
-    effect(f){ f(x); return this },
-    chain: (f) => f(x),
-    equals: (b) => b?.match?.({ Just: equals(x) , _: () => false }) || false,
-    onNone: () => x,
-    isJust: () => true,
-    isNone: () => false,
-    empty: () => _None
-})
+class Maybe {}
 
-const _None = {
-    match: (cases) => extract(getCase("none",cases)),
-    get: () => undefined,
-    map(){ return this },
-    effect(){ return this },
-    chain: (f) => f(),
-    equals: (b) => b?.match?.({ None: () => true, _: () => false }) || false,
-    onNone: (f) => extract(f),
-    isJust: () => false,
-    isNone: () => true,
-    empty: () => _None
+class Just extends Maybe {
+    constructor(val){
+        super();
+        setInnerValue(this,val)
+    }
+    match(cases){ return extractWith([this.get()])(getCase("just",cases)) }
+    get(){ return getInnerValue(this) }
+    map(f){ return new Just(f(this.get())) }
+    effect(f){ 
+        f(this.get()); 
+        return this 
+    }
+    chain(f){ return f(this.get()) }
+    equals(b){ return b?.match?.({ Just: rEquals(this.get()) , _: () => false }) || false }
+    onNone(){ return this.get() }
+    isJust(){ return true }
+    isNone(){ return false }
+    empty(){ return new None }
 }
 
-const from =  x => x ? Just(x) : _None
+class None extends Maybe {
+    constructor(){
+        super();
+    }
+    match(cases){ return extract(getCase("none",cases)) }
+    get(){ return undefined }
+    map(){ return this }
+    effect(){ return this }
+    chain(){ return this }
+    equals(b){ return b?.match?.({ None: () => true, _: () => false }) || false }
+    onNone(f){ return extract(f) }
+    isJust(){ return false }
+    isNone(){ return true }
+    empty(){ return this }
+}
 
-const Maybe = {
-    Just,
-    None: () => _None,
+const from = x => x ? new Just(x) : new None;
+
+export default {
+    Just: (x) => new Just(x),
+    None: () => new None,
     from,
     fromFalsy: from,
-    fromArray: x => x.length === 0 ? _None : Just(x),
-    fromNullish: x => isNil(x) ? _None : Just(x),
-    fromEmpty: x => isEmpty(x) ? _None : Just(x),
-    fromPredicate: (pred,val) => pred(val) ? Just(val) : _None,
-    fromTry: t => t?.match?.({ Success: Just, Failure: () => _None }),
-    fromResult: r => r?.match?.({ Ok: Just, Err: () => _None }),
+    fromArray: x => x.length === 0 ? new None : new Just(x),
+    fromNullish: x => isNil(x) ? new None : new Just(x),
+    fromEmpty: x => isEmpty(x) ? new None : new Just(x),
+    fromPredicate: (pred,val) => pred(val) ? new Just(val) : new None,
+    fromResult(r){
+        return r?.match?.({ 
+            Ok: this.Just, 
+            Err: this.None
+        })
+    },
     isEmpty: x => x?.isNone() || false,
-    match,
-    equals
+    match: globalMatch,
+    equals: rEquals
 }
-
-export default Maybe;
