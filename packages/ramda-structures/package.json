@@ -49,7 +49,7 @@
             "src/*/*.{js,jsx}"
         ],
         "testMatch": [
-            "<rootDir>/src/**/?(*.)test.{js,jsx}"
+            "**/__tests__/(*.)test.js"
         ],
         "testEnvironment": "node",
         "transform": {

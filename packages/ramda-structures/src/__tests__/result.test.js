@@ -29,6 +29,20 @@ describe("Result", () => {
                 expect(Result[cons](arg)).toTypeMatch(type)
             })
         })
+
+        const is42 = x => x === 42
+        const True = () => true;
+        const False = () => false;
+
+        it("fromPredicate should create an Ok with a predicate that returns true", () => {
+            expect(Result.fromPredicate(is42,42)).toTypeMatch("Ok")
+            expect(Result.fromPredicate(True)).toTypeMatch("Ok")
+        })
+
+        it("fromPredicate should create an Err with a predicate that returns false", () => {
+            expect(Result.fromPredicate(is42,2)).toTypeMatch("Err")
+            expect(Result.fromPredicate(False)).toTypeMatch("Err")
+        })
     })
 
     describe("methods", () => {
@@ -44,6 +58,18 @@ describe("Result", () => {
             const mappedErr = err42.map(x => x);
             expect(ok42).not.toBe(mappedOk);
             expect(mappedErr).toBe(err42);
+        })
+
+        it("should not call effect when err and effect should leave inner value as is", () => {
+            let calls = 0;
+            const fn = (x) => {
+                calls++;
+                return 0;
+            }
+            err42.effect(fn)
+            const val = ok42.effect(fn).get();
+            expect(val).toBe(42)
+            expect(calls).toBe(1);
         })
 
         it("should call chain with inner value", () => {

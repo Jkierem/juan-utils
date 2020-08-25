@@ -57,8 +57,44 @@ these are the methods that Just and None have defined.
 | map :: Maybe a ~> (a -> b) -> Maybe b | returns Just of the mapped value if called on a Just. None otherwise | 
 | effect :: Maybe a ~> (a -> any) -> Maybe a | calls the provided function with the inner value and returns the same object if it is a Just. Does nothing otherwise |
 | chain :: Maybe a ~> (a -> b) -> b | Call the received function with the inner value |
-| equals :: Maybe a ~> b -> Boolean | Tests equality. To Just are equal if their inner values are equal. Two Nones are always equal |
+| equals :: Maybe a ~> b -> Boolean | Tests equality. Two Just are equal if their inner values are equal. Two Nones are always equal |
 | onNone :: Maybe a ~> ( (() -> b) \| c) -> a \| b \| c | This function returns the inner value when the object is a Just. Otherwise either calls the provided function and returns it's result or in the case a value was provided, returns said value |
 | isJust :: Maybe a ~> () -> Boolean | returns true if it is a Just. False otherwise |
 | isNone :: Maybe a ~> () -> Boolean | returns true if it is a None. False otherwise |
 | empty :: Maybe a ~> () -> None | return the empty value for the type. Always None |
+
+## Result
+
+```
+Result<A,B> = Ok<A> | Err<B>
+```
+
+Result marks the possibility of an Error. The default constructor returns Err when the received value is an Error and Ok otherwise.
+
+| constructor          | description                                 |
+| -------------------- | ------------------------------------------- |
+| Ok :: a -> Ok a      | Ok constructor |
+| Err :: a -> Err a    | Err constructor |
+| from :: a -> Result a         | returns Err on Error Object. Ok otherwise |
+| fromError :: a -> Result a    | returns Err on Error Object. Ok otherwise |
+| fromFalsy :: a -> Result a     | returns Err on falsy value. Ok otherwise  |
+| fromPredicate :: (a -> Boolean) -> a -> Result a | returns Ok if the predicate returns a truthy value. Err otherwise |
+| fromTry :: Try a => a -> Result a | returns Ok on a Success. Err on a Failure |
+| fromMaybe :: Maybe a => a -> Result a | returns Ok on a Just. Err of undefined on a None |
+| attempt :: (() -> a) -> Result a | returns Ok if the functions returns. Err if the function throws |
+| match :: (Cases a, Result b) => a -> b -> c | returns the result of evaluating the cases with the provided value |
+| equals :: a -> b -> Boolean | returns whether two values are equal. Reference to ramda's equals function |
+
+### Ok and Err
+
+| method | description |
+| ------ | ----------- |
+| match :: Cases a => Result b ~> a -> c | returns the result of evaluating the cases with the called object |
+| get :: Result a ~> () -> a | returns the inner value. |
+| map :: Result a ~> (a -> b) -> Result b | returns Ok of the mapped value if called on a Ok. Does nothing otherwise | 
+| effect :: Result a ~> (a -> any) -> Result a | calls the provided function with the inner value and returns the same object if it is a Ok. Does nothing otherwise |
+| chain :: Result a ~> (a -> b) -> b | Call the received function with the inner value if Ok. Returns the same object otherwise |
+| equals :: Result a ~> b -> Boolean | Tests equality. Two Results are equal if their inner values are equal. |
+| onErr :: Result a ~> ( (() -> b) \| c) -> a \| b \| c | This function returns the inner value when the object is a Ok. Otherwise either calls the provided function and returns it's result or in the case a value was provided, returns said value |
+| isOk :: Result a ~> () -> Boolean | returns true if it is a Ok. False otherwise |
+| isErr :: Result a ~> () -> Boolean | returns true if it is a Err. False otherwise |

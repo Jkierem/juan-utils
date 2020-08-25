@@ -57,6 +57,18 @@ describe("Maybe", () => {
             expect(called).toBeFalsy();
         })
 
+        it("should not call effect when none and effect should leave inner value as is", () => {
+            let calls = 0;
+            const fn = (x) => {
+                calls++;
+                return 0;
+            }
+            none.effect(fn)
+            const val = just42.effect(fn).get();
+            expect(val).toBe(42)
+            expect(calls).toBe(1);
+        })
+
         it("should return new object on map", () => {
             const mapped = just42.map(x => x);
             expect(mapped).not.toBe(just42)
@@ -114,6 +126,20 @@ describe("Maybe", () => {
             it(`${cons} should create a ${type} with ${label}`,() => {
                 expect(Maybe[cons](val)).toTypeMatch(type);
             })
+        })
+
+        const is42 = x => x === 42
+        const True = () => true;
+        const False = () => false;
+
+        it("fromPredicate should create a just with a predicate that returns true", () => {
+            expect(Maybe.fromPredicate(is42,42)).toTypeMatch("Just")
+            expect(Maybe.fromPredicate(True)).toTypeMatch("Just")
+        })
+
+        it("fromPredicate should create a none with a predicate that returns false", () => {
+            expect(Maybe.fromPredicate(is42,2)).toTypeMatch("None")
+            expect(Maybe.fromPredicate(False)).toTypeMatch("None")
         })
     })
 })

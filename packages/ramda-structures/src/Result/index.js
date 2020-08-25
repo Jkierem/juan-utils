@@ -1,12 +1,12 @@
 import { equals } from 'ramda'
-import { callPropOrFalse, extractWith, getCase, extract } from '../_internals'
+import { callPropOrFalse, extractWith, getCase } from '../_internals'
 import { match } from '../_tools'
 
 const Ok = (val) => ({
     match: (cases) => extractWith([val])(getCase("ok",cases)),
     get: () => val,
     map: (f) => Ok(f(val)),
-    effect(f){ f(x); return this },
+    effect(f){ f(val); return this },
     chain: (f) => f(val),
     equals: (b) => b && callPropOrFalse("isOk",b) && equals(val, b.get()),
     onError: () => val,

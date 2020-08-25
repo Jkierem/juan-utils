@@ -10,7 +10,7 @@ describe("Utils", () => {
             expect(getCase("HeY",cases)).toBe(getCase("hey",cases));
         })
 
-        it("should fallback to default, then _, then placeholder", () => {
+        it("should fallback to default, then _", () => {
             const cases1 = {
                 value: "what",
                 "default": "default",

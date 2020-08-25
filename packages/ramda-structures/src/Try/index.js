@@ -6,7 +6,7 @@ const Success = v => ({
     match: (cases) => extractWith([v])(getCase("success",cases)),
     get: () => v,
     map: f => Success(f(v)),
-    effect(f){ f(x); return this },
+    effect(f){ f(v); return this },
     chain: f => f(v),
     equals: (b) => b && callPropOrFalse("isSuccess",b) && equals(v, b.get()),
     catch: () => v,

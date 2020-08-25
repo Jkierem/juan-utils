@@ -35,6 +35,20 @@ describe("Try", () => {
                 expect(Try[cons](val)).toTypeMatch(type)
             })
         })
+
+        const is42 = x => x === 42
+        const True = () => true;
+        const False = () => false;
+
+        it("fromPredicate should create an Ok with a predicate that returns true", () => {
+            expect(Try.fromPredicate(is42,42)).toTypeMatch("Success")
+            expect(Try.fromPredicate(True)).toTypeMatch("Success")
+        })
+
+        it("fromPredicate should create an Err with a predicate that returns false", () => {
+            expect(Try.fromPredicate(is42,2)).toTypeMatch("Failure")
+            expect(Try.fromPredicate(False)).toTypeMatch("Failure")
+        })
     })
 
     describe("object methods", () => {
@@ -90,6 +104,18 @@ describe("Try", () => {
             expect(Success42.onFailure()).toBe(42);
             expect(Failure42.onFailure(() => 43)).toBe(43)
             expect(Failure42.onFailure(43)).toBe(43)
+        })
+
+        it("should not call effect when err and effect should leave inner value as is", () => {
+            let calls = 0;
+            const fn = (x) => {
+                calls++;
+                return 0;
+            }
+            Failure42.effect(fn)
+            const val = Success42.effect(fn).get();
+            expect(val).toBe(42)
+            expect(calls).toBe(1);
         })
     })
 })
