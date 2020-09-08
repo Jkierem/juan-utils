@@ -22,6 +22,18 @@ class Just extends Maybe {
     isJust(){ return true }
     isNone(){ return false }
     empty(){ return new None }
+    apply(m){
+        return m.match({
+            Just: (x) => this.map(fn => fn(x)),
+            None: () => m
+        })
+    }
+    concat(m){ 
+        return m.match({ 
+            None: () => this.map(x => x), 
+            Just: () => this.map(x => x.concat(m.get()))
+        }) 
+    }
 }
 
 class None extends Maybe {
@@ -38,6 +50,13 @@ class None extends Maybe {
     isJust(){ return false }
     isNone(){ return true }
     empty(){ return this }
+    apply(){ return this }
+    concat(m){ 
+        return m.match({ 
+            None: () => new None, 
+            Just: (x) => new Just(x)
+        }) 
+    }
 }
 
 const from = x => x ? new Just(x) : new None;

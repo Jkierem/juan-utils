@@ -6,6 +6,9 @@ describe("Maybe", () => {
     describe("object methods", () => {
         const just42 = Maybe.Just(42)
         const none = Maybe.None()
+        const justInc = Maybe.Just(x => x + 1)
+        const justArr1 = Maybe.Just([1])
+        const justArr2 = Maybe.Just([2])
     
         it("should match", () => {
             expect(just42).toTypeMatch("Just");
@@ -91,6 +94,20 @@ describe("Maybe", () => {
             expect(Maybe.equals(just42,just42)).toBeTruthy()
             expect(Maybe.equals(just42,42)).toBeFalsy()
             expect(Maybe.equals(none,Maybe.None())).toBeTruthy()
+        })
+
+        it("applicative -> should apply inner function", () => {
+            expect(justInc.apply(just42).get()).toBe(43)
+            expect(justInc.apply(none)).toTypeMatch("None")
+            expect(none.apply(just42)).toTypeMatch("None")
+        })
+
+        it("semigroup -> should concat inner values", () => {
+            expect(justArr1.concat(just42).get()).toStrictEqual([1,42])
+            expect(justArr1.concat(justArr2).get()).toStrictEqual([1,2])
+            expect(justArr1.concat(none).get()).toStrictEqual([1])
+            expect(none.concat(just42).get()).toBe(42)
+            expect(none.concat(none)).toTypeMatch("None")
         })
     })
 

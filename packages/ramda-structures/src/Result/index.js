@@ -9,22 +9,25 @@ class Ok extends Result {
         super();
         setInnerValue(this,val);
     }
-    get(){ 
-        return getInnerValue(this) 
-    }
-    match(cases){
-        return extractWith([this.get()])(getCase("ok",cases))
-    }
-    map(f){ 
-        return new Ok(f(this.get()))
+    get(){ return getInnerValue(this) }
+    match(cases){ return extractWith([this.get()])(getCase("ok",cases)) }
+    map(f){ return new Ok(f(this.get())) }
+    mapError(){ return this }
+    bimap(fn){ return this.map(fn) }
+    filter(pred){ return pred(this.get()) ? this : this.swap() }
+    fold(f,g){ return g(this.get())}
+    swap(){ return new Err(this.get()) }
+    apply(r){
+        return r.match({
+            Ok: (x) => this.map(fn => fn(x)),
+            Err: () => r
+        })
     }
     effect(f){ 
         f(this.get()); 
         return this 
     }
-    chain(f){
-        return f(this.get())
-    }
+    chain(f){ return f(this.get()) }
     equals(b){
         return b?.match?.({ 
             Ok: rEquals(this.get()),
@@ -48,6 +51,12 @@ class Err extends Result {
         return extractWith([this.get()])(getCase("err",cases))
     }
     map(){ return this }
+    mapError(f){ return new Err(f(this.get())) }
+    bimap(fnOk,fn){ return this.mapError(fn) }
+    filter(){ return this }
+    fold(f,g){ return f(this.get())}
+    swap(){ return new Ok(this.get()) }
+    apply(){ return this }
     effect(){ return this }
     chain(){ return this }
     equals(b){
@@ -70,10 +79,10 @@ export default {
     fromError: from,
     fromFalsy: val => val ? new Ok(val) : new Err(val),
     fromPredicate: (pred,val) => pred(val) ? new Ok(val) : new Err(val),
-    fromMaybe(m){ 
+    fromMaybe(m,onNothing){ 
         return m?.match?.({ 
             Just: this.Ok, 
-            None: this.Err 
+            None: () => this.Err(onNothing)
         }) 
     },
     attempt: f => {

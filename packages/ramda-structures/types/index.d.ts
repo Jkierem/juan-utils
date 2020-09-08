@@ -12,6 +12,8 @@ declare module "@juan-utils/ramda-structures" {
         map: (fn: (a: any) => any) => Maybe<any>;
         effect: (fn: (a: any) => any) => Maybe<any>;
         chain: (fn: (a: any) => Maybe<any>) => Maybe<any>;
+        apply: (m: Maybe<any>) => Maybe<any>;
+        concat: (m: Maybe<any>) => Maybe<any>;
         equals: (b: any) => boolean;
         onNone: (fn: any) => any;
         isJust: () => boolean;
@@ -25,6 +27,8 @@ declare module "@juan-utils/ramda-structures" {
         map: <B>(fn: (a:A) => B) => Just<B>;
         effect: (fn: (a: any) => any) => Maybe<A>;
         chain: <B>(fn: (a:A) => Maybe<B>) => Maybe<B>;
+        apply: (m: Maybe<any>) => Maybe<any>;
+        concat: (m: Maybe<any>) => Maybe<any>;
         equals: (b: any) => boolean;
         onNone: (fn: any) => any;
         isJust: () => boolean;
@@ -64,6 +68,12 @@ declare module "@juan-utils/ramda-structures" {
         match: (cases: ResultCases) => any;
         get: () => A;
         map: <B>(fn: (a:A) => B) => Result<B,any>;
+        mapError: (fn: (b:any) => any) => Result<any,any>;
+        bimap: (fnOk: (a:any) => any,fnErr: (a:any) => any) => Result<any,any>;
+        filter: (fn: (a: any) => boolean) => Result<any,any>;
+        fold: (fnErr: (a:any) => any,fnOk: (a:any) => any) => Result<any,any>;
+        swap: () => Result<any,any>;
+        apply: (r: Result<any,any>) => Result<any,any>;
         effect: (fn: (a: any) => any) => Result<A,any>;
         chain: <B,C>(fn: (a:A) => Result<B,C>) => Result<B,C>;
         equals: (b: any) => boolean;
@@ -76,6 +86,12 @@ declare module "@juan-utils/ramda-structures" {
         match: (cases: ResultCases) => any;
         get: () => A;
         map: <B>(fn: (a:A) => B) => Result<B,any>;
+        mapError: (fn: (b:any) => any) => Result<any,any>;
+        bimap: (fnOk: (a:any) => any,fnErr: (a:any) => any) => Result<any,any>;
+        filter: (fn: (a: any) => boolean) => Result<any,any>;
+        fold: (fnErr: (a:any) => any,fnOk: (a:any) => any) => Result<any,any>;
+        swap: () => Result<any,any>;
+        apply: (r: Result<any,any>) => Result<any,any>;
         effect: (fn: (a: any) => any) => Result<A,any>;
         chain: <B,C>(fn: (a:A) => Result<B,C>) => Result<B,C>;
         equals: (b: any) => boolean;
@@ -93,7 +109,7 @@ declare module "@juan-utils/ramda-structures" {
         fromError: <A>(val: A) => Result<A,Error>;
         fromFalsy: <A>(val: A) => Result<A,A>;
         fromPredicate: <A>(pred: (a: A) => boolean, val?: A ) => Result<A,A>;
-        fromMaybe: <A>(val: Maybe<A>) => Result<A,undefined>;
+        fromMaybe: <A>(val: Maybe<A>,onNothing: any) => Result<A,undefined>;
         attempt: <A>(fn: (a:any) => A) => Result<A,Error>;
         match: <A,B>(cases: ResultCases) => Result<A,B>;
         equals: {

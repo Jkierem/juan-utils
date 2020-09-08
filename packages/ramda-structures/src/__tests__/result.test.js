@@ -1,6 +1,22 @@
 import Maybe from '../Maybe'
 import Result from '../Result'
 
+const Spy = (fn = x => x) => {
+    let calls = 0;
+    let _spy = (...args) => {
+        calls++;
+        return fn(...args)
+    }
+
+    Object.defineProperty(_spy,"called",{
+        get: () => calls > 0
+    })
+
+    _spy.reset = () => { calls = 0 }
+
+    return _spy
+}
+
 describe("Result", () => {
     describe("constructors", () => {
         const error = new Error(42);
@@ -43,6 +59,8 @@ describe("Result", () => {
     describe("methods", () => {
         const ok42 = Result.Ok(42);
         const err42 = Result.Err(42)
+        const okInc = Result.Ok(x => x + 1)
+
         it("should return inner value", () => {
             expect(ok42.get()).toBe(42)
             expect(err42.get()).toBe(42)
@@ -67,9 +85,25 @@ describe("Result", () => {
             expect(calls).toBe(1);
         })
 
-        it("should call chain with inner value", () => {
-            expect(ok42.chain(x => x == 42)).toBeTruthy()
-            expect(err42.chain(x => x == 42)).toBeTruthy()
+        it("should call chain with inner value if Ok, nothing otherwise", () => {
+            expect(ok42.chain(x => 42)).toBe(42)
+            expect(err42.chain(x => x == 42).isErr()).toBeTruthy()
+        })
+
+        it("should apply ok applicatives", () => {
+            expect(okInc.apply(ok42).get()).toBe(43)
+            expect(okInc.apply(err42)).toTypeMatch("Err")
+            expect(err42.apply()).toTypeMatch("Err")
+        })
+
+        it("should swap context from an ok to err and vice versa", () => {
+            const swappedOk  = ok42.swap();
+            const swappedErr = err42.swap();
+
+            expect(swappedOk).toTypeMatch("Err")
+            expect(swappedOk.get()).toBe(42)
+            expect(swappedErr).toTypeMatch("Ok")
+            expect(swappedErr.get()).toBe(42)
         })
 
         it("should compare by type and inner value", () => {
@@ -95,6 +129,51 @@ describe("Result", () => {
             expect(ok42.isErr()).toBeFalsy();
             expect(err42.isErr()).toBeTruthy();
             expect(err42.isOk()).toBeFalsy();
+        })
+
+        it("bimap should call f on ok, g on err", () => {
+            const spyF = Spy();
+            const spyG = Spy();
+            const reset = () => { spyF.reset(); spyG.reset() }
+
+            ok42.bimap(spyF,spyG)
+            expect(spyF.called).toBeTruthy()
+            expect(spyG.called).toBeFalsy()
+            reset();
+            err42.bimap(spyF,spyG)
+            expect(spyF.called).toBeFalsy()
+            expect(spyG.called).toBeTruthy()
+        })
+
+        it("fold should call g on ok, f on err", () => {
+            const spyF = Spy();
+            const spyG = Spy();
+            const reset = () => { 
+                spyF.reset(); 
+                spyG.reset() 
+            }
+
+            ok42.fold(spyF,spyG)
+            expect(spyF.called).toBeFalsy()
+            expect(spyG.called).toBeTruthy()
+            reset();
+            err42.fold(spyF,spyG)
+            expect(spyF.called).toBeTruthy()
+            expect(spyG.called).toBeFalsy()
+        })
+
+        it("filter should swap on false predicate if Ok. Nothing otherwise", () => {
+            expect(ok42.filter(x => x !== 42)).toTypeMatch("Err")
+            expect(ok42.filter(x => x === 42)).toTypeMatch("Ok")
+            expect(err42.filter(x => x === 42)).toTypeMatch("Err")
+        })
+
+        it("mapErro should map on err. Nothing otherwise", () => {
+            const mapSpy = Spy();
+            ok42.mapError(mapSpy);
+            expect(mapSpy.called).toBeFalsy();
+            err42.mapError(mapSpy);
+            expect(mapSpy.called).toBeTruthy();
         })
     })
 })
