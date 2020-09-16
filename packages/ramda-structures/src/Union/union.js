@@ -1,8 +1,9 @@
+import { fromPairs, toPairs } from 'ramda'
 import { setType, setInnerValue, getInnerValue, setVariant, extractWith, getVariant, getCase } from '../_internals'
 import Functor from './functor'
 import Show from './show'
 
-const mapObj = fn => obj => Object.fromEntries(Object.entries(obj).map(fn))
+const mapObj = fn => obj => fromPairs(toPairs(obj).map(fn))
 
 const Box = (cases) => {
     Object.keys(cases).forEach((trivial,idx,keys) => {
