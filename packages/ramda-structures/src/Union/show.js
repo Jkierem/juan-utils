@@ -1,4 +1,4 @@
-const { getType, getVariant, getInnerValue } = require("../_internals")
+import { getType, getVariant, getInnerValue } from "../_internals"
 
 const Show = ({ overrides }) => (cases) => {
     Object.keys(cases).forEach(trivial => {
