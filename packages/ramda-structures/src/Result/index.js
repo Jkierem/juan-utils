@@ -1,97 +1,81 @@
 import { equals as rEquals } from 'ramda'
-import { extractWith, getCase, setInnerValue, getInnerValue } from '../_internals'
+import { Applicative, Bifunctor, Effect, Eq, Filterable, Foldable, Functor, FunctorError, Monad, Show, Swap, Union } from '../Union';
 import { match } from '../_tools'
 
-class Result {}
-
-class Ok extends Result {
-    constructor(val){
-        super();
-        setInnerValue(this,val);
+const Defs = {
+    right: "Ok",
+    left: "Err",
+    first: "Ok",
+    second: "Err",
+    trivials: ["Ok"],
+    identities: ["Err"],
+    empties: ["Err"],
+    errors: ["Err"],
+    pure: "Ok",
+    overrides: {
+        fold: {
+            Ok(f,g){ return g(this.get()) },
+            Err(f,g){ return f(this.get()) }
+        },
+        equals: {
+            Err(other){
+                return other?.match?.({
+                    Err: x => rEquals(this.get(),x),
+                    _: () => false
+                })
+            }
+        },
+        filter: {
+            Ok(pred) {
+                return pred(this.get()) ? this : this.swap();
+            }
+        }
     }
-    get(){ return getInnerValue(this) }
-    match(cases){ return extractWith([this.get()])(getCase("ok",cases)) }
-    map(f){ return new Ok(f(this.get())) }
-    mapError(){ return this }
-    bimap(fn){ return this.map(fn) }
-    filter(pred){ return pred(this.get()) ? this : this.swap() }
-    fold(f,g){ return g(this.get())}
-    swap(){ return new Err(this.get()) }
-    apply(r){
-        return r.match({
-            Ok: (x) => this.map(fn => fn(x)),
-            Err: () => r
-        })
-    }
-    effect(f){ 
-        f(this.get()); 
-        return this 
-    }
-    chain(f){ return f(this.get()) }
-    equals(b){
-        return b?.match?.({ 
-            Ok: rEquals(this.get()),
-            _: () => false
-        }) || false
-    }
-    onError(){ return this.get() }
-    isOk(){ return true }
-    isErr(){ return false }
 }
 
-class Err extends Result {
-    constructor(val){
-        super();
-        setInnerValue(this,val);
-    }
-    get(){ 
-        return getInnerValue(this) 
-    }
-    match(cases){
-        return extractWith([this.get()])(getCase("err",cases))
-    }
-    map(){ return this }
-    mapError(f){ return new Err(f(this.get())) }
-    bimap(fnOk,fn){ return this.mapError(fn) }
-    filter(){ return this }
-    fold(f,g){ return f(this.get())}
-    swap(){ return new Ok(this.get()) }
-    apply(){ return this }
-    effect(){ return this }
-    chain(){ return this }
-    equals(b){
-        return b?.match?.({ 
-            Err: rEquals(this.get()),
-            _: () => false
-        }) || false
-    }
-    onError(f){ return extractWith([this.get()])(f) }
-    isOk(){ return false }
-    isErr(){ return true }
-}
-
-const from =  val => val instanceof Error ? new Err(val) : new Ok(val)
-
-export default {
-    Ok: (x) => new Ok(x),
-    Err: (x) => new Err(x),
-    from,
-    fromError: from,
-    fromFalsy: val => val ? new Ok(val) : new Err(val),
-    fromPredicate: (pred,val) => pred(val) ? new Ok(val) : new Err(val),
+const Result = Union("Result",{
+    Ok : x => x,
+    Err: x => x
+},[
+    Bifunctor(Defs),
+    Effect(Defs),
+    Eq(Defs),
+    Foldable(Defs),
+    Functor(Defs),
+    FunctorError(Defs),
+    Monad(Defs),
+    Applicative(Defs),
+    Show(Defs),
+    Swap(Defs),
+    Filterable(Defs)
+]).constructors({
+    from(val){
+        return val instanceof Error ? this.Err(val) : this.Ok(val)
+    },
+    fromError(val){
+        return val instanceof Error ? this.Err(val) : this.Ok(val)
+    },
+    fromFalsy(val){ 
+        return val ? this.Ok(val) : this.Err(val)
+    },
+    fromPredicate(pred,val){
+        return pred(val) ? this.Ok(val) : this.Err(val)
+    },
     fromMaybe(m,onNothing){ 
         return m?.match?.({ 
             Just: this.Ok, 
             None: () => this.Err(onNothing)
         }) 
     },
-    attempt: f => {
+    attempt(f) {
         try {
-            return new Ok(f())
+            return this.Ok(f())
         } catch(e) {
-            return new Err(e)
+            return this.Err(e)
         }
     },
     match,
     equals: rEquals
-}
+})
+
+export default Result

@@ -1,4 +1,4 @@
-import { ifElse, is, apply, identity, propOr, F, __, toPairs, toLower, curryN, compose, find, fromPairs, isNil, prop, complement } from 'ramda'
+import { ifElse, is, apply, identity, __, toPairs, toLower, curryN, compose, find, fromPairs, isNil, prop, complement } from 'ramda'
 
 /**
  * @description if the value given is a function, applies it with "data" as arguments and returns the result. Otherwise, it is equal to R.identity
@@ -14,7 +14,7 @@ export const extractWith = (data) => (value) => ifElse(
  * @description if the value given is a function, applies it with empty arguments and returns the result. Otherwise, is equal to R.identity
  * @param {any} value value to be extracted
  */
-export const extract = (value) => extractWith([])(value)
+//export const extract = (value) => extractWith([])(value)
 
 const mapKeys = curryN(2,(fn,obj) => fromPairs(toPairs(obj).map(([key, val]) => [ fn(key), val ])))
 
@@ -31,6 +31,18 @@ export const getCase = (name,obj) => getFirstCaseInsensitive([name,"default","_"
 
 export const safeMatch = (val,cases) => val?.match?.(cases) || cases?.default?.(val) || cases?._?.(val)
 
+export const splitBy = (fn,arr) => arr.reduce(([left,right],next) => { 
+    return fn(next) ? [ left, [...right, next]] : [ [...left,next], right]
+},[[],[]])
+
 export const InnerValue = Symbol("@@value");
 export const getInnerValue = x => x[InnerValue];
 export const setInnerValue = (x,val) => x[InnerValue] = val;
+
+export const Type = Symbol("@@type");
+export const getType = x => x[Type]
+export const setType = (x,t) => x[Type] = t
+
+export const Variant = Symbol("@@variant");
+export const getVariant = x => x[Variant];
+export const setVariant = (x,t) => x[Variant] = t

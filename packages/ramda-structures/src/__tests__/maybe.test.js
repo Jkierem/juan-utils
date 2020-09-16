@@ -1,6 +1,7 @@
 import Maybe from '../Maybe'
 import Result from '../Result'
 import { isEmpty } from 'ramda'
+import { NewType } from '../Union/union'
 
 describe("Maybe", () => {
     describe("object methods", () => {
@@ -109,6 +110,27 @@ describe("Maybe", () => {
             expect(none.concat(just42).get()).toBe(42)
             expect(none.concat(none)).toTypeMatch("None")
         })
+
+        it("show -> should return string representation", () => {
+            expect(just42.toString()).toBe("[Maybe => Just 42]")
+            expect(none.toString()).toBe("[Maybe => None]")
+        })
+
+        it("monoid -> should append inner values",() => {
+            expect(justArr1.append(just42).get()).toStrictEqual([1,42])
+            expect(justArr1.append(justArr2).get()).toStrictEqual([1,2])
+            expect(justArr1.append(none).get()).toStrictEqual([1])
+            expect(none.append(just42).get()).toBe(42)
+            expect(none.append(none)).toTypeMatch("None")
+        })
+
+        it("filterable -> should filter inner value", () => {
+            expect(Maybe.Just([1,2,3,4]).filter(x => x % 2 === 0).get()).toStrictEqual([2,4])
+            const called = false;
+            const spy = () => { called = true }
+            none.filter(spy)
+            expect(called).toBeFalsy()
+        })
     })
 
     describe("constructors", () => {
@@ -157,6 +179,14 @@ describe("Maybe", () => {
         it("fromPredicate should create a none with a predicate that returns false", () => {
             expect(Maybe.fromPredicate(is42,2)).toTypeMatch("None")
             expect(Maybe.fromPredicate(False)).toTypeMatch("None")
+        })
+
+        it("monad -> pure should return Just", () => {
+            expect(Maybe.pure(42)).toTypeMatch("Just")
+        })
+
+        it("monoid -> empty should be none", () => {
+            expect(Maybe.empty()).toTypeMatch("None")
         })
     })
 })

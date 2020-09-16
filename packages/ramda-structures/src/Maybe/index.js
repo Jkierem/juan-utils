@@ -1,82 +1,65 @@
 import { equals as rEquals, isNil, isEmpty } from 'ramda'
-import { extract, getCase, extractWith, setInnerValue, getInnerValue } from '../_internals'
 import { match as globalMatch } from '../_tools'
+import { Union, Functor, Monad, Applicative, Eq, Semigroup, Show, Monoid, Effect, Filterable} from '../Union'
 
-class Maybe {}
-
-class Just extends Maybe {
-    constructor(val){
-        super();
-        setInnerValue(this,val)
-    }
-    match(cases){ return extractWith([this.get()])(getCase("just",cases)) }
-    get(){ return getInnerValue(this) }
-    map(f){ return new Just(f(this.get())) }
-    effect(f){ 
-        f(this.get()); 
-        return this 
-    }
-    chain(f){ return f(this.get()) }
-    equals(b){ return b?.match?.({ Just: rEquals(this.get()) , _: () => false }) || false }
-    onNone(){ return this.get() }
-    isJust(){ return true }
-    isNone(){ return false }
-    empty(){ return new None }
-    apply(m){
-        return m.match({
-            Just: (x) => this.map(fn => fn(x)),
-            None: () => m
-        })
-    }
-    concat(m){ 
-        return m.match({ 
-            None: () => this.map(x => x), 
-            Just: () => this.map(x => x.concat(m.get()))
-        }) 
+const MaybeDefs = {
+    trivials: ["Just"],
+    identities: ["None"],
+    empties: ["None"],
+    pure: "Just",
+    cero: "None",
+    overrides: {
+        show: {
+            None(){
+                return `[Maybe => None]`
+            }
+        }
     }
 }
 
-class None extends Maybe {
-    constructor(){
-        super();
-    }
-    match(cases){ return extract(getCase("none",cases)) }
-    get(){ return undefined }
-    map(){ return this }
-    effect(){ return this }
-    chain(){ return this }
-    equals(b){ return b?.match?.({ None: () => true, _: () => false }) || false }
-    onNone(f){ return extract(f) }
-    isJust(){ return false }
-    isNone(){ return true }
-    empty(){ return this }
-    apply(){ return this }
-    concat(m){ 
-        return m.match({ 
-            None: () => new None, 
-            Just: (x) => new Just(x)
-        }) 
-    }
-}
-
-const from = x => x ? new Just(x) : new None;
-
-export default {
-    Just: (x) => new Just(x),
-    None: () => new None,
-    from,
-    fromFalsy: from,
-    fromArray: x => x.length === 0 ? new None : new Just(x),
-    fromNullish: x => isNil(x) ? new None : new Just(x),
-    fromEmpty: x => isEmpty(x) ? new None : new Just(x),
-    fromPredicate: (pred,val) => pred(val) ? new Just(val) : new None,
+const Maybe = Union("Maybe",{
+    Just: x => x,
+    None: () => {}
+},[
+    Functor(MaybeDefs),
+    Effect(MaybeDefs),
+    Eq(MaybeDefs),
+    Monad(MaybeDefs),
+    Monoid(MaybeDefs),
+    Applicative(MaybeDefs),
+    Semigroup(MaybeDefs),
+    Filterable(MaybeDefs),
+    Show(MaybeDefs)
+]).constructors({
+    from(x){ 
+        return  x ? this.Just(x) : this.None() 
+    },
+    fromFalsy(x){
+        return  x ? this.Just(x) : this.None() 
+    },
+    fromArray(arr){
+        return arr.length === 0 ? this.None() : this.Just(arr)
+    },
+    fromNullish(x){
+        return isNil(x) ? this.None() : this.Just(x)
+    },
+    fromEmpty(x){ 
+        return isEmpty(x) ? this.None() : this.Just(x)
+    },
+    fromPredicate(pred,val){
+        return pred(val) ? this.Just(val) : this.None()
+    },
     fromResult(r){
         return r?.match?.({ 
             Ok: this.Just, 
             Err: this.None
         })
     },
-    isEmpty: x => x?.isNone() || false,
+    isEmpty(x){
+        return x?.isNone() || false
+    },
     match: globalMatch,
     equals: rEquals
-}
+})
+
+export default Maybe

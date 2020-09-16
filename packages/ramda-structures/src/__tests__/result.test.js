@@ -29,6 +29,8 @@ describe("Result", () => {
         [
             ["from", "Err", "Error object", error],
             ["from", "Ok", "Non-Error value", truthy],
+            ["fromError", "Err", "Error object", error],
+            ["fromError", "Ok", "Non-Error value", truthy],
             ["fromFalsy", "Err", "falsy value", falsy],
             ["fromFalsy", "Ok", "truthy value", truthy],
             ["fromMaybe", "Err", "None", none],
@@ -73,7 +75,7 @@ describe("Result", () => {
             expect(mappedErr).toBe(err42);
         })
 
-        it("should not call effect when err and effect should leave inner value as is", () => {
+        it("should not call effect when Err and effect should leave inner value as is", () => {
             let calls = 0;
             const fn = (x) => {
                 calls++;
@@ -96,7 +98,7 @@ describe("Result", () => {
             expect(err42.apply()).toTypeMatch("Err")
         })
 
-        it("should swap context from an ok to err and vice versa", () => {
+        it("should swap context from an ok to Err and vice versa", () => {
             const swappedOk  = ok42.swap();
             const swappedErr = err42.swap();
 
@@ -118,10 +120,10 @@ describe("Result", () => {
             expect(ok42.equals(42)).toBeFalsy()
         })
 
-        it("onError should return inner value if Ok, extract argument otherwise", () => {
-            expect(ok42.onError()).toBe(42);
-            expect(err42.onError(() => 43)).toBe(43)
-            expect(err42.onError(43)).toBe(43)
+        it("onErr should return inner value if Ok, extract argument otherwise", () => {
+            expect(ok42.onErr()).toBe(42);
+            expect(err42.onErr(() => 43)).toBe(43)
+            expect(err42.onErr(43)).toBe(43)
         })
 
         it("should return true/false for appropiate 'is' function", () => {
@@ -131,7 +133,7 @@ describe("Result", () => {
             expect(err42.isOk()).toBeFalsy();
         })
 
-        it("bimap should call f on ok, g on err", () => {
+        it("bimap should call f on ok, g on Err", () => {
             const spyF = Spy();
             const spyG = Spy();
             const reset = () => { spyF.reset(); spyG.reset() }
@@ -145,7 +147,7 @@ describe("Result", () => {
             expect(spyG.called).toBeTruthy()
         })
 
-        it("fold should call g on ok, f on err", () => {
+        it("fold should call g on ok, f on Err", () => {
             const spyF = Spy();
             const spyG = Spy();
             const reset = () => { 
@@ -168,7 +170,7 @@ describe("Result", () => {
             expect(err42.filter(x => x === 42)).toTypeMatch("Err")
         })
 
-        it("mapErro should map on err. Nothing otherwise", () => {
+        it("mapError should map on Err. Nothing otherwise", () => {
             const mapSpy = Spy();
             ok42.mapError(mapSpy);
             expect(mapSpy.called).toBeFalsy();
