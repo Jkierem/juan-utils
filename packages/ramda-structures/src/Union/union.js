@@ -44,7 +44,7 @@ const Union = (name, cases, exts) => {
             setType(this,name)
             setVariant(this,key)
             setInnerValue(this,val(...args))
-            setTypeclasses(this,tcs)
+            setTypeclasses(this,() => tcs)
         }]
     })(cases)
     const extensions = [ Box, ...exts ]
