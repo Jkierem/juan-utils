@@ -4,12 +4,11 @@ declare module "@juan-utils/ramda-structures" {
     type Extractable<A> = A | (() => A)
 
     type CaseUnion<K> = K | "default" | "_";
-    type Cases<K> = {
+    type Cases<K extends string | number | symbol> = {
         [P in CaseUnion<K>]?: Extractable<any>;
     }
 
     type MaybeCases = Cases<"Just" | "None">
-
     export interface None {
         match: (a: MaybeCases) => any;
         unwrap: () => any;

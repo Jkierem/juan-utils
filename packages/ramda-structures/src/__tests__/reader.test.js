@@ -20,6 +20,15 @@ describe("Reader Monad",() => {
             Reader.runReader(fn,read42);
             expect(res).toBe(42)
         })
+        it("runBoundReader -> should bind function",() => {
+            const read42 = Reader.from(42);
+            let res = null;
+            function fn (){
+                res = this.ask(x => x)
+            }
+            Reader.runBoundReader(fn,read42);
+            expect(res).toBe(42)
+        })
         it("runReader -> should restore ask to previous state", () => {
             const read42 = Reader.from(42);
             const read43 = Reader.from(43);

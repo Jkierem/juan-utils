@@ -1,13 +1,13 @@
 import { __ } from 'ramda'
-import Union, { NewType } from '../Union/union';
+import { Union, NewType, Monad, Functor } from '../Union';
 import { getCase } from '../_internals';
-import { toPrimitive } from '../_tools'
+import { hasInstance, toPrimitive } from '../_tools'
 
 describe("Utils", () => {
+    // Box is the simplest definition of an union
+    const Boxed = Union("Box",{ Box: x => x },[]).constructors({ of(a){ return this.Box(a) }});
+    const TooMuch = Boxed.of(Boxed.of(Boxed.of(42)))
     describe("Union types", () => {
-        // Box is the simplest definition of an union
-        const Boxed = Union("Box",{ Box: x => x },[]).constructors({ of(a){ return this.Box(a) }});
-        const TooMuch = Boxed.of(Boxed.of(Boxed.of(42)))
         it("should have a way to break nested unions", () => {
             expect(TooMuch.unwrap()).toBe(42)
         })
@@ -16,6 +16,18 @@ describe("Utils", () => {
             expect(toPrimitive(TooMuch)).toBe(42)
             expect(toPrimitive(42)).toBe(42)
             expect(toPrimitive(undefined)).toBeUndefined();
+        })
+    })
+    describe("hasInstance", () => {
+        const Box = NewType("Box");
+        const Boxed42 = Box.from(42)
+        it("should return true for implementors, false otherwise", () => {
+            expect(hasInstance(Boxed42,"Functor")).toBeTruthy()
+            expect(hasInstance(Boxed42,Functor)).toBeTruthy()
+            expect(hasInstance(Boxed42,"Monad")).toBeFalsy()
+            expect(hasInstance(Boxed42,Monad)).toBeFalsy()
+            expect(hasInstance(42,Monad)).toBeFalsy()
+            expect(hasInstance(42,Monad)).toBeFalsy()
         })
     })
 

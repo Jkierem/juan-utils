@@ -15,6 +15,9 @@ const ReaderMonad = () => (cases,global) => {
         getGlobal().ask = mem
         return value
     }
+    global.runBoundReader = function(fn,reader){
+        return fn.call(reader)
+    }
 }
 
 const Defs = {

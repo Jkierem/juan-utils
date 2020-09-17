@@ -38,7 +38,8 @@ const Box = (cases) => {
 }
 
 const Union = (name, cases, exts) => {
-    const tcs =  exts.map(tc => getTypeclass(tc)).filter(Boolean)
+    const extensions = [ Box, ...exts ]
+    const tcs =  extensions.map(tc => getTypeclass(tc)).filter(Boolean)
     const mappedCases = mapObj(([key,val]) => {
         return [key , function(...args){
             setType(this,name)
@@ -47,7 +48,6 @@ const Union = (name, cases, exts) => {
             setTypeclasses(this,() => tcs)
         }]
     })(cases)
-    const extensions = [ Box, ...exts ]
     const globals = {}
     extensions.forEach(fn => fn(mappedCases,globals))
     const trueCases = mapObj(([key,value]) => [key, (...args) => new value(...args)])(mappedCases)

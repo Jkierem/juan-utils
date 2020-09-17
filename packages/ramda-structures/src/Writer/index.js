@@ -1,6 +1,7 @@
 import { is } from 'ramda'
 import Sum from '../Sum';
 import Mult from '../Mult';
+import Merge from '../Merge';
 import { Monad, Monoid, Show, Union } from '../Union'
 import { getGlobal, getInnerValue, setInnerValue } from '../_internals';
 
@@ -38,9 +39,21 @@ const WriterMonad = () => (cases,globals) => {
         getGlobal().forward = mem2
         return writer
     }
+    globals.runBoundWriter = (fn,_writer) => {
+        const [inner,cons] = getInnerValue(_writer)
+        const writer = new cases.Writer()
+        setInnerValue(writer,[inner,[...cons]])
+        fn.call(writer)
+        return writer
+    }
     globals.runSeq = (fns,writer) => {
         return fns.reduce((writer,next) => {
             return globals.runWriter(next,writer)
+        }, writer)
+    }
+    globals.runBoundSeq = (fns,writer) => {
+        return fns.reduce((writer,next) => {
+            return globals.runBoundWriter(next,writer)
         }, writer)
     }
 }
@@ -71,6 +84,9 @@ const Writer = Union("WriterMonad",{
     },
     arraySink(){
         return this.Writer([])
+    },
+    objectSink(){
+        return this.Writer(Merge.empty())
     }
 })
 
