@@ -1,7 +1,11 @@
-const Foldable = ({ overrides }) => (cases) => {
+import { currySetTypeclass } from "../_internals"
+
+const mark = currySetTypeclass("Foldable")
+
+const Foldable = ({ overrides }) => mark((cases) => {
     Object.keys(cases).forEach((key) => {
         cases[key].prototype.fold = overrides?.fold?.[key]
     })
-}
+})
 
-export default Foldable
+export default mark(Foldable)

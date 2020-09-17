@@ -46,3 +46,24 @@ export const setType = (x,t) => x[Type] = t
 export const Variant = Symbol("@@variant");
 export const getVariant = x => x[Variant];
 export const setVariant = (x,t) => x[Variant] = t
+
+export const Typeclass = Symbol("@@typeclass");
+export const getTypeclass = x => x[Typeclass];
+export const setTypeclass = (t,x) => { 
+    x[Typeclass] = t
+    return x
+};
+export const currySetTypeclass = t => x => setTypeclass(t,x)
+
+export const Typeclasses = Symbol("@@typeclasses");
+/* istanbul ignore next */
+export const getTypeclasses = x => x[Typeclasses];
+export const setTypeclasses = (x,ts) => x[Typeclasses] = ts;
+
+/* istanbul ignore next */
+export const getGlobal = function () { 
+    if (typeof glboalThis !== "undefined"){ return globalThis; }
+    if (typeof self !== 'undefined') { return self; } 
+    if (typeof window !== 'undefined') { return window; } 
+    if (typeof global !== 'undefined') { return global; }
+};

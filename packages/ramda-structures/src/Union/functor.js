@@ -1,7 +1,7 @@
 import { includes } from "ramda"
-import { splitBy } from "../_internals"
+import { setTypeclass, splitBy } from "../_internals"
 
-const Functor = ({ trivials, identities, overrides }) => (cases) => {
+const Functor = ({ trivials, identities, overrides }) => setTypeclass("Functor",(cases) => {
     trivials.forEach(trivial => {
         function trivialFmap(fn){
             return new cases[trivial](fn(this.get()))
@@ -18,9 +18,11 @@ const Functor = ({ trivials, identities, overrides }) => (cases) => {
         cases[empt].prototype.fmap = fmap
         cases[empt].prototype.map = fmap
     })
-}
+})
 
-export const FunctorError = ({ errors , overrides }) => (cases) => {
+setTypeclass("Functor",Functor)
+
+const FunctorError = ({ errors , overrides }) => setTypeclass("FunctorError",(cases) => {
     const [ lefts, rights ] = splitBy( c => !includes(c,errors), Object.keys(cases))
     lefts.forEach(left => {
         function trivialMapError(fn){
@@ -37,6 +39,9 @@ export const FunctorError = ({ errors , overrides }) => (cases) => {
         const mapError = overrides?.mapError?.[right] || idMapError
         cases[right].prototype.mapError = mapError
     })
-}
+})
 
+setTypeclass("FunctorError",FunctorError)
+
+export { FunctorError }
 export default Functor;

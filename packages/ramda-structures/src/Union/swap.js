@@ -1,4 +1,6 @@
-const Swap = ({ left, right, overrides }) => (cases) => {
+import { setTypeclass } from "../_internals"
+
+const Swap = ({ left, right, overrides }) => setTypeclass("Swap",(cases) => {
     function triviallswap(){
         return new cases[right](this.get())
     }
@@ -9,6 +11,8 @@ const Swap = ({ left, right, overrides }) => (cases) => {
     const rswap = overrides?.swap?.[right] || trivialrswap
     cases[left].prototype.swap = lswap
     cases[right].prototype.swap = rswap
-}
+})
+
+setTypeclass("Swap",Swap)
 
 export default Swap

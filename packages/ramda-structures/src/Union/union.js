@@ -1,5 +1,5 @@
 import { fromPairs, toPairs } from 'ramda'
-import { setType, setInnerValue, getInnerValue, setVariant, extractWith, getVariant, getCase } from '../_internals'
+import { setType, setInnerValue, getInnerValue, setVariant, extractWith, getVariant, getCase, setTypeclasses, getTypeclass } from '../_internals'
 import Functor from './functor'
 import Show from './show'
 
@@ -7,6 +7,13 @@ const mapObj = fn => obj => fromPairs(toPairs(obj).map(fn))
 
 const Box = (cases) => {
     Object.keys(cases).forEach((trivial,idx,keys) => {
+        cases[trivial].prototype.unwrap = function(){
+            let inner = this.get();
+            while( inner?.get ){
+                inner = inner.get()
+            }
+            return inner
+        }
         cases[trivial].prototype.get = function(fn){
             return getInnerValue(this)
         }
@@ -31,11 +38,13 @@ const Box = (cases) => {
 }
 
 const Union = (name, cases, exts) => {
+    const tcs =  exts.map(tc => getTypeclass(tc)).filter(Boolean)
     const mappedCases = mapObj(([key,val]) => {
         return [key , function(...args){
             setType(this,name)
             setVariant(this,key)
             setInnerValue(this,val(...args))
+            setTypeclasses(this,tcs)
         }]
     })(cases)
     const extensions = [ Box, ...exts ]
@@ -47,13 +56,13 @@ const Union = (name, cases, exts) => {
             return {
                 ...trueCases,
                 ...globals,
-                ...mapObj(([key,fn]) => [key,fn.bind(trueCases)])(cons)
+                ...mapObj(([key,fn]) => [key,fn.bind(trueCases)])(cons),
             }
         }
     }
 }
 
-export const NewType = (name) => Union(name,
+export const NewType = (name,exts=[]) => Union(name,
     { [name]: x => x },
     [
         Functor({ trivials: [ name ], identities:[] }),
@@ -64,7 +73,8 @@ export const NewType = (name) => Union(name,
                     }
                 }
             }
-        })
+        }),
+        ...exts,
     ]).constructors({ from(...args){ return this[name](...args) }})
 
 export default Union;

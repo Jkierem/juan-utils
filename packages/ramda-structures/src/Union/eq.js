@@ -1,7 +1,9 @@
 import { equals as eq } from "ramda"
-import { getVariant } from "../_internals"
+import { currySetTypeclass, getVariant } from "../_internals"
 
-const Eq = ({ trivials, empties, overrides }) => (cases) => {
+const mark = currySetTypeclass("Eq")
+
+const Eq = ({ trivials, empties, overrides }) => mark((cases) => {
     function trivialEquals(other){
         return getVariant(this) === getVariant(other) && eq(this.get(), other.get())
     }
@@ -16,6 +18,6 @@ const Eq = ({ trivials, empties, overrides }) => (cases) => {
         const equals = overrides?.equals?.[empt] || emptyEquals
         cases[empt].prototype.equals = equals
     })
-}
+})
 
-export default Eq;
+export default mark(Eq);

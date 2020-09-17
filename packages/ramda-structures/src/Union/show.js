@@ -1,6 +1,6 @@
-import { getType, getVariant, getInnerValue } from "../_internals"
+import { getType, getVariant, getInnerValue, setTypeclass } from "../_internals"
 
-const Show = ({ overrides }) => (cases) => {
+const Show = ({ overrides }) => setTypeclass("Show",(cases) => {
     Object.keys(cases).forEach(trivial => {
         function trivialShow(){
             return `[${getType(this)} => ${getVariant(this)} ${getInnerValue(this)}]`;
@@ -9,6 +9,8 @@ const Show = ({ overrides }) => (cases) => {
         cases[trivial].prototype.show = show
         cases[trivial].prototype.toString = show
     })
-}
+})
+
+setTypeclass("Show",Show)
 
 export default Show

@@ -1,7 +1,7 @@
 import Maybe from '../Maybe'
 import Result from '../Result'
 import { isEmpty } from 'ramda'
-import { NewType } from '../Union/union'
+import Sum from '../Sum'
 
 describe("Maybe", () => {
     describe("object methods", () => {
@@ -36,9 +36,13 @@ describe("Maybe", () => {
             expect(called).toBe(false);
         })
 
-        it("isEmpty should return true if None", () => {
+        it("isEmpty should return true if None and isEmpty (Just x ) === isEmpty x", () => {
             expect(isEmpty(just42)).toBeFalsy()
+            expect(isEmpty(Maybe.Just(""))).toBeTruthy()
             expect(isEmpty(none)).toBeTruthy()
+            expect(just42.isEmpty()).toBeFalsy()
+            expect(Maybe.Just("").isEmpty()).toBeTruthy()
+            expect(none.isEmpty()).toBeTruthy()
             expect(Maybe.isEmpty(just42)).toBeFalsy()
             expect(Maybe.isEmpty(none)).toBeTruthy()
         })
@@ -122,6 +126,16 @@ describe("Maybe", () => {
             expect(justArr1.append(none).get()).toStrictEqual([1])
             expect(none.append(just42).get()).toBe(42)
             expect(none.append(none)).toTypeMatch("None")
+        })
+
+        it("monoid -> empty (Just x) is Just (empty x). None if isNil(empty x)", () => {
+            const emptyJust = Maybe.Just(Sum.from(42)).empty()
+            expect(emptyJust.get()).toTypeMatch("Zero")
+            expect(emptyJust.unwrap()).toBe(0)
+            expect(just42.empty().get()).toBe(undefined);
+            expect(justArr1.empty().get()).toStrictEqual([])
+            expect(Maybe.Just({}).empty().get()).toStrictEqual({})
+            expect(Maybe.Just("Hi").empty().get()).toStrictEqual("")
         })
 
         it("filterable -> should filter inner value", () => {

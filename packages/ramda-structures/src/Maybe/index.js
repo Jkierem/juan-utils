@@ -1,4 +1,4 @@
-import { equals as rEquals, isNil, isEmpty } from 'ramda'
+import { equals as rEquals, isNil, isEmpty, empty } from 'ramda'
 import { match as globalMatch } from '../_tools'
 import { Union, Functor, Monad, Applicative, Eq, Semigroup, Show, Monoid, Effect, Filterable} from '../Union'
 
@@ -7,12 +7,17 @@ const MaybeDefs = {
     identities: ["None"],
     empties: ["None"],
     pure: "Just",
-    cero: "None",
+    zero: "None",
     overrides: {
         show: {
-            None(){
-                return `[Maybe => None]`
-            }
+            None(){ return `[Maybe => None]` }
+        },
+        empty: {
+            Just(){ return Maybe.fromNullish(empty(this.get())) }
+        },
+        isEmpty: {
+            Just(){ return isEmpty(this.get()) },
+            None(){ return true }
         }
     }
 }
@@ -56,7 +61,7 @@ const Maybe = Union("Maybe",{
         })
     },
     isEmpty(x){
-        return x?.isNone() || false
+        return x?.isNone() || isEmpty(x?.get?.()) || false
     },
     match: globalMatch,
     equals: rEquals

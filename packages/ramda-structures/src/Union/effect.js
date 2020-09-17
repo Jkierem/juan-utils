@@ -1,4 +1,8 @@
-const Effect = ({ trivials, identities, overrides }) => (cases) => {
+import { currySetTypeclass as setTypeclass } from "../_internals"
+
+const mark = setTypeclass("Effect")
+
+const Effect = ({ trivials, identities, overrides }) => mark((cases) => {
     trivials.forEach(trivial => {
         function trivialEffect(fn){
             fn(this.get())
@@ -17,6 +21,6 @@ const Effect = ({ trivials, identities, overrides }) => (cases) => {
         cases[empt].prototype.effect = effect
         cases[empt].prototype.peak = effect
     })
-}
+})
 
-export default Effect
+export default mark(Effect)

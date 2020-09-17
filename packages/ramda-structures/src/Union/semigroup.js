@@ -1,4 +1,6 @@
-const Semigroup = ({ trivials, identities, overrides }) => (cases) => {
+import { setTypeclass } from "../_internals"
+
+const Semigroup = ({ trivials, identities, overrides }) => setTypeclass("Semigroup",(cases) => {
     trivials.forEach(trivial => {
         function trivialConcat(m){
             return m.match({
@@ -16,6 +18,8 @@ const Semigroup = ({ trivials, identities, overrides }) => (cases) => {
         const concat = overrides?.concat?.[empt] || idConcat
         cases[empt].prototype.concat = concat
     })
-}
+})
+
+setTypeclass("Semigroup",Semigroup)
 
 export default Semigroup;

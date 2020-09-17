@@ -1,4 +1,7 @@
 export { default as Maybe } from './Maybe'
 export { default as Result } from './Result'
+export { default as Reader } from './Reader'
+export { default as Sum } from './Sum'
+export { default as Mult } from './Mult'
 export * from './Union'
 export * from './_tools'

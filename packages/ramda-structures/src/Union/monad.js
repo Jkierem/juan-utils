@@ -1,4 +1,6 @@
-const Monad = ({ trivials, identities, pure, overrides }) => (cases,globals) => {
+import { setTypeclass } from "../_internals"
+
+const Monad = ({ trivials, identities, pure, overrides }) => setTypeclass("Monad",(cases,globals) => {
     trivials.forEach(trivial => {
         function trivialChain(fn){
             return fn(this.get())
@@ -17,7 +19,12 @@ const Monad = ({ trivials, identities, pure, overrides }) => (cases,globals) => 
         cases[empt].prototype.bind    = chain
         cases[empt].prototype.flatMap = chain
     })
+    Object.keys(cases).forEach(key => {
+        cases[key].prototype.pure = (...args) => new cases[pure](...args)
+    })
     globals.pure = (...args) => new cases[pure](...args)
-}
+})
+
+setTypeclass("Monad",Monad)
 
 export default Monad;
