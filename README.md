@@ -1,5 +1,7 @@
 # Juan-utils
 
+**NO LONGER IN USE**
+
 My own monorepo playground/utility lib
 
 ## Included packages
@@ -8,4 +10,4 @@ My own monorepo playground/utility lib
 - @juan-utils/functions **NO LONGER MAINTAINED**
 - @juan-utils/structures **NO LONGER MAINTAINED**
 - @juan-utils/state **NO LONGER MAINTAINED**
-- @juan-utils/ramda-structures 
+- @juan-utils/ramda-structures **NO LONGER MAINTAINED**
